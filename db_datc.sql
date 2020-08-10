@@ -1,23 +1,24 @@
 -- phpMyAdmin SQL Dump
--- version 4.0.9
--- http://www.phpmyadmin.net
+-- version 5.0.2
+-- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 17, 2018 at 03:15 PM
--- Server version: 5.6.14
--- PHP Version: 5.5.6
+-- Generation Time: Aug 10, 2020 at 07:51 PM
+-- Server version: 10.4.11-MariaDB
+-- PHP Version: 7.4.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
 SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `lawyer_portal`
+-- Database: `db_datc`
 --
 
 -- --------------------------------------------------------
@@ -26,14 +27,13 @@ SET time_zone = "+00:00";
 -- Table structure for table `tbl_casebrief`
 --
 
-CREATE TABLE IF NOT EXISTS `tbl_casebrief` (
-  `case_id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `tbl_casebrief` (
+  `case_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `case_title` varchar(255) NOT NULL,
   `case_description` text NOT NULL,
-  `case_added_date` date NOT NULL,
-  PRIMARY KEY (`case_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
+  `case_added_date` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tbl_casebrief`
@@ -52,15 +52,14 @@ INSERT INTO `tbl_casebrief` (`case_id`, `user_id`, `case_title`, `case_descripti
 -- Table structure for table `tbl_forum_answer`
 --
 
-CREATE TABLE IF NOT EXISTS `tbl_forum_answer` (
-  `answer_id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `tbl_forum_answer` (
+  `answer_id` int(11) NOT NULL,
   `forum_id` int(11) NOT NULL,
   `answer_description` text NOT NULL,
   `user_id` int(11) NOT NULL,
   `user_type` varchar(10) NOT NULL,
-  `answer_added_date` datetime NOT NULL,
-  PRIMARY KEY (`answer_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=12 ;
+  `answer_added_date` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tbl_forum_answer`
@@ -84,15 +83,14 @@ INSERT INTO `tbl_forum_answer` (`answer_id`, `forum_id`, `answer_description`, `
 -- Table structure for table `tbl_forum_question`
 --
 
-CREATE TABLE IF NOT EXISTS `tbl_forum_question` (
-  `forum_id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `tbl_forum_question` (
+  `forum_id` int(11) NOT NULL,
   `forum_title` varchar(255) NOT NULL,
   `forum_description` text NOT NULL,
   `user_id` int(11) NOT NULL,
   `user_type` varchar(10) NOT NULL,
-  `forum_added_date` datetime NOT NULL,
-  PRIMARY KEY (`forum_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
+  `forum_added_date` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tbl_forum_question`
@@ -111,8 +109,8 @@ INSERT INTO `tbl_forum_question` (`forum_id`, `forum_title`, `forum_description`
 -- Table structure for table `tbl_lawyer_schedule`
 --
 
-CREATE TABLE IF NOT EXISTS `tbl_lawyer_schedule` (
-  `schedule_id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `tbl_lawyer_schedule` (
+  `schedule_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `schedule_date` date NOT NULL,
   `day` varchar(50) NOT NULL,
@@ -121,9 +119,8 @@ CREATE TABLE IF NOT EXISTS `tbl_lawyer_schedule` (
   `client_id` int(11) NOT NULL,
   `schedule_add_date` date NOT NULL,
   `updated_date` date NOT NULL,
-  `booked_date` date NOT NULL,
-  PRIMARY KEY (`schedule_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=54 ;
+  `booked_date` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tbl_lawyer_schedule`
@@ -190,8 +187,8 @@ INSERT INTO `tbl_lawyer_schedule` (`schedule_id`, `user_id`, `schedule_date`, `d
 -- Table structure for table `tbl_user`
 --
 
-CREATE TABLE IF NOT EXISTS `tbl_user` (
-  `user_id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `tbl_user` (
+  `user_id` int(11) NOT NULL,
   `title` enum('Mr','Mrs','Ms','Miss') NOT NULL,
   `first_name` varchar(255) NOT NULL,
   `last_name` varchar(255) NOT NULL,
@@ -202,9 +199,8 @@ CREATE TABLE IF NOT EXISTS `tbl_user` (
   `admitted_bar` varchar(255) DEFAULT '0',
   `specialty` varchar(255) NOT NULL,
   `location` varchar(255) NOT NULL,
-  `register_date` date NOT NULL,
-  PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=25 ;
+  `register_date` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tbl_user`
@@ -241,16 +237,15 @@ INSERT INTO `tbl_user` (`user_id`, `title`, `first_name`, `last_name`, `email`, 
 -- Table structure for table `tbl_user_client`
 --
 
-CREATE TABLE IF NOT EXISTS `tbl_user_client` (
-  `client_id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `tbl_user_client` (
+  `client_id` int(11) NOT NULL,
   `first_name` varchar(255) NOT NULL,
   `last_name` varchar(255) NOT NULL,
   `email` varchar(40) NOT NULL,
   `password` varchar(40) NOT NULL,
   `contact` varchar(15) NOT NULL,
-  `register_date` date NOT NULL,
-  PRIMARY KEY (`client_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
+  `register_date` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tbl_user_client`
@@ -263,6 +258,87 @@ INSERT INTO `tbl_user_client` (`client_id`, `first_name`, `last_name`, `email`, 
 (8, 'luky', 'perera', 'luky@gmail.com', '7c4a8d09ca3762af61e59520943dc26494f8941b', '0124587544', '2018-05-17'),
 (9, 'chatu', 'kari', 'chatu@gmail.com', '7c4a8d09ca3762af61e59520943dc26494f8941b', '012458544', '2018-05-17'),
 (10, 'achini', 'siriwardana', 'achini@yahoo.com', '7c4a8d09ca3762af61e59520943dc26494f8941b', '0713695488', '2018-05-17');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `tbl_casebrief`
+--
+ALTER TABLE `tbl_casebrief`
+  ADD PRIMARY KEY (`case_id`);
+
+--
+-- Indexes for table `tbl_forum_answer`
+--
+ALTER TABLE `tbl_forum_answer`
+  ADD PRIMARY KEY (`answer_id`);
+
+--
+-- Indexes for table `tbl_forum_question`
+--
+ALTER TABLE `tbl_forum_question`
+  ADD PRIMARY KEY (`forum_id`);
+
+--
+-- Indexes for table `tbl_lawyer_schedule`
+--
+ALTER TABLE `tbl_lawyer_schedule`
+  ADD PRIMARY KEY (`schedule_id`);
+
+--
+-- Indexes for table `tbl_user`
+--
+ALTER TABLE `tbl_user`
+  ADD PRIMARY KEY (`user_id`);
+
+--
+-- Indexes for table `tbl_user_client`
+--
+ALTER TABLE `tbl_user_client`
+  ADD PRIMARY KEY (`client_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `tbl_casebrief`
+--
+ALTER TABLE `tbl_casebrief`
+  MODIFY `case_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT for table `tbl_forum_answer`
+--
+ALTER TABLE `tbl_forum_answer`
+  MODIFY `answer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT for table `tbl_forum_question`
+--
+ALTER TABLE `tbl_forum_question`
+  MODIFY `forum_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `tbl_lawyer_schedule`
+--
+ALTER TABLE `tbl_lawyer_schedule`
+  MODIFY `schedule_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
+
+--
+-- AUTO_INCREMENT for table `tbl_user`
+--
+ALTER TABLE `tbl_user`
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+
+--
+-- AUTO_INCREMENT for table `tbl_user_client`
+--
+ALTER TABLE `tbl_user_client`
+  MODIFY `client_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
