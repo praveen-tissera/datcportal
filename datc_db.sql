@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 10, 2020 at 07:59 PM
+-- Generation Time: Nov 28, 2020 at 04:15 AM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.6
 
@@ -35,7 +35,7 @@ CREATE TABLE `batch_table` (
   `create_date` date NOT NULL,
   `commence_date` date NOT NULL,
   `tentitive_close_date` date NOT NULL,
-  `close_date` date NOT NULL,
+  `close_date` date DEFAULT NULL,
   `discription` varchar(255) NOT NULL,
   `state` enum('active','complete','inactive') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -47,7 +47,10 @@ CREATE TABLE `batch_table` (
 INSERT INTO `batch_table` (`batch_id`, `course_id`, `staff_id`, `batch_number`, `create_date`, `commence_date`, `tentitive_close_date`, `close_date`, `discription`, `state`) VALUES
 (1, 1, 1, '1', '2020-08-08', '2021-08-07', '0000-00-00', '2021-01-03', 'class time : Saturday 9.00 am to 3.00 pm', 'active'),
 (2, 1, 1, '2', '2020-08-09', '2021-08-08', '0000-00-00', '2021-01-03', 'class time : Sunday 9.00 am to 3.00 pm', 'active'),
-(3, 2, 1, '1', '2020-08-16', '2021-08-29', '0000-00-00', '2021-01-03', 'class time : Sunday 9.00 am to 3.00 pm', 'active');
+(3, 2, 1, '1', '2020-08-16', '2021-08-29', '0000-00-00', '2021-01-03', 'class time : Sunday 9.00 am to 3.00 pm', 'active'),
+(4, 3, 1, '1', '2020-08-08', '2021-08-07', '2021-11-19', '2021-01-03', 'class time : Saturday 9.00 am to 3.00 pm', 'active'),
+(5, 2, 2, '2', '2020-11-26', '2020-11-26', '2021-01-27', NULL, 'test', 'active'),
+(6, 5, 2, '1', '2020-11-26', '2020-11-26', '2020-12-31', NULL, 'test batch description', 'active');
 
 -- --------------------------------------------------------
 
@@ -71,8 +74,10 @@ CREATE TABLE `course_table` (
 --
 
 INSERT INTO `course_table` (`course_id`, `course_name`, `course_description`, `course_fee`, `state`, `staff_id`, `course_type`, `submit_date`) VALUES
-(1, 'Diploma of Agribusiness management ', 'This qualification reflects the role of personnel working on farms, stations and related rural businesses involved in administering and managing those businesses. Industry expects individuals with this qualification to take personal responsibility and exercise autonomy in undertaking complex work. They must analyze information and exercise judgment to complete a range of advanced skilled activities.', 'Rs.30,000.00', 'active', 2, 'diploma', '2020-01-01'),
-(2, 'Diploma Of Horticulture ', 'The Diploma of Horticulture reflects the role of those who manage amenity horticultural enterprises where a range of skills and knowledge across the breadth of the industry is required or personnel working in horticulture at a level requiring higher technical skills.', 'Rs.25,000.00', 'active', 2, 'diploma', '2020-01-02');
+(1, 'Diploma of Agribusiness management ', 'This qualification reflects the role of personnel working on farms, stations and related rural businesses involved in administering and managing those businesses. Industry expects individuals with this qualification to take personal responsibility and exercise autonomy in undertaking complex work. They must analyze information and exercise judgment to complete a range of advanced skilled activities.', '30000.00', 'active', 2, 'diploma', '2020-01-01'),
+(2, 'Diploma Of Horticulture ', 'The Diploma of Horticulture reflects the role of those who manage amenity horticultural enterprises where a range of skills and knowledge across the breadth of the industry is required or personnel working in horticulture at a level requiring higher technical skills.', '25000.00', 'active', 2, 'diploma', '2020-01-02'),
+(3, 'One Day Training', 'The Diploma of Horticulture reflects the role of those who manage amenity horticultural enterprises where a range of skills and knowledge across the breadth of the industry is required or personnel working in horticulture at a level requiring higher technical skills.', '25000.00', 'active', 2, 'oneday', '2020-01-02'),
+(5, 'test courseon', 'test discript', '40000', 'active', 2, 'diploma', '2020-11-26');
 
 -- --------------------------------------------------------
 
@@ -82,12 +87,22 @@ INSERT INTO `course_table` (`course_id`, `course_name`, `course_description`, `c
 
 CREATE TABLE `payment_receive_table` (
   `payment_id` int(11) NOT NULL,
-  `receipt_number` varchar(10) NOT NULL,
+  `receipt_number` varchar(14) NOT NULL,
   `paid_amount` float NOT NULL,
   `paid_date` date NOT NULL,
   `staff_id` int(11) NOT NULL,
   `add_date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `payment_receive_table`
+--
+
+INSERT INTO `payment_receive_table` (`payment_id`, `receipt_number`, `paid_amount`, `paid_date`, `staff_id`, `add_date`) VALUES
+(27, '20201119154516', 15000, '2020-11-19', 2, '2020-11-19'),
+(46, '20201121045937', 15000, '2020-11-21', 2, '2020-11-21'),
+(48, '20201124123716', 25000, '2020-11-24', 2, '2020-11-24'),
+(47, '20201124181924', 15000, '2020-11-24', 2, '2020-11-24');
 
 -- --------------------------------------------------------
 
@@ -101,9 +116,20 @@ CREATE TABLE `payment_schedule_table` (
   `batch_id` int(11) NOT NULL,
   `payment_status` enum('full','1st installment','2nd installment') NOT NULL,
   `amount` float NOT NULL,
-  `payment_due_date` date NOT NULL,
+  `payment_due_date` date DEFAULT NULL,
   `added_date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `payment_schedule_table`
+--
+
+INSERT INTO `payment_schedule_table` (`payment_id`, `student_id`, `batch_id`, `payment_status`, `amount`, `payment_due_date`, `added_date`) VALUES
+(27, 17, 2, '1st installment', 15000, NULL, '2020-11-19'),
+(28, 17, 2, '2nd installment', 15000, '2022-02-08', '2020-11-19'),
+(46, 37, 2, '1st installment', 15000, NULL, '2020-11-21'),
+(47, 37, 2, '2nd installment', 15000, '2022-02-08', '2020-11-21'),
+(48, 38, 4, 'full', 25000, NULL, '2020-11-24');
 
 -- --------------------------------------------------------
 
@@ -139,10 +165,19 @@ CREATE TABLE `student_attendance_table` (
   `student_attent_id` int(11) NOT NULL,
   `student_id` int(11) NOT NULL,
   `batch_id` int(11) NOT NULL,
-  `attend_date` int(11) NOT NULL,
+  `status` enum('1','0') NOT NULL,
+  `attend_date` date NOT NULL,
   `added_date` date NOT NULL,
   `staff_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `student_attendance_table`
+--
+
+INSERT INTO `student_attendance_table` (`student_attent_id`, `student_id`, `batch_id`, `status`, `attend_date`, `added_date`, `staff_id`) VALUES
+(94, 17, 2, '1', '2020-11-22', '2020-11-28', 2),
+(95, 37, 2, '0', '2020-11-22', '2020-11-28', 2);
 
 -- --------------------------------------------------------
 
@@ -164,9 +199,12 @@ CREATE TABLE `student_batch_map_table` (
 --
 
 INSERT INTO `student_batch_map_table` (`student_id`, `batch_id`, `staff_id`, `added_date`, `state`, `certificate_no`) VALUES
-(17, 2, 3, '2020-08-05', 'pending', NULL),
+(17, 2, 3, '2020-08-05', 'active', NULL),
 (17, 1, 3, '2020-08-05', 'pending', NULL),
-(1, 1, 3, '2020-08-06', 'pending', NULL);
+(1, 1, 3, '2020-08-06', 'pending', NULL),
+(18, 1, 3, '2020-08-10', 'pending', NULL),
+(37, 2, 2, '2020-11-21', 'active', NULL),
+(38, 4, 2, '2020-11-24', 'active', NULL);
 
 -- --------------------------------------------------------
 
@@ -207,7 +245,10 @@ CREATE TABLE `student_table` (
 
 INSERT INTO `student_table` (`student_id`, `first_name`, `last_name`, `birth_date`, `email`, `telephone`, `password`, `staff_id`, `state`, `register_date`) VALUES
 (1, 'chinthana', 'perera', '1997-08-04', 'chinthan@gmail.com', '', '6367c48dd193d56ea7b0baad25b19455e529f5ee', 1, 'pending', '2020-08-01'),
-(17, 'praveen', 'tissera', '1985-08-03', 'praveen@gmail.com', '+94764354111', '6367c48dd193d56ea7b0baad25b19455e529f5ee', 3, 'pending', '2020-08-03');
+(17, 'praveen', 'tissera', '1985-08-03', 'praveen@gmail.com', '+94764354111', '6367c48dd193d56ea7b0baad25b19455e529f5ee', 3, 'active', '2020-08-03'),
+(18, 'lalitha', 'caldera', '2002-02-04', 'lalitha@gmail.com', '0712345644', '6367c48dd193d56ea7b0baad25b19455e529f5ee', 3, 'pending', '2020-08-10'),
+(37, 'roshi', 'fernando', '2013-12-31', 'roshi@gmail.com', '+94764354111', '13ef57bf287aadea333199529c11519af8fe4ef7', 2, 'active', '2020-11-21'),
+(38, 'sampa', 'withanachchi', '2005-10-24', 'samparasanie@gmail.com', '12345678', 'd85c89bf4e2cf42fe4cb367394aa81e7479ec41c', 2, 'active', '2020-11-24');
 
 -- --------------------------------------------------------
 
@@ -251,6 +292,14 @@ CREATE TABLE `trainer_batch_map_table` (
   `state` enum('active','deactivate') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `trainer_batch_map_table`
+--
+
+INSERT INTO `trainer_batch_map_table` (`trainer_id`, `batch_id`, `staff_id`, `added_date`, `state`) VALUES
+(1, 2, 2, '2020-11-25', 'active'),
+(1, 1, 2, '2020-11-26', 'active');
+
 -- --------------------------------------------------------
 
 --
@@ -273,7 +322,8 @@ CREATE TABLE `trainer_table` (
 --
 
 INSERT INTO `trainer_table` (`trainer_id`, `first_name`, `last_name`, `birth_date`, `email`, `password`, `state`, `register_date`) VALUES
-(1, 'trainer', 'trainer', '1987-08-03', 'trainer@gmail.com', '6367c48dd193d56ea7b0baad25b19455e529f5ee', 'active', '2020-08-01');
+(1, 'trainer', 'trainer', '1987-08-03', 'trainer@gmail.com', '6367c48dd193d56ea7b0baad25b19455e529f5ee', 'active', '2020-08-01'),
+(2, 'praveen', 'tissera', '1981-11-30', 'admin@gmail.com', 'e4bce67fa5c141e90981d3017c21791b11fe7dcc', 'active', '2020-11-24');
 
 --
 -- Indexes for dumped tables
@@ -386,19 +436,19 @@ ALTER TABLE `trainer_table`
 -- AUTO_INCREMENT for table `batch_table`
 --
 ALTER TABLE `batch_table`
-  MODIFY `batch_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `batch_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `course_table`
 --
 ALTER TABLE `course_table`
-  MODIFY `course_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `course_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `payment_schedule_table`
 --
 ALTER TABLE `payment_schedule_table`
-  MODIFY `payment_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `payment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT for table `staff_table`
@@ -410,13 +460,13 @@ ALTER TABLE `staff_table`
 -- AUTO_INCREMENT for table `student_attendance_table`
 --
 ALTER TABLE `student_attendance_table`
-  MODIFY `student_attent_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `student_attent_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=96;
 
 --
 -- AUTO_INCREMENT for table `student_table`
 --
 ALTER TABLE `student_table`
-  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT for table `subject_table`
@@ -434,7 +484,7 @@ ALTER TABLE `trainer_attendance_table`
 -- AUTO_INCREMENT for table `trainer_table`
 --
 ALTER TABLE `trainer_table`
-  MODIFY `trainer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `trainer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables

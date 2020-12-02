@@ -20,7 +20,7 @@
       //print_r($course_wise_active_batch);
       $tabActivFlag = true;
       $tabContentActivFlag = true;
-      echo '<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">';
+      echo '<ul class="nav nav-pills mb-3 col-12" id="pills-tab" role="tablist">';
       foreach ($course_wise_active_batch as $key => $active_course) {
         //print_r($active_course);
         echo '<li class="nav-item" role="presentation">';
@@ -47,7 +47,7 @@
         
         echo '<div class="row">';
         echo '<hr>';
-        echo '<div class="col-8">';
+        echo '<div class="col-12">';
           
         echo '<h3>Course Overview</h3>
               <p>';
@@ -74,7 +74,7 @@
           foreach ($active_course->datch_detail as $key => $batch) {
 
             echo '<tr>';
-            echo '<th scope="row">' . $batch->batch_id . '</th>';
+            echo '<th scope="row">' . $batch->batch_number . '</th>';
             echo '<td>' . $batch->commence_date . '</td>';
             echo '<td>' . $batch->discription . '</td>';
             echo '<td><a href="'. base_url('user/veiwRegister/'.$batch->course_id.'/'.$batch->batch_number) . '" class="badge badge-success">Register </a></td>';

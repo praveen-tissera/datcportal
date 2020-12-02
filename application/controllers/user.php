@@ -15,18 +15,22 @@ Class User extends CI_Controller {
 		//load url library
 		$this->load->helper('url');
 
-		// Load database
+		// Load Models
 		$this->load->model('user_model');
+		$this->load->model('search_model');
+		$this->load->model('trainer_model');
 		
 	}  
-
-	
-	
-
-
-	
-
-
+	public function index() {
+		if(isset($this->session->userdata['lawyer_detail'])){
+			//if session is already set
+			redirect('/user/lawyerDashBoard');
+		}
+		else{
+			$this->load->view('login');
+			
+		}
+	}
 	
 
 /*******************************************************DATC Institute Code */
@@ -114,7 +118,7 @@ public function studentTrainerLogin(){
 					'login' => TRUE,
 					'type' => 'trainer'
 					);
-					print_r($user_session_data);
+					// print_r($user_session_data);
 			}
 		
 				$this->session->set_userdata('user_detail', $user_session_data);
@@ -190,7 +194,7 @@ public function staffMemberLogin(){
 				'user-wise-menu' => $user_menu
 				);
 				
-				print_r($user_session_data);
+				// print_r($user_session_data);
 		
 				$this->session->set_userdata('user_detail', $user_session_data);
 				redirect('/user/staffDashBoard');
@@ -232,21 +236,18 @@ public function showCourse($category){
 	if($category == 'diploma'){
 		$result_course = $this->user_model->read_active_course($category);
 		//print_r($result_course);
+		if(!$result_course){
+			// echo "cannot find diploma related courses";
+			$data['error_message_display'] = 'cannot find diploma related courses';
+		}else{
 		foreach($result_course as $key => $single_course){
 			$result_batch = $this->user_model->read_active_batch($single_course->course_id);
 			//print_r($single_course->course_name);
 			$single_course->datch_detail = $result_batch;	
 			$result_course_with_batch[] = $single_course;
+		}
 
-
-			// foreach($result as $key=>$book_value){
-	
-			// 	$result_lawyer_detail= $this->user_model->get_lawyer_detail($book_value->user_id);
-			// 	$book_value->lawyer = $result_lawyer_detail[0]->first_name . ' '. $result_lawyer_detail[0]->last_name;
-			// 	$book_value->legal_professional = $result_lawyer_detail[0]->legal_professional;
-			// 	$result_booking_history[] = $book_value;
-				
-			// }
+		
 
 		}
 		
@@ -254,8 +255,24 @@ public function showCourse($category){
 		$this->load->view('course-diploma',$data);
 
 	}else if($category == 'training'){
-		$result = $this->user_model->read_active_course($category);
-		$this->load->view('course-training');
+		$result_course = $this->user_model->read_active_course($category);
+		if(!$result_course){
+			echo "cannot find traning related courses";
+			$data['error_message_display'] = 'cannot find training related courses';
+		}else{
+			foreach($result_course as $key => $single_course){
+				$result_batch = $this->user_model->read_active_batch($single_course->course_id);
+				//print_r($single_course->course_name);
+				$single_course->datch_detail = $result_batch;	
+				$result_course_with_batch[] = $single_course;
+	
+			}
+			
+			$data['course_wise_active_batch'] = $result_course_with_batch;
+		}
+		
+		
+		$this->load->view('course-diploma',$data);
 	}
 }
 
@@ -366,7 +383,7 @@ public function studentRegisterOnline($course_id,$batch_id){
 }
 
 /**
- * sudent management dashboard
+ * student management dashboard
  */
 
  public function student(){
@@ -385,6 +402,66 @@ public function studentRegisterOnline($course_id,$batch_id){
 
 		}
  }
+ /**
+ * trainer management dashboard
+ */
+
+public function trainer(){
+	// $session = $this->session->userdata['user_detail'];
+
+	if($this->session->userdata['user_detail']['type'] == 'admin'){
+		$data['studentManagement'] = array(
+			'newTrainerRegistration' => 'New Trainer',
+			'trainerBatch' => 'Assign Trainer to Batch',
+			'searchTrainer' => 'Search Trainer',
+		);
+
+		$this->load->view('trainer-management',$data);
+
+	}else if($this->session->userdata['user_detail']['type'] == 'coordinator'){
+
+	}
+}
+
+ /**
+ * attendance management dashboard
+ */
+
+public function attendance(){
+	// $session = $this->session->userdata['user_detail'];
+
+	if($this->session->userdata['user_detail']['type'] == 'admin'){
+		$data['studentManagement'] = array(
+			'newAttendanceRegistration' => 'Add Attendance',
+			'searchAttendance' => 'Search Attendance',
+		);
+
+		$this->load->view('attendance-management',$data);
+
+	}else if($this->session->userdata['user_detail']['type'] == 'coordinator'){
+
+	}
+}
+
+/**
+ * course batch management dashboard
+ */
+public function course(){
+	// $session = $this->session->userdata['user_detail'];
+
+	if($this->session->userdata['user_detail']['type'] == 'admin'){
+		$data['studentManagement'] = array(
+			'newCourseRegistration' => 'New Course',
+			'newBatchRegistration' => 'New Batch', 
+			'searchCourse' => 'Search Course & Batch',
+		);
+
+		$this->load->view('course-management',$data);
+
+	}else if($this->session->userdata['user_detail']['type'] == 'coordinator'){
+
+	}
+}
 
  public function pendingOnlineRegistration(){
 	$result = $this->user_model->get_pending_students();
@@ -392,7 +469,7 @@ public function studentRegisterOnline($course_id,$batch_id){
 	foreach ($result as $key => $student) {
 			//print_r($student);
 			$result_batch = $this->user_model->get_pending_student_batch($student->student_id);
-			// print_r($result_batch);
+			//  print_r($result_batch);
 			foreach ($result_batch as $key => $batch) {
 				$result_batch_indetail = $this->user_model->read_active_batch_byid($batch->batch_id);
 				//print_r($result_batch_indetail[0]);
@@ -406,12 +483,13 @@ public function studentRegisterOnline($course_id,$batch_id){
 			}
 			//print_r($batch_detail_final);
 			$student->batch_summary = $batch_detail_final;
-			unset($batch_detail_final);
+			 unset($batch_detail_final);
+			//print_r($batch_detail_final); 
 			// $student->batch_detail = $result_batch;
 			$pending_student_detail[] = $student;
 			
 	}
-	//print_r($pending_student_detail);
+	// print_r($pending_student_detail);
 	$data['peding_student_registration'] = $pending_student_detail;
 	 $this->load->view('pending-student-registration',$data);
  }
@@ -421,12 +499,210 @@ public function studentRegisterOnline($course_id,$batch_id){
 	if($student_state == 'pending'){
 		//new registration to the batch
 		$result_student_detail = $this->user_model->student_detail_byid($student_id);
-		print_r($result_student_detail);
+		//print_r($result_student_detail);
 		$result_course_detail = $this->user_model->read_course_byid($course_id);
-		print_r($result_course_detail);
+		//print_r($result_course_detail);
 		$result_batch_detail = $this->user_model->read_batch_byid($batch_id);
-		print_r($result_batch_detail);
+		//print_r($result_batch_detail);
+
+		$data = array(
+			'student_detail' => $result_student_detail,
+			'course_detail' => $result_course_detail,
+			'batch_detail' => $result_batch_detail
+		);
+		$this->load->view('pending-registration-form',$data);
 	}
+ }
+
+/**
+ * confirm student first payment those who do online registration
+ */
+
+ 
+ public function studentRegisterconfirm(){
+	//  print_r($_POST);
+	 if($_POST['pay_type'] == 1){
+
+
+		 $result_update_student = $this->user_model->update_student_payment($_POST,$this->session->userdata('user_detail')['user_id']);
+		 echo "receipt number <br>";
+		 echo $result_update_student;
+// check whether receipt get from model
+		if($result_update_student !== 0){
+			$data['success_message_display'] = 'Student detail updated successfully.';
+			$data['receipt_number'] = $result_update_student;
+			$data['student_detail'] = $_POST;
+			$this->load->view('student-first-payment-confirmation',$data);
+		}
+	 }else if($_POST['pay_type'] == 2){
+	
+		$result_update_student = $this->user_model->update_student_payment($_POST,$this->session->userdata('user_detail')['user_id']);
+		// part payment only first installment
+		// print_r($_POST);
+		// check whether receipt get from model
+		if($result_update_student !== 0){
+			$data['success_message_display'] = 'Student detail updated successfully';
+			$data['receipt_number'] = $result_update_student;
+			$data['student_detail'] = $_POST;
+			$this->load->view('student-first-payment-confirmation',$data);
+		}
+
+
+	 }
+ }
+
+ public function newRegistration($step='1'){
+	 echo $step;
+	 /**
+		* step one -  select course
+		* step two - select batch and payment type
+		* step three - student details
+		*/
+		if($step == '1'){
+			// get all courses into drop down
+			$data['all_courses'] = $this->user_model->read_all_active_courses();
+			
+			$this->load->view('new-student-offline-registration',$data);
+
+		}
+		if($step == '2'){
+			// /print_r($_POST);
+			$data['select_course'] = $this->user_model->read_active_course_byid($_POST['selected_course']);
+			// print_r($course_details[0]);
+			 $data['all_batches'] = $this->user_model->read_active_batch($_POST['selected_course']);
+			//  print_r($data);
+			 $this->load->view('new-student-offline-registration',$data);
+			
+		}
+		if($step == '3'){
+			// submission
+			// print_r($_POST);
+			// Array ( [course-id] => 1 [selected_batch] => 2 [payment_mode] => full [due-date] => 2022-02-08 [firstname] => roshi [lastname] => fernando [bdate] => 2007-06-05 [email] => roshi@gmail.com [telephone] => 1234567 [password] => 71160457V )
+
+			$data_student = array(
+				'first_name' => $this->input->post('firstname'),
+				'last_name' => $this->input->post('lastname'),
+				'birth_date' => $this->input->post('bdate'),
+				'email' => $this->input->post('email'),
+				'telephone' => $this->input->post('telephone'),
+				'password' => sha1($this->input->post('password')),
+				'staff_id' => $this->session->userdata('user_detail')['user_id'],
+				'state' => 'active',
+				'register_date' => Date('Y-m-d'),
+
+			);
+			$data_course_batch = array(
+				'batch_id'=> $this->input->post('selected_batch'),
+				'staff_id'=> $this->session->userdata('user_detail')['user_id'],
+				'added_date'=> Date('Y-m-d'),
+				'state'=> 'active',
+				'certificate_no' => NuLL
+			);
+			$pay_type = ($this->input->post('payment_mode') == 'full') ? '1':'2';
+			$payment_detail = array(
+				'payment_mode' => $this->input->post('payment_mode'),
+				'pay_type' => $pay_type,
+				'fullpayment'=> $this->input->post('fullpayment'),
+				'installmentone' => $this->input->post('installmentone'),
+				'installmenttwo' => $this->input->post('installmenttwo'),
+				'due-date' =>$this->input->post('due-date')
+			);
+			 $registration_details = $this->user_model->register_student_offiline($data_student,$data_course_batch,$payment_detail);
+			//  echo "<hr>";
+			 if($registration_details == 'email found'){
+				$data['error_message_display'] = "Student Registration fail. User with the same email exist!";
+				$this->load->view('student-first-payment-confirmation', $data);
+			 }else{
+				  $student_batch_payment = array_merge($data_student,$data_course_batch,$payment_detail,$registration_details);
+					// print_r($student_batch_payment);
+					$data['success_message_display'] = "Student registered successfully";
+					$data['student_detail'] = $student_batch_payment;
+					$this->load->view('student-first-payment-confirmation', $data);
+			 }
+			
+		}
+		
+ }
+/**
+ * search students base on the text send
+ */
+ public function searchStudent(){
+	// show default student search page
+	if(isset($_POST['search-text']) && isset($_POST['type'])){
+		// print_r($_POST);
+		$student_search_result = $this->search_model->search_student($_POST);
+		// print_r($student_search_result);
+		// if found students
+		if($student_search_result == 0){
+			$data = array(
+				'error_message_display'  => 'No result found',
+				'search_input' => $_POST
+			);
+			$this->load->view('student-search-view',$data);
+		}else{
+			$data = array(
+				'success_message_display' => 'Found result',
+				'search_result' => $student_search_result,
+				'search_input' => $_POST
+			);
+			$this->load->view('student-search-view',$data);
+		}
+
+	}else{
+		$this->load->view('student-search-view');
+	}
+ }
+
+/**
+ * view indiviual student details
+ * course selected
+ * payment details
+ */
+ public function studentProfile($studentid){
+	$success = $this->session->flashdata('success_message_display');
+	$error = $this->session->flashdata('error_message_display');
+	if(!empty($success)){
+		$data['success_message_display'] = $success;
+		
+	}
+	if(!empty($error)){
+		$data['error_message_display'] = $error;
+		
+	}
+	if(isset($studentid)){
+		// $student_profile = $this->user_model->student_detail_byid($studentid);
+		  $student_courses_batches = $this->user_model->student_wise_batches_course($studentid);
+		//$student_courses_batches = $this->user_model->batch_details_with_course_detail(1);
+		// $student_courses_batches = $this->user_model->payment_schedule(17,2);
+		// print_r($student_courses_batches);a
+		$data['student_profile'] = $this->user_model->student_detail_byid($studentid)[0];
+		$data['student_object'] = $student_courses_batches;
+		$this->load->view('student-profile',$data);
+	}else{
+		echo "invalid input";
+	}
+
+ }
+
+ /**
+	* update installments which are settle after 1st installment
+  */
+ public function payInstallment($paymentid,$batchid,$studentid){
+	 
+	$payment_schedule_detials = $this->user_model->payment_schedule_by_paymentid($paymentid);
+	
+	echo $this->session->userdata('user_detail')['user_id'];
+	 $result_add_installment  = $this->user_model->add_installment_payment($paymentid,$batchid,$this->session->userdata('user_detail')['user_id'],$payment_schedule_detials[0]->amount,$studentid);
+
+	 if($result_add_installment == 1){
+		 echo "true";
+		$this->session->set_flashdata('success_message_display','installment payment added successfully');
+		redirect('/user/studentProfile/'.$studentid);
+	 }else{
+		echo "false";
+		$this->session->set_flashdata('error_message_display','Error or processing your request. Please try again');
+		redirect('/user/studentProfile/'.$studentid);
+	 }
  }
 
 /**

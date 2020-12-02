@@ -9,7 +9,7 @@
                         <div class="top-bar-right">
                             <?php 
                                 if(isset($this->session->userdata('user_detail')['type']) && ($this->session->userdata('user_detail')['type'] == 'admin' || $this->session->userdata('user_detail')['type'] == 'coordinator')){
-                                    echo '<a class="btn btn-danger" id="appointment" href="'. base_url('/user/search') .'">View Pending Registrations</a>';
+                                    echo '<a class="btn btn-danger" id="appointment" href="'. base_url('/user/pendingOnlineRegistration') .'">View Pending Registrations</a>';
                                 }else{
                                     echo '<a class="btn btn-danger" id="appointment" href="'. base_url('/user/search') .'">Register to a course</a>';
                                 }

@@ -64,7 +64,7 @@
                         <div class="card-body">
                             <h5 class="card-title">Training Courses</h5>
                             <p class="card-text">The training programs are especially created for young farmers in order to develop their knowledge & skills.<br><br></p>
-                            <a href="" class="btn btn-info">view all</a>
+                            <a href="<?php echo base_url('user/showCourse/training'); ?>" class="btn btn-info">view all</a>
                         </div>
                         </div>
                     </div>
