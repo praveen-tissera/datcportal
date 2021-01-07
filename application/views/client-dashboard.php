@@ -15,7 +15,6 @@ if (!($this->session->userdata('user_detail'))) {
 <!-- lawyer profile and resouce link -->
 <?php $this->load->view('header'); ?>
 <?php $this->load->view('top-navigation'); ?>
-<?php $this->load->view('staff-navigation'); ?>
 
 
 
@@ -38,15 +37,14 @@ if (!($this->session->userdata('user_detail'))) {
 
     ?>
     <?php 
-    // print_r($studentManagement);
     
     if(isset($this->session->userdata('user_detail')['user-wise-menu'])){
       $userMenu = $this->session->userdata('user_detail')['user-wise-menu'];
           
-          foreach ($trainerManagement as $key => $value) {
+          foreach ($userMenu as $key => $value) {
             echo '<div class="col-4">';  
-            echo '<a href="'. base_url('trainer/'.$key) . '">';
-             echo  '<div class="card text-white bg-dark mb-4" style="max-width: 18rem; min-height:8rem;">';
+            echo '<a href="'. base_url('user/'.$key) . '">';
+             echo  '<div class="card text-white bg-info mb-4" style="max-width: 18rem; min-height:8rem;">';
                 echo '<div class="card-body">';
               echo '<h5 class="card-title text-center pt-4">' . $value . '</h5>';
              

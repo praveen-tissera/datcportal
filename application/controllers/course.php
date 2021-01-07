@@ -210,7 +210,8 @@ public function searchCourse(){
 	//   print_r($course_batches_object);
 	 if($course_batches_object != 0){
 		$data['course_profile'] = $course_details;
-	 	$data['course_batches_object'] = $course_batches_object;
+		 $data['course_batches_object'] = $course_batches_object;
+		 print_r($data);
 	 	 $this->load->view('course-profile',$data);
 	 }else{
 		$data['error_message_display'] = 'invalid input of trainer';

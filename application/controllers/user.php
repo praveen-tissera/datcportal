@@ -22,18 +22,35 @@ Class User extends CI_Controller {
 		
 	}  
 	public function index() {
-		if(isset($this->session->userdata['lawyer_detail'])){
+		if(isset($this->session->userdata['user_detail'])){
 			//if session is already set
-			redirect('/user/lawyerDashBoard');
+			// redirect('/user/lawyerDashBoard');
 		}
 		else{
-			$this->load->view('login');
+			// $this->load->view('login');
 			
 		}
 	}
 	
 
 /*******************************************************DATC Institute Code */
+
+public function login() {
+	if(isset($this->session->userdata['user_detail'])){
+			//if session is already set
+			// redirect('/user/studentTrainerDashBoard');
+			print_r($this->session->userdata('user_detail'));
+			if($this->session->userdata('user_detail')['type'] == 'admin' ||$this->session->userdata('user_detail')['type'] == 'coordinator'){
+				$this->load->view('staff-login');
+			}else if($this->session->userdata('user_detail')['type'] == 'trainer' ||$this->session->userdata('user_detail')['type'] == 'student'){
+				$this->load->view('login');
+			}
+		}
+		else{
+			$this->load->view('login');
+			
+		}
+}
 
 public function userLogin() {
 	if(isset($this->session->userdata['user_detail'])){
@@ -92,6 +109,11 @@ public function studentTrainerLogin(){
 			$result = $this->user_model->read_StudentTraner_information($data['email'],$data['user-type']);
 			
 			if($data['user-type'] == 'student'){
+				$user_menu = ['profile'=>'My Profile',
+											
+											'course'=>'Course Managment',
+											'attendance'=>'Attendance'
+										];
 					$user_session_data = array(
 				'user_id' => $result[0]->student_id,
 				'fname' => $result[0]->frist_name,
@@ -102,11 +124,18 @@ public function studentTrainerLogin(){
 				'register-date' => $result[0]->register_date,
 				'state' => $result[0]->state,
 				'login' => TRUE,
-				'type' => 'student'
+				'type' => 'student',
+				'user-wise-menu' => $user_menu
 				);
 				
 			}else{
-				
+				$user_menu = ['profile'=>'My Profile',
+											
+											'student'=>'Student Managment',
+											
+											'course'=>'Course Managment',
+										
+										];
 				$user_session_data = array(
 					'user_id' => $result[0]->trainer_id,
 					'fname' => $result[0]->first_name,
@@ -116,8 +145,10 @@ public function studentTrainerLogin(){
 					'register-date' => $result[0]->register_date,
 					'state' => $result[0]->state,	
 					'login' => TRUE,
-					'type' => 'trainer'
+					'type' => 'trainer',
+					'user-wise-menu' => $user_menu
 					);
+					
 					// print_r($user_session_data);
 			}
 		
@@ -227,6 +258,29 @@ public function staffMemberLogin(){
 		// $result = $this->user_model->show_client_booking($client_detail['user_id']);
 
 		$this->load->view('staff-dashboard');
+
+
+	
+	}
+
+	/**
+	 * Show student and trainer  dashboard page
+	 */
+	public function clientDashBoard() {
+		$success = $this->session->flashdata('success_message_display');
+		 $error = $this->session->flashdata('error_message_display');
+		if(!empty($success)){
+			$data['success_message_display'] = $success;
+		}
+		if(!empty($error)){
+			$data['error_message_display'] = $error;
+		}
+
+		 $client_detail = $this->session->userdata('user_detail');
+			print_r($client_detail);
+		// $result = $this->user_model->show_client_booking($client_detail['user_id']);
+
+		 $this->load->view('client-dashboard');
 
 
 	
@@ -402,6 +456,127 @@ public function studentRegisterOnline($course_id,$batch_id){
 
 		}
  }
+
+
+ /**
+	*  current login user profile 
+  */
+
+ public function profile(){
+	$success = $this->session->flashdata('success_message_display');
+	$error = $this->session->flashdata('error_message_display');
+	if(!empty($success)){
+		$data['success_message_display'] = $success;
+		
+	}
+	if(!empty($error)){
+		$data['error_message_display'] = $error;
+		
+	}
+
+	 if($this->session->userdata('user_detail')['type'] == 'admin' ||$this->session->userdata('user_detail')['type'] == 'coordinator'){
+		
+		$data['profile'] = $this->user_model->get_Staff_detail_by_id($this->session->userdata('user_detail')['user_id'])[0];
+		$data['profile']->user_role = $this->session->userdata('user_detail')['type'];
+
+	}else if($this->session->userdata('user_detail')['type'] == 'trainer'){
+		$data['profile'] = $this->user_model->read_trainer_detail($this->session->userdata('user_detail')['user_id']);
+		$data['profile']->user_role = $this->session->userdata('user_detail')['type'];
+	
+
+
+	}else if($this->session->userdata('user_detail')['type'] == 'student'){
+		
+		$data['profile'] = $this->user_model->student_detail_byid($this->session->userdata('user_detail')['user_id'])[0];
+		
+		 $data['profile']->user_role = $this->session->userdata('user_detail')['type'];
+	}
+
+
+
+	$this->load->view('my-profile',$data);
+ }
+
+ public function profileUpdate($section,$role){
+	 if($role == 'admin' || $role == 'coordinator'){
+		 
+		 if($section =='profile'){
+			 $result_update_profile = $this->user_model->update_profile($section,$role,$_POST);
+
+			 if($result_update_profile ==1){
+				$this->session->set_flashdata('success_message_display','profile update successfully');
+				redirect('/user/profile');
+
+		}else if($result_update_profile == 0){
+				$this->session->set_flashdata('success_message_display','No data found to update');
+				redirect('/user/profile');
+		}else{
+				$this->session->set_flashdata('error_message_display','Error processing the form. ');
+				redirect('/user/profile');
+		}
+
+		 }else if($section =='password'){
+
+		 }
+
+
+
+	 }else if($role == 'trainer'){
+			print_r($_POST);
+			if($section =='profile'){
+				$result_update_profile = $this->user_model->update_profile($section,$role,$_POST);
+
+				if($result_update_profile ==1){
+					$this->session->set_flashdata('success_message_display','profile update successfully');
+					redirect('/user/profile');
+	
+			}else if($result_update_profile == 0){
+					$this->session->set_flashdata('success_message_display','No data found to update');
+					redirect('/user/profile');
+			}else{
+					$this->session->set_flashdata('error_message_display','Error processing the form. ');
+					redirect('/user/profile');
+			}
+
+
+
+
+
+			}else if($section =='password'){
+ 
+			}
+	 }else if($role == 'student'){
+		print_r($_POST);
+		if($section =='profile'){
+
+		}else if($section =='password'){
+
+		}
+	}
+
+ }
+
+ /**
+ * staff management dashboard
+ */
+
+public function staff(){
+	// $session = $this->session->userdata['user_detail'];
+
+	if($this->session->userdata['user_detail']['type'] == 'admin'){
+		$data['staffManagement'] = array(
+			'newStaffRegistration' => 'New Staff Member',
+			'searchStaff' => 'Search Staff Member',
+		);
+
+		$this->load->view('staff-management',$data);
+
+	}else if($this->session->userdata['user_detail']['type'] == 'coordinator'){
+
+	}
+}
+
+
  /**
  * trainer management dashboard
  */
@@ -410,7 +585,7 @@ public function trainer(){
 	// $session = $this->session->userdata['user_detail'];
 
 	if($this->session->userdata['user_detail']['type'] == 'admin'){
-		$data['studentManagement'] = array(
+		$data['trainerManagement'] = array(
 			'newTrainerRegistration' => 'New Trainer',
 			'trainerBatch' => 'Assign Trainer to Batch',
 			'searchTrainer' => 'Search Trainer',

@@ -109,6 +109,9 @@ class Course_model extends CI_Model
                 //  print_r($batch);
                  $batches[$key]->batch_object = $this->userModel->batch_details_with_course_detail($batch->batch_id);
                  $batches[$key]->staff_object = $this->userModel->get_Staff_detail_by_id($batch->staff_id)[0];
+                 
+
+                  $batches[$key]->trainer_object = $this->userModel-> trainer_map_to_batch($batch->batch_id);
                 //  $batches[$key]->payment_object = $this->payment_schedule($studentid,$batch->batch_id);
              }
              return $batches;

@@ -43,7 +43,7 @@ if (!($this->session->userdata('user_detail'))) {
     if(isset($this->session->userdata('user_detail')['user-wise-menu'])){
       $userMenu = $this->session->userdata('user_detail')['user-wise-menu'];
           
-          foreach ($trainerManagement as $key => $value) {
+          foreach ($staffManagement as $key => $value) {
             echo '<div class="col-4">';  
             echo '<a href="'. base_url('trainer/'.$key) . '">';
              echo  '<div class="card text-white bg-dark mb-4" style="max-width: 18rem; min-height:8rem;">';

@@ -92,6 +92,7 @@ if (!($this->session->userdata('user_detail'))) {
         <th scope="col">Commence date</th>
         <th scope="col">Tentetive close date</th>
         <th scope="col">Completed date</th>
+        <th scope="col">Trainer</th>
         <th scope="col">Batch description</th>
         <th scope="col">Batch status</th>
         
@@ -121,6 +122,14 @@ echo "<tbody>";
         echo "</td>";
         echo "<td>";
            print_r($batch->close_date); 
+        echo "</td>";
+        echo "<td>";
+        if(isset($batch->trainer_object->trainer_detail)){
+          print_r($batch->trainer_object->trainer_detail->first_name); 
+        }else{
+          echo "Trainer not found";
+        }
+           
         echo "</td>";
         echo "<td>";
            print_r($batch->discription); 

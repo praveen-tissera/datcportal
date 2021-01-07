@@ -704,6 +704,49 @@ class User_model extends CI_Model
             return false;
         }
    }
+
+   /**
+    * get trainer all detail 
+    * input need traner id
+    */
+
+    public function read_trainer_detail($trainerid){
+        $condition = "trainer_id = " . "'" . $trainerid . "'";
+        $this->db->select('*');
+        $this->db->from('trainer_table');
+        $this->db->where($condition);
+        $this->db->limit(1);
+        $query = $this->db->get();
+        if($query->num_rows() > 0){
+            $trainer_details = $query->result();
+            return $trainer_details[0];
+        }else{
+            return(0);
+        }
+    }
+
+    /**
+     * get trainer id map with batch
+     * 
+     */
+    public function trainer_map_to_batch($batchid){
+        $condition = "batch_id = " . "'" . $batchid . "'";
+        $this->db->select('*');
+        $this->db->from('trainer_batch_map_table');
+        $this->db->where($condition);
+        $this->db->limit(1);
+        $query = $this->db->get();
+        if($query->num_rows() > 0){
+            $trainer_map_batch = $query->result();
+            $trainer_detail = $this->read_trainer_detail($trainer_map_batch[0]->trainer_id);
+            $trainer_map_batch[0]->trainer_detail = $trainer_detail;
+            // print_r($trainer_map_batch[0]);
+            return $trainer_map_batch[0];
+        }else{
+            return(0);
+        }
+    }
+
    /**
     * return payment sechedule for student * batch wise
     * supprorting method
@@ -829,5 +872,54 @@ class User_model extends CI_Model
         }else{
             return(0);
         }
+    }
+
+
+
+    /**
+     * update admin coordinator profile
+     */
+    public function update_profile($section,$role,$data){
+        if($role == 'admin' || $role == 'coordinator'){
+            if($section == 'profile'){
+                $condition ="staff_id =" . "'" .  $data['regnumber'] . "'";
+                $this->db->set('staff_name', $data['name']);
+                $this->db->set('email', $data['email']);
+                $this->db->where($condition);
+                     
+                $result_updat_profile = $this->db->update('staff_table');
+                
+                
+                if($this->db->affected_rows() == 1){
+                    return(1);
+                }else if($this->db->affected_rows() == 0){
+                    return(0);
+                }else{
+                    return(-1);
+                }
+
+            }
+        }elseif ($role=='trainer') {
+            $condition ="trainer_id =" . "'" .  $data['regnumber'] . "'";
+            $this->db->set('first_name', $data['fname']);
+            $this->db->set('last_name', $data['lname']);
+            $this->db->set('email', $data['email']);
+            $this->db->set('birth_date', $data['bdate']);
+            $this->db->where($condition);
+                 
+            $result_updat_profile = $this->db->update('trainer_table');
+            
+            
+            if($this->db->affected_rows() == 1){
+                return(1);
+            }else if($this->db->affected_rows() == 0){
+                return(0);
+            }else{
+                return(-1);
+            }
+        }elseif ($role=='student') {
+                
+        }
+
     }
 }
