@@ -898,9 +898,25 @@ class User_model extends CI_Model
                     return(-1);
                 }
 
+            }elseif ($section == 'password') {
+                $condition ="staff_id =" . "'" .  $data['regnumber'] . "'";
+                $this->db->set('password', $data['newpsw']);
+                $this->db->where($condition);
+                     
+                $result_updat_profile = $this->db->update('staff_table');
+                
+                
+                if($this->db->affected_rows() == 1){
+                    return(1);
+                }else if($this->db->affected_rows() == 0){
+                    return(0);
+                }else{
+                    return(-1);
+                }
             }
         }elseif ($role=='trainer') {
-            $condition ="trainer_id =" . "'" .  $data['regnumber'] . "'";
+            if($section == 'profile'){
+                $condition ="trainer_id =" . "'" .  $data['regnumber'] . "'";
             $this->db->set('first_name', $data['fname']);
             $this->db->set('last_name', $data['lname']);
             $this->db->set('email', $data['email']);
@@ -917,8 +933,61 @@ class User_model extends CI_Model
             }else{
                 return(-1);
             }
-        }elseif ($role=='student') {
+            }elseif ($section == 'password') {
+                $condition ="trainer_id =" . "'" .  $data['regnumber'] . "'";
+                $this->db->set('password', $data['newpsw']);
+                $this->db->where($condition);
+                     
+                $result_updat_profile = $this->db->update('trainer_table');
                 
+                
+                if($this->db->affected_rows() == 1){
+                    return(1);
+                }else if($this->db->affected_rows() == 0){
+                    return(0);
+                }else{
+                    return(-1);
+                }
+            }
+            
+        }elseif ($role=='student') {
+            if($section == 'profile'){
+                $condition ="student_id =" . "'" .  $data['regnumber'] . "'";
+                $this->db->set('first_name', $data['fname']);
+                $this->db->set('last_name', $data['lname']);
+                $this->db->set('email', $data['email']);
+                $this->db->set('birth_date', $data['bdate']);
+                $this->db->set('telephone', $data['telephone']);
+                $this->db->where($condition);
+                     
+                $result_updat_profile = $this->db->update('student_table');
+                
+                
+                if($this->db->affected_rows() == 1){
+                    return(1);
+                }else if($this->db->affected_rows() == 0){
+                    return(0);
+                }else{
+                    return(-1);
+                }
+            }elseif ($section == 'password') {
+                $condition ="student_id =" . "'" .  $data['regnumber'] . "'";
+                $this->db->set('password', $data['newpsw']);
+                $this->db->where($condition);
+                     
+                $result_updat_profile = $this->db->update('student_table');
+                
+                
+                if($this->db->affected_rows() == 1){
+                    return(1);
+                }else if($this->db->affected_rows() == 0){
+                    return(0);
+                }else{
+                    return(-1);
+                }
+            }
+           
+
         }
 
     }

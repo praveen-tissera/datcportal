@@ -14,6 +14,33 @@ if (!($this->session->userdata('user_detail'))) {
 
 
 <?php $this->load->view('header'); ?>
+
+<style>
+.pass_show{position: relative} 
+
+.pass_show .ptxt { 
+
+position: absolute; 
+
+top: 50%; 
+
+right: 40px; 
+
+z-index: 1; 
+
+color: #f36c01; 
+
+margin-top: -10px; 
+
+cursor: pointer; 
+
+transition: .3s ease all; 
+
+} 
+
+.pass_show .ptxt:hover{color: #333333;} 
+
+</style>
 <?php $this->load->view('top-navigation'); ?>
 <?php $this->load->view('staff-navigation'); ?>
 
@@ -77,18 +104,18 @@ if (!($this->session->userdata('user_detail'))) {
   <div class="tab-pane fade show active" id="profile">
     <?php
     echo '<pre>';
-    print_r($profile);
+    // print_r($profile);
     echo '</pre>';
     ?>
   
   <?php 
     if($profile->user_role == 'student'){ 
-      echo form_open("user/searchStudent/profile/$profile->user_role");
+      echo form_open("user/profileUpdate/profile/$profile->user_role");
       ?>
     <div class="form-group row pl-2">
       <label for="regnumber" class="col-sm-2 col-form-label">Registration number</label>
       <div class="col-sm-10">
-        <input type="text" name="reg_number" readonly class="form-control-plaintext" id="regnumber" value="<?php echo $profile->student_id; ?>">
+        <input type="text" name="regnumber" readonly class="form-control-plaintext" id="regnumber" value="<?php echo $profile->student_id; ?>">
       </div>
     </div>
     <div class="form-group row pl-2">
@@ -100,7 +127,7 @@ if (!($this->session->userdata('user_detail'))) {
     <div class="form-group row pl-2">
       <label for="lname" class="col-sm-2 col-form-label">Last name</label>
       <div class="col-sm-10">
-        <input type="text" name="fname" readonly class="form-control" id="lname" value="<?php echo $profile->last_name; ?>">
+        <input type="text" name="lname" readonly class="form-control" id="lname" value="<?php echo $profile->last_name; ?>">
       </div>
     </div>
     <div class="form-group row pl-2">
@@ -112,7 +139,7 @@ if (!($this->session->userdata('user_detail'))) {
     <div class="form-group row pl-2">
       <label for="bdate" class="col-sm-2 col-form-label">Birthdate</label>
       <div class="col-sm-10">
-        <input type="text" name="bdate" readonly class="form-control" id="bdate" value="<?php echo $profile->birth_date; ?>">
+        <input type="date" name="bdate" readonly class="form-control" id="bdate" value="<?php echo $profile->birth_date; ?>">
       </div>
     </div>
     
@@ -245,17 +272,23 @@ if (!($this->session->userdata('user_detail'))) {
   </div>
   
   <div class="tab-pane fade" id="password" >
-  <?php echo form_open('user/searchStudent'); ?>
-    <div class="form-group row pl-2">
+  <?php echo form_open("user/profileUpdate/password/$profile->user_role"); ?>
+    <div class="form-group row pl-2 mt-4">
       <label for="currentpsw" class="col-sm-2 col-form-label">Current password</label>
-      <div class="col-sm-10">
-        <input type="text" name="currentpsw" class="form-control" id="currentpsw" >
+      <div class="col-sm-10 pass_show">
+        <input type="password" name="currentpsw" class="form-control" id="currentpsw" >
       </div>
     </div>
     <div class="form-group row pl-2">
       <label for="newpsw" class="col-sm-2 col-form-label">New password</label>
-      <div class="col-sm-10">
-        <input type="text" name="newpsw" class="form-control" id="newpsw" >
+      <div class="col-sm-10 pass_show">
+        <input type="password" name="newpsw" class="form-control" id="newpsw" >
+      </div>
+    </div>
+    <div class="form-group row pl-2">
+      <label for="confirmnewpsw" class="col-sm-2 col-form-label">Confirm password</label>
+      <div class="col-sm-10 pass_show">
+        <input type="password" name="confirmnewpsw" class="form-control" id="confirmnewpsw" >
       </div>
     </div>
     <button type="reset" class="btn btn-dark m-2">Reset</button>
@@ -364,9 +397,26 @@ echo "<tbody>";
         $('#bdate').removeAttr('readonly');
         
       }else if(role == 'student'){
-
+        $('#email').removeAttr('readonly');
+        $('#fname').removeAttr('readonly');
+        $('#lname').removeAttr('readonly');
+        $('#bdate').removeAttr('readonly');
+        $('#telephone').removeAttr('readonly');
       }
      
     });
   });
+
+  $(document).ready(function(){
+$('.pass_show').append('<span class="ptxt">Show</span>');  
+});
+  
+
+$(document).on('click','.pass_show .ptxt', function(){ 
+
+$(this).text($(this).text() == "Show" ? "Hide" : "Show"); 
+
+$(this).prev().attr('type', function(index, attr){return attr == 'password' ? 'text' : 'password'; }); 
+
+}); 
 </script>

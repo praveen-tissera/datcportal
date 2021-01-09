@@ -496,7 +496,9 @@ public function studentRegisterOnline($course_id,$batch_id){
 
 	$this->load->view('my-profile',$data);
  }
-
+/**
+ * update user profil
+ */
  public function profileUpdate($section,$role){
 	 if($role == 'admin' || $role == 'coordinator'){
 		 
@@ -517,6 +519,43 @@ public function studentRegisterOnline($course_id,$batch_id){
 
 		 }else if($section =='password'){
 
+			$staff_detail = $this->user_model->get_Staff_detail_by_id($this->session->userdata('user_detail')['user_id'])[0];
+			
+			$_POST['currentpsw'] = sha1($_POST['currentpsw']);
+			$_POST['newpsw'] = sha1($_POST['newpsw']);
+			$_POST['confirmnewpsw'] = sha1($_POST['confirmnewpsw']);
+			$_POST['regnumber'] = $this->session->userdata('user_detail')['user_id'];
+			if($_POST['currentpsw'] === $staff_detail->password){
+				if(	$_POST['newpsw'] === $staff_detail->password){
+					$this->session->set_flashdata('error_message_display','New password cannot be same as old password');
+					redirect('/user/profile');
+				}
+				elseif ($_POST['newpsw'] != $_POST['confirmnewpsw']) {
+					print_r($_POST);
+					$this->session->set_flashdata('error_message_display','New password and confirm password mismatch');
+					redirect('/user/profile');
+				}else{
+							echo "update password and logout";
+							$result_update_profile = $this->user_model->update_profile($section,$role,$_POST);
+							
+							
+						if($result_update_profile ==1){
+							$this->logoutUser($role,'updatepsw');
+						}else if($result_update_profile == 0){
+								$this->session->set_flashdata('success_message_display','No data found to update');
+								redirect('/user/profile');
+						}else{
+								$this->session->set_flashdata('error_message_display','Error processing the form. ');
+								redirect('/user/profile');
+						}
+
+
+				}
+			
+			}else{
+				$this->session->set_flashdata('error_message_display','Password missmatch');
+				// redirect('/user/profile');
+			}
 		 }
 
 
@@ -543,13 +582,104 @@ public function studentRegisterOnline($course_id,$batch_id){
 
 
 			}else if($section =='password'){
- 
+				$trainer_detail = $this->user_model->read_trainer_detail($this->session->userdata('user_detail')['user_id']);
+				$_POST['currentpsw'] = sha1($_POST['currentpsw']);
+				$_POST['newpsw'] = sha1($_POST['newpsw']);
+				$_POST['confirmnewpsw'] = sha1($_POST['confirmnewpsw']);
+				$_POST['regnumber'] = $this->session->userdata('user_detail')['user_id'];
+				if($_POST['currentpsw'] === $trainer_detail->password){
+					if(	$_POST['newpsw'] === $trainer_detail->password){
+						$this->session->set_flashdata('error_message_display','New password cannot be same as old password');
+						redirect('/user/profile');
+					}
+					elseif ($_POST['newpsw'] != $_POST['confirmnewpsw']) {
+						print_r($_POST);
+						$this->session->set_flashdata('error_message_display','New password and confirm password mismatch');
+						redirect('/user/profile');
+					}else{
+								echo "update password and logout";
+								$result_update_profile = $this->user_model->update_profile($section,$role,$_POST);
+								
+								
+							if($result_update_profile ==1){
+								$this->logoutUser($role,'updatepsw');
+							}else if($result_update_profile == 0){
+									$this->session->set_flashdata('success_message_display','No data found to update');
+									redirect('/user/profile');
+							}else{
+									$this->session->set_flashdata('error_message_display','Error processing the form. ');
+									redirect('/user/profile');
+							}
+
+
+					}
+				
+				}else{
+					$this->session->set_flashdata('error_message_display','Password missmatch');
+					redirect('/user/profile');
+				}
 			}
 	 }else if($role == 'student'){
 		print_r($_POST);
 		if($section =='profile'){
 
+			$result_update_profile = $this->user_model->update_profile($section,$role,$_POST);
+
+				if($result_update_profile ==1){
+					$this->session->set_flashdata('success_message_display','profile update successfully');
+					redirect('/user/profile');
+	
+			}else if($result_update_profile == 0){
+					$this->session->set_flashdata('success_message_display','No data found to update');
+					redirect('/user/profile');
+			}else{
+					$this->session->set_flashdata('error_message_display','Error processing the form. ');
+					redirect('/user/profile');
+			}
+
+
+
 		}else if($section =='password'){
+			print_r($_POST);
+			$staff_detail = $this->user_model->student_detail_byid($this->session->userdata('user_detail')['user_id'])[0];
+			
+			$_POST['currentpsw'] = sha1($_POST['currentpsw']);
+			$_POST['newpsw'] = sha1($_POST['newpsw']);
+			$_POST['confirmnewpsw'] = sha1($_POST['confirmnewpsw']);
+			$_POST['regnumber'] = $this->session->userdata('user_detail')['user_id'];
+			if($_POST['currentpsw'] === $staff_detail->password){
+				if(	$_POST['newpsw'] === $staff_detail->password){
+					$this->session->set_flashdata('error_message_display','New password cannot be same as old password');
+					redirect('/user/profile');
+				}elseif ($_POST['newpsw'] != $_POST['confirmnewpsw']) {
+					print_r($_POST);
+					$this->session->set_flashdata('error_message_display','New password and confirm password mismatch');
+					redirect('/user/profile');
+				}else{
+							echo "update password and logout";
+							$result_update_profile = $this->user_model->update_profile($section,$role,$_POST);
+							
+							
+						if($result_update_profile ==1){
+							$this->logoutUser($role,'updatepsw');
+						}else if($result_update_profile == 0){
+								$this->session->set_flashdata('success_message_display','No data found to update');
+								 redirect('/user/profile');
+						}else{
+								$this->session->set_flashdata('error_message_display','Error processing the form. ');
+								redirect('/user/profile');
+						}
+
+
+				}
+			
+			}else{
+				$this->session->set_flashdata('error_message_display','Password missmatch');
+				 redirect('/user/profile');
+			}
+
+			
+
 
 		}
 	}
@@ -884,16 +1014,28 @@ public function course(){
 	 * Logout module 
 	 */
 	 
-	public function logoutUser($user) {
+	public function logoutUser($user,$message = "") {
 		// Removing session data
 		if($user == 'student' || $user == 'trainer'){
 				$this->session->unset_userdata('user_detail');
-				$data['success_message_display'] = 'Log out sucessfully';
+				if($message == 'updatepsw'){
+					$data['success_message_display'] = 'Password updated successfuly please login';
+				}
+				else{
+					$data['success_message_display'] = 'Log out sucessfully';
+				}
+
 				$this->load->view('login', $data);
 		}
 		elseif($user = 'coordinator' || $user = 'admin'){
 				$this->session->unset_userdata('user_detail');
-				$data['success_message_display'] = 'Log out sucessfully';
+				if($message == 'updatepsw'){
+					$data['success_message_display'] = 'Password updated successfuly please login';
+				}
+				else{
+					$data['success_message_display'] = 'Log out sucessfully';
+				}
+				
 				$this->load->view('staff-login', $data);
 		}		
 	}
