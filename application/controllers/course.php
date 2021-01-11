@@ -223,5 +223,22 @@ public function searchCourse(){
 		// $this->load->view('course-search-view',$data);
 	}
  }
+ public function newSubject($step = 1){
+	//  show existing active course
+	if($step == 1){
+		$data['active_courses'] = $this->course_model->get_all_courses_base_state('active');
+		$this->load->view('subject-registration',$data);
+	}else if($step == 2){
+		// get all subject if exist 
+		print_r($_POST);
+		// if no subject found retun 0
+		$data['subjects'] = $this->course_model->get_all_subjects($_POST['selectcourse']);
+		$data['select_course_detail'] = $this->course_model->get_course_by_id($_POST['selectcourse']);
+
+		$this->load->view('subject-registration',$data);
+		
+	}
+
+ }
 }
 ?>

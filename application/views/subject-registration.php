@@ -61,7 +61,7 @@ if (!($this->session->userdata('user_detail'))) {
       <?php 
         if(isset($active_courses)){
           echo '<label>Course name</label>';
-          echo form_open('attendance/searchAttendance/2');
+          echo form_open('course/newSubject/2');
           echo "<select class='form-control' name='selectcourse'>";
           // print_r($active_courses);
           foreach ($active_courses as $key => $active_course) {
@@ -79,31 +79,32 @@ if (!($this->session->userdata('user_detail'))) {
 
         </div>
         <?php
-          if(isset($active_batches)){
+          if(isset($subjects)){
             echo '<div class="col-6">';
-            // print_r($active_batches);
-            echo form_open('attendance/searchAttendance/3');
-            echo "<input type='text' name='course_id' value={$select_course_detail[0]->course_id}>";
-            echo '<label>Batch number</label>';
-            echo "<select class='form-control' name='selectbatch'>";
-            // print_r($active_courses);
-              echo "<option>Select a batch</option>";
-            foreach ($active_batches as $key => $active_batch) {
-                echo "<option value='{$active_batch->batch_id}'>$active_batch->batch_number</option>";
-            }
-            echo "</select>";
-  
+            echo "<table class='table'>";
+              echo "<tr>";
+                echo "<th>Subject #</th>";
+                echo "<th>Subject Name</th>";
+                echo "<th>Status</th>";
+                
+              echo "</tr>";
+              foreach ($subjects as $key => $value) {
+                echo "<tr>";
+                  echo "<td>";
+                    echo $value->subject_id;
+                  echo "</td>";
+                  echo "<td>";
+                    echo $value->subject_name;
+                  echo "</td>";
+                  echo "<td>";
+                    echo $value->state;
+                  echo "</td>";
+                echo "</tr>";
+              }
+
+            echo "</table>";
+            // print_r($subjects);
           echo '</div>';
-          }elseif (isset($select_batch_detail)) {
-            // print_r($select_batch_detail);
-            echo form_open('attendance/searchAttendance/4');
-            echo "<input type='text' value='{$select_batch_detail->course_id}' name='course_id'>";
-            echo "<input type='text' value='{$select_batch_detail->batch_id}' name='batch_id'>";
-            echo '<div class="col-6">';
-              echo '<label>Selected batch number : </label>';
-              
-              echo "<p>{$select_batch_detail->batch_number}</p>";
-            echo "</div>";
           }
         ?>
       

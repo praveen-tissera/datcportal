@@ -154,49 +154,8 @@ Class Attendance extends CI_Controller {
 					// print_r($data);
 					
 					// }
-					// $this->load->view('attendance-view',$data);
-					print_r($data);
-		}else if($step == 4){
-			$students_obj = $this->attendance_model->get_students_by_batch_id($_POST['batch_id']);
-			// print_r($students_obj);
-			list($start_date, $end_date) = $this->x_week_range(date("Y-m-d"));
-		
-			foreach ($students_obj as $key => $student) {
-				$datetime = new DateTime($start_date);
-				for($i=1; $i<=7; $i++){
-					
-					$index = $student->student_id.'_'.$i;
-					 
-						if($_POST[$index] != 'na'){
-							//echo $_POST[$index];
-							$data = array(
-								'student_id' => $student->student_id,
-								'batch_id' => $student->batch_id,
-								'status' => $_POST[$index],
-								'attend_date' => $datetime->format('Y-m-d'),
-								'added_date' => Date('Y-m-d'),
-								'staff_id' => $this->session->userdata('user_detail')['user_id']
-							);
-							$datetime->modify('+1 day');
-							$datetime->format('Y-m-d');
-							// print_r($data);
-							$this->attendance_model->add_new_attendance($data);
-						}else{
-							$datetime->modify('+1 day');
-							$datetime->format('Y-m-d');
-						}
-						
-
-						// print_r($data);
-				}
-				
-			}
-			$data['success_message_display'] = "Batch attendance added successfully";
-			
-			 $data['active_courses'] = $this->course_model->get_all_courses_base_state('active');
-			 $this->load->view('attendance-view',$data);
-			
-
+					 $this->load->view('attendance-view',$data);
+					// print_r($data);
 		}
 		
 	}

@@ -96,13 +96,14 @@ class Attendance_model extends CI_Model
 
     public function read_student_batchwise_attendance($batch_id,$student_id){
         $condition = "batch_id =" . "'" . $batch_id . "' AND student_id = '" . $student_id . "'";
-        $this->db->distinct();
-        $this->db->select('attend_date');
+        // $this->db->distinct('attend_date');
+        $this->db->select('attend_date,status');
         $this->db->from('student_attendance_table');
         $this->db->where($condition);
         $this->db->order_by("attend_date","ASC");
         
         $query = $this->db->get();
+        echo 'last query' . $this->db->last_query();
         if($query->num_rows() > 0){
             return $query->result();
         }

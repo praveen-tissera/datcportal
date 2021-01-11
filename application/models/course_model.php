@@ -120,5 +120,21 @@ class Course_model extends CI_Model
             return(0);
         }
      }
+     /**
+      * get all subjects in a course
+      */
+     public function get_all_subjects($course_id){
+        $condition = "course_id = " . "'" . $course_id . "'";
+        $this->db->select('*');
+        $this->db->from('subject_table');
+        $this->db->where($condition);
+        $query = $this->db->get();
+        if($query->num_rows() > 0){
+            return $query->result();
+        }else{
+            return(0);
+        }
+
+     }
     
 }
