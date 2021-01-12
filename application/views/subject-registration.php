@@ -22,9 +22,9 @@ if (!($this->session->userdata('user_detail'))) {
 <br>
 
 <div class="container">
-  <div class="row">
-    <div class="col-12">
-    <?php
+    <div class="row">
+        <div class="col-12">
+            <?php
 
     if (isset($error_message_display)) {
       echo '<div class="alert alert-danger" role="alert">';
@@ -38,8 +38,8 @@ if (!($this->session->userdata('user_detail'))) {
     }
 
     ?>
+        </div>
     </div>
-  </div>
     <?php 
     // print_r($studentManagement);
     
@@ -52,13 +52,13 @@ if (!($this->session->userdata('user_detail'))) {
     
     ?>
     <div class="row">
-    
-    
-      
 
-      <div class="col-6">
-          
-      <?php 
+
+
+
+        <div class="col-4">
+
+            <?php 
         if(isset($active_courses)){
           echo '<label>Course name</label>';
           echo form_open('course/newSubject/2');
@@ -68,7 +68,6 @@ if (!($this->session->userdata('user_detail'))) {
               echo "<option value='{$active_course->course_id}'>$active_course->course_name</option>";
           }
           echo "</select>";
-          
         }elseif (isset($select_course_detail)) {
           echo '<label>Selected course</label>';
             echo "<p>{$select_course_detail[0]->course_name}</p>";
@@ -79,13 +78,16 @@ if (!($this->session->userdata('user_detail'))) {
 
         </div>
         <?php
-          if(isset($subjects)){
-            echo '<div class="col-6">';
+     
+
+          if(isset($subjects) && is_array($subjects)){
+            echo '<div class="col-8">';
             echo "<table class='table'>";
               echo "<tr>";
                 echo "<th>Subject #</th>";
                 echo "<th>Subject Name</th>";
                 echo "<th>Status</th>";
+                echo "<th></th>";
                 
               echo "</tr>";
               foreach ($subjects as $key => $value) {
@@ -99,100 +101,100 @@ if (!($this->session->userdata('user_detail'))) {
                   echo "<td>";
                     echo $value->state;
                   echo "</td>";
+                  echo "<td>";
+                    echo "<a href='". base_url('course/newSubject/2/'.$value->course_id.'/'.$value->subject_id.'/1') . "' >edit</a>";
+                  echo "</td>";
                 echo "</tr>";
               }
 
             echo "</table>";
             // print_r($subjects);
           echo '</div>';
+          }elseif(isset($subjects) && $subjects == 0){
+            echo "No subject found";
           }
         ?>
+
+
+    </div>
+
+    <?php
       
         
-  </div>
-
-      <?php
-      
-        // print_r();
-        if(isset($batch_attendance) &&  $batch_attendance != 0){
           echo "<div class='row'>";
             echo "<div class='col-12'>";
+            if(isset($subjects) && isset($subject_detail)){
+              echo '<h3 class="mt-4">Update Subject</h3>';
+              echo form_open('course/newSubject/4'); ?>
 
-       
-        echo "<table class='table table-striped table-responsive'>";
-        echo "<tr>";
-          echo "<th>";
-            echo "Registration #";
-          echo "</th>";
-          echo "<th>";
-            echo "Student name";
-          echo "</th>";
-        foreach ($batch_attendance as $value) {
-          echo "<th>";
-            echo $value->attend_date;
-          echo "</th>";
-          
-        }
+          <input type="hidden" name="courseid" value="<?php echo $select_course_detail[0]->course_id; ?>">
+          <input type="hidden" name="subjectid" value="<?php echo $subject_detail[0]->subject_id; ?>">
+          <div class="form-group">
+              <label for="subject">Subject Title</label>
+              <input type="subject" required name="subject"class="form-control" id="subject" value="<?php echo $subject_detail[0]->subject_name ?>">
 
+          </div>
 
-        echo "</tr>";
-        foreach ($batch_student_attendance as $studentkey => $stdObj) {
-          echo "<tr>";
-            echo "<td>";
-            // echo "<pre>";
-            //   print_r($stdObj->student_detail->student_id);
-            // echo "</pre>";
-            echo $stdObj->student_detail->student_id;
-            echo "</td>";
-            echo "<td>";
-            echo $stdObj->student_detail->first_name . " " . $stdObj->student_detail->last_name;
-            echo "</td>";
-
-            foreach ($batch_attendance as $batch_attend_date) {
-              foreach ($stdObj->student_attendance as $stdAttendDate) {
-                // echo $stdAttendDate->attend_date;
-                // echo "---";
-                // echo $batch_attend_date->attend_date;
-                // echo "<hr>";
-
-                if($stdAttendDate->attend_date == $batch_attend_date->attend_date ){
-                   echo "<td>";
-                  // $stdAttendDate->attend_date;
-                   echo $stdAttendDate->status;
-                   echo "</td>";
-                  
-                }
-              }
+          <div class="form-group">
+            <label for="status">Status</label>
+            <select class="form-control" name="state" id="status">
+              <option <?php echo  ($subject_detail[0]->state == 'active') ? 'selected' : '' ?>>active</option>
+              <option <?php echo ($subject_detail[0]->state == 'inactive') ? 'selected' : '' ?>>inactive</option>
               
-            }
+            </select>
+
+            <?php }
+            elseif(isset($subjects)){
+              echo '<h3 class="mt-4">Add New Subject</h3>';
+              echo form_open('course/newSubject/3');
+              // print_r($select_course_detail);
+
+          ?>
+          <input type="hidden" name="courseid" value="<?php echo $select_course_detail[0]->course_id; ?>">
+          <div class="form-group">
+              <label for="subject">Subject Title</label>
+              <input required type="subject" name="subject"class="form-control" id="subject">
+
+          </div>
+
+          <div class="form-group">
+            <label for="status">Status</label>
+            <select class="form-control" name="state" id="status">
+              <option>active</option>
+              <option>inactive</option>
+              
+            </select>
+          </div>
 
 
-          echo "</tr>";
+    <?php }
+           
+          
+          
 
 
-        }
-         
-        echo "</table>";
+        
+      
+          echo "</div>";
         echo "</div>";
-        echo "</div>";
-      }
+     
       
      
       ?>
-      <div class="row">
-      <div class="col-12">
-         <a class="btn btn-dark mt-2" href="<?php echo base_url('attendance/searchAttendance')?>">Back</a>
-        <button type="submit" class="mt-4 form-group btn btn-primary">Next</button>
-       </div>
+    <div class="row">
+        <div class="col-12">
+            <a class="btn btn-dark mt-2" href="<?php echo base_url('course/newSubject')?>">Back</a>
+            <button type="submit" class="mt-4 form-group btn btn-primary">Next</button>
+        </div>
 
-        
-      <?php  echo form_close();?>
-      </div>
+
+        <?php  echo form_close();?>
     </div>
-    
- 
-  
- 
+</div>
+
+
+
+
 
 
 
@@ -205,15 +207,15 @@ if (!($this->session->userdata('user_detail'))) {
 
 <?php $this->load->view('footer'); ?>
 <script>
-  $(document).ready(function(){
+$(document).ready(function() {
     $('#due-date').hide();
-    $('#pay_mode').on('change',function(){
-      var installment = $(this).val();
-      if(installment == '1st installment'){
-        $('#due-date').show();
-      }else{
-        $('#due-date').hide();
-      }
+    $('#pay_mode').on('change', function() {
+        var installment = $(this).val();
+        if (installment == '1st installment') {
+            $('#due-date').show();
+        } else {
+            $('#due-date').hide();
+        }
     });
-  });
+});
 </script>

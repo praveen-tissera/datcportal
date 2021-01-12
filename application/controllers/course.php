@@ -223,21 +223,106 @@ public function searchCourse(){
 		// $this->load->view('course-search-view',$data);
 	}
  }
- public function newSubject($step = 1){
+ public function newSubject($step = 1,$editcourseid=0,$subjectid=0,$status=0){
+	$success = $this->session->flashdata('success_message_display');
+	$error = $this->session->flashdata('error_message_display');
+	$flash_courseid = $this->session->flashdata('courseid');
+	if(!empty($success)){
+		$data['success_message_display'] = $success;
+		
+	}
+	if(!empty($error)){
+		$data['error_message_display'] = $error;
+		
+	}
 	//  show existing active course
 	if($step == 1){
 		$data['active_courses'] = $this->course_model->get_all_courses_base_state('active');
 		$this->load->view('subject-registration',$data);
-	}else if($step == 2){
+	}else if($step == 2 ){
 		// get all subject if exist 
-		print_r($_POST);
-		// if no subject found retun 0
-		$data['subjects'] = $this->course_model->get_all_subjects($_POST['selectcourse']);
-		$data['select_course_detail'] = $this->course_model->get_course_by_id($_POST['selectcourse']);
+		// print_r($_POST);
+		// $courseid = (!empty($flash_courseid)) ? $flash_courseid : $_POST['selectcourse'];
 
-		$this->load->view('subject-registration',$data);
+		if(isset($flash_courseid) && !empty($flash_courseid)){
+			$courseid = $flash_courseid;
+		}elseif(isset($_POST['selectcourse'])){
+			$courseid = $_POST['selectcourse'];
+		}
+
+
+
+
+		// if flash data or post data not available direct to step 1
+		if(isset($courseid) && !empty($courseid)){
+				// if no subject found retun 0
+				$data['subjects'] = $this->course_model->get_all_subjects($courseid);
+				$data['select_course_detail'] = $this->course_model->get_course_by_id($courseid);
+	
+				$this->load->view('subject-registration',$data);
+			
+		}elseif($editcourseid >0 && $subjectid > 0 && $status ==1){
+			// show subject to edit
+			$data['subjects'] = $this->course_model->get_all_subjects($editcourseid);
+				$data['select_course_detail'] = $this->course_model->get_course_by_id($editcourseid);
+			$data['select_course_detail'] = $this->course_model->get_course_by_id($editcourseid);
+			$data['subject_detail'] = $this->course_model->get_subject($editcourseid,$subjectid);
+			// print_r($data);
+			$this->load->view('subject-registration',$data);
+			
+		}else{
+				redirect('/course/newSubject/1');
+		}
 		
+		
+	}elseif ($step == 3) {
+		// add new subject
+		print_r($_POST);
+		
+		$data = array(
+			'course_id' => $_POST['courseid'],
+			'subject_name' => $_POST['subject'],
+			'state' => $_POST['state']
+		);
+		$result = $this->course_model->add_new_subject($data);
+		if($result == 1){
+			$this->session->set_flashdata('success_message_display','Subject added successfully');
+			$this->session->set_flashdata('courseid',$_POST['courseid']);
+				redirect('/course/newSubject/2');
+		}else{
+			$this->session->set_flashdata('error_message_display','Error came when inserting subject. Please try again');
+				redirect('/trainer/newSubject/1');
+		}
+	}elseif($step == 4){
+		// upddate selected subject
+		print_r($_POST);
+		$data  = array(
+			'course_id' => $_POST['courseid'],
+			'subject_id' => $_POST['subjectid'],
+			'subject_name' => $_POST['subject'],
+			'state' => $_POST['state'],
+
+		);
+
+		$result_subject_update = $this->course_model->update_subject($data);
+
+		if($result_subject_update == 1){
+			$this->session->set_flashdata('success_message_display','Subject updated successfully');
+			$this->session->set_flashdata('courseid',$_POST['courseid']);
+				redirect('/course/newSubject/2');
+
+		}else if($result_subject_update == 0){
+			$this->session->set_flashdata('success_message_display','Nothing to update');
+			$this->session->set_flashdata('courseid',$_POST['courseid']);
+				redirect('/course/newSubject/2');
+
+		}else{
+			$this->session->set_flashdata('error_message_display','Error when updating subject. Please try again');
+			$this->session->set_flashdata('courseid',$_POST['courseid']);
+				redirect('/course/newSubject/2');
+		}
 	}
+
 
  }
 }

@@ -61,6 +61,59 @@ class Course_model extends CI_Model
         }
     }
 
+
+    /**
+     * add new subject
+     */
+    public function add_new_subject($data)
+    {
+        $this->db->insert('subject_table', $data);
+        // echo $this->db->last_query();
+        if ($this->db->affected_rows() > 0) {
+            return(1);
+        }else{
+            return(0);
+        }
+    }
+
+
+     /**
+     * get subject details base on course id and subject id
+     */
+    public function get_subject($courseid,$subjectid){
+        $condition = "course_id =" . "'" . $courseid . "' && subject_id ='" . $subjectid . "'";
+        $this->db->select('*');
+        $this->db->from('subject_table');
+        $this->db->where($condition);
+        $this->db->limit(1);
+        $query = $this->db->get();
+        if($query->num_rows() > 0){
+            return $query->result();
+        }else{
+            return(0);
+        }
+    }
+        /**
+         * update subject details
+         */
+    public function update_subject($data){
+
+        $condition ="subject_id =" . "'" .  $data['subject_id'] . "'";
+        $this->db->set('subject_name', $data['subject_name']);
+        $this->db->set('state', $data['state'] );
+        $this->db->where($condition);
+                        
+        $this->db->update('subject_table');
+
+        if($this->db->affected_rows() == 1){
+            return(1);
+        }else if($this->db->affected_rows() == 0){
+            return(0);
+        }else{
+            return(-1);
+        }
+
+    }
     
 
 
