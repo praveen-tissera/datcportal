@@ -189,5 +189,61 @@ class Course_model extends CI_Model
         }
 
      }
-    
+     /**
+      * get all subjects in a course
+      */
+      public function get_all_stat_base_subjects($course_id,$state){
+        $condition = "course_id = " . "'" . $course_id . "' AND state = '" . $state . "'";
+        $this->db->select('*');
+        $this->db->from('subject_table');
+        $this->db->where($condition);
+        $query = $this->db->get();
+        if($query->num_rows() > 0){
+            return $query->result();
+        }else{
+            return(0);
+        }
+
+     }
+     /**
+      * add subject marks
+      */
+     public function add_update_subject_mark($data){
+        $condition = "student_id = " . "'" . $data['student_id'] . "' AND batch_id='" . $data['batch_id'] . "' AND subject_id ='" . $data['subject_id'] . "'";
+        $this->db->select('*');
+        $this->db->from('student_mark_table');
+        $this->db->where($condition);
+        $query = $this->db->get();
+        
+        if($query->num_rows() > 0){
+
+
+            $this->db->set('mark', $data['mark']);
+            $this->db->set('state', $data['state']);
+            $this->db->where($condition);          
+            $this->db->update('student_mark_table');
+            echo $this->db->last_query();
+            return('update');
+
+        }else{
+            $this->db->insert('student_mark_table', $data);
+            return('insert');
+
+        }
+     }
+
+     /**
+      * update certificate details 
+      */
+      public function update_certificate($data){
+        $condition = "student_id = " . "'" . $data['student_id'] . "' AND batch_id='" . $data['batch_id'] .  "'";
+            $this->db->set('certificate_no', $data['certificate_no']);
+            $this->db->where($condition);          
+            $this->db->update('student_batch_map_table');
+            // echo $this->db->last_query();
+            return('update');
+    }
+
+      
+  
 }

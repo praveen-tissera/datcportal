@@ -142,18 +142,7 @@ Class Attendance extends CI_Controller {
 			$data['select_batch_detail'] = $this->user_model->read_batch_byid($_POST['selectbatch'])[0];
 			$data['batch_attendance'] = $this->attendance_model->read_batchwise_attendance($_POST['selectbatch']);
 			$data['batch_student_attendance'] = $this->attendance_model->get_students_by_batch_id($_POST['selectbatch']);
-			// print_r($data);
-					// if(	$data['student_in_batch_obj'] == 0){
-					// 	$data['error_message_display'] = "No student register yet";
-					// 	$this->load->view('attendance-view',$data);
-					// }else{
-					// 	// get start and end date range in current week
-					// list($start_date, $end_date) = $this->x_week_range(date("Y-m-d"));
-					// $data['start_date'] = $start_date;
-					// $data['end_date'] = $end_date;
-					// print_r($data);
-					
-					// }
+
 					 $this->load->view('attendance-view',$data);
 					// print_r($data);
 		}

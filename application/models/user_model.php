@@ -348,6 +348,27 @@ class User_model extends CI_Model
         }
     }
 
+/**
+ * get student details map to batch 
+ * 
+ */
+
+public function read_student_detail_to_batch($student_id,$batch_id){
+    $condition = "student_id =" . "'" . $student_id . "' AND batch_id = '". $batch_id ."'";
+    $this->db->select('*');
+    $this->db->from('student_batch_map_table');
+    $this->db->where($condition);
+    $this->db->limit(1);
+    $query = $this->db->get();
+    if ($query->num_rows() == 1) {
+        $result = $query->result();
+        $result[0]->student_detail = $this->student_detail_byid($student_id)[0];
+        return $result[0];
+    }else{
+        return (0);
+    }
+}
+
     public function get_pending_students(){
         $condition = "state ='pending'";
         $this->db->select('*');
@@ -988,6 +1009,57 @@ class User_model extends CI_Model
             }
            
 
+        }
+
+    }
+    public function batch_wise_students($batchid){
+        $this->load->model('Course_model', 'courseModel');
+        $condition = "batch_id = " . "'" . $batchid . "'";
+        $this->db->select('*');
+        $this->db->from('student_batch_map_table');
+        $this->db->where($condition);
+        $query = $this->db->get();
+        if($query->num_rows() > 0){
+            $students = $query->result();
+            foreach ($students as $key => $student) {
+               $students[$key]->student_full_details = $this->student_detail_byid($student->student_id)[0];
+            //    $students_object[$key]->student_wise_subjects = $this->courseModel->get_all_subjects($courseid);
+            }
+        }else{
+            $students = 0;
+        }
+        // print_r($students_object);
+        return $students;
+    }
+    public function read_subject_and_marks_student_wise($studentid,$courseid,$batchid){
+        $this->load->model('Course_model','courseModel');
+        $subjects_marks_in_course = $this->courseModel->get_all_stat_base_subjects($courseid,'active');
+        // print_r($subjects_in_course);
+        if($subjects_marks_in_course != 0){
+            foreach ($subjects_marks_in_course as $key => $subject) {
+                $subjects_marks_in_course[$key]->student_mark = $this->read_student_mark($studentid,$batchid,$subject->subject_id);
+            }
+            
+        }
+        // print_r($subjects_marks_in_course);
+        return $subjects_marks_in_course;
+            
+        
+        
+        
+        
+    }
+    public function read_student_mark($studentid,$batchid,$subjectid){
+        $condition = "student_id  = " . "'" . $studentid . "' AND batch_id = '" . $batchid . "' AND subject_id = '". $subjectid . "'";
+        $this->db->select('*');
+        $this->db->from('student_mark_table');
+        $this->db->where($condition);
+        $this->db->limit(1);
+        $query = $this->db->get();
+        if($query->num_rows() > 0){
+            return $query->result();
+        }else{
+            return('not found');
         }
 
     }

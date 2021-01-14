@@ -759,7 +759,8 @@ public function course(){
 			'newCourseRegistration' => 'New Course',
 			'newBatchRegistration' => 'New Batch', 
 			'searchCourse' => 'Search Course & Batch',
-			'newSubject' => 'New Subject'
+			'newSubject' => 'New Subject',
+			'examCertificate' => 'Exam & Certificate'
 		);
 
 		$this->load->view('course-management',$data);

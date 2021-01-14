@@ -325,5 +325,97 @@ public function searchCourse(){
 
 
  }
+ public function examCertificate($step=1,$courseid=0,$batchid=0,$studentid=0,$state=0){
+	if($step == 1){
+		$data['active_courses'] = $this->course_model->get_all_courses_base_state('active');
+		$this->load->view('exam-certificate-view',$data);
+	}elseif ($step == 2) {
+		// print_r($_POST);
+		$select_course_detail = $this->course_model->get_course_by_id($_POST['selectcourse']);
+		$data['select_course_detail'] = $select_course_detail;
+		 
+		$data['active_batches'] = $this->course_model->get_course_batch_details($_POST['selectcourse']);
+		$this->load->view('exam-certificate-view',$data);
+	}elseif ($step == 3) {
+		// print_r($_POST);
+		$data['select_course_detail'] = $this->course_model->get_course_by_id($_POST['course_id']);
+		$data['select_batch_detail'] = $this->user_model->read_batch_byid($_POST['selectbatch'])[0];
+		// $data['batch_attendance'] = $this->attendance_model->read_batchwise_attendance($_POST['selectbatch']);
+		// $data['batch_student_attendance'] = $this->attendance_model->get_students_by_batch_id($_POST['selectbatch']);
+		$data['students_detail'] = $this->user_model->batch_wise_students($_POST['selectbatch']);
+				 $this->load->view('exam-certificate-view',$data);
+				  // print_r($data);
+	}elseif($step == 4 && ($courseid > 0 && $batchid > 0 && $studentid>0 )){
+
+		$data['select_course_detail'] = $this->course_model->get_course_by_id($courseid);
+		$data['select_batch_detail'] = $this->user_model->read_batch_byid($batchid)[0];
+		
+		if($state == 'marks'){
+			// show student marks form if exist to edit or add new 
+		// 	$courseid,
+		// $batchid,
+		// $studentid,
+		$data['students_detail'] = $this->user_model->batch_wise_students($batchid);
+		$data['student_marks'] = $this->user_model->read_subject_and_marks_student_wise($studentid,$courseid,$batchid);
+			
+		print_r($_POST);
+		if(isset($_POST['subjectid']) && isset($_POST['newmark'])){
+			// add subject marks
+			$mark_data = array(
+				'student_id' => $studentid,
+				'batch_id' => $batchid,
+				'mark' => $_POST['newmark'],
+				'state' => $_POST['markstate'],
+				'subject_id' => $_POST['subjectid'],
+			);
+			$result_subject_marks = $this->course_model->add_update_subject_mark($mark_data);
+			echo $result_subject_marks;
+			if($result_subject_marks == 'insert'){
+				$data['success_message_display'] = "Mark addded successfully";
+			}else if($result_subject_marks == 'update'){
+				$data['success_message_display'] = "Mark updated successfully";
+			}else{
+				$data['error_message_display'] = "Error on adding marks. Try again";
+			}
+			$data['student_marks'] = $this->user_model->read_subject_and_marks_student_wise($studentid,$courseid,$batchid);
+		
+			
+
+		}
+		
+
+		 $this->load->view('exam-certificate-view',$data);
+
+
+		}elseif($state == 'certificate'){
+			// show student certificate form if exist to edit or add new 
+			
+			if(isset($_POST['certificatenumber']) && isset($_POST['studentid']) && isset($_POST['batchid'])){
+				// add or update certificate details
+				echo "update certificate";
+				$data_certificate = array(
+					'student_id' => $_POST['studentid'],
+					'batch_id' => $_POST['batchid'],
+					'certificate_no' => $_POST['certificatenumber']
+				);
+				$result = $this->course_model->update_certificate($data_certificate);
+				if($result == 'update'){
+					$data['success_message_display'] = "certificate addded successfully";
+				}else{
+					$data['error_message_display'] = "Error on adding marks. Try again";
+				}
+			}
+			$data['students_detail'] = $this->user_model->batch_wise_students($batchid);
+			$data['student_batch_certificate'] =$this->user_model->read_student_detail_to_batch($studentid,$batchid);
+
+			$this->load->view('exam-certificate-view',$data);
+
+		}
+		
+	
+	}
+ }
+
+ 
 }
 ?>
