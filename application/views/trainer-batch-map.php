@@ -118,8 +118,8 @@ if (!($this->session->userdata('user_detail'))) {
         <?php 
         if(isset($course_batches)){
           echo form_open('trainer/trainerBatch/3'); 
-          echo "<input type='text' name='course_id' value='$select_trainer->trainer_id'>";
-          echo "<input type='text' name='trainer_id' value='$select_course->course_id'>";
+          echo "<input type='hidden' name='course_id' value='$select_trainer->trainer_id'>";
+          echo "<input type='hidden' name='trainer_id' value='$select_course->course_id'>";
           // print_r($course_batches);
           echo '<label>Select a batch</label>';
         

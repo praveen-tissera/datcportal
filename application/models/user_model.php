@@ -1063,4 +1063,30 @@ public function read_student_detail_to_batch($student_id,$batch_id){
         }
 
     }
+    public function addCaptcha($data){
+        $query = $this->db->insert_string('captcha', $data);
+        $this->db->query($query);
+        return(1);
+
+    }
+    public function validateCaptcha($data){
+       
+
+        $condition = "word  = " . "'" . $data['string'] . "' AND ip_address = '" . $data['ip'] . "' AND captcha_time > '". $data['time'] . "'";
+        $this->db->select('*');
+        $this->db->from('captcha');
+        $this->db->where($condition);
+        $this->db->limit(1);
+
+        $query = $this->db->get();
+        
+        if ($query->num_rows() == 0)
+        {
+            return(0);
+        }else{
+            return(1);
+        }
+
+
+    }
 }

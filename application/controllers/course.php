@@ -211,7 +211,7 @@ public function searchCourse(){
 	 if($course_batches_object != 0){
 		$data['course_profile'] = $course_details;
 		 $data['course_batches_object'] = $course_batches_object;
-		 print_r($data);
+		//  print_r($data);
 	 	 $this->load->view('course-profile',$data);
 	 }else{
 		$data['error_message_display'] = 'invalid input of trainer';
@@ -277,7 +277,7 @@ public function searchCourse(){
 		
 	}elseif ($step == 3) {
 		// add new subject
-		print_r($_POST);
+		// print_r($_POST);
 		
 		$data = array(
 			'course_id' => $_POST['courseid'],
@@ -295,7 +295,7 @@ public function searchCourse(){
 		}
 	}elseif($step == 4){
 		// upddate selected subject
-		print_r($_POST);
+		// print_r($_POST);
 		$data  = array(
 			'course_id' => $_POST['courseid'],
 			'subject_id' => $_POST['subjectid'],
@@ -358,7 +358,7 @@ public function searchCourse(){
 		$data['students_detail'] = $this->user_model->batch_wise_students($batchid);
 		$data['student_marks'] = $this->user_model->read_subject_and_marks_student_wise($studentid,$courseid,$batchid);
 			
-		print_r($_POST);
+		// print_r($_POST);
 		if(isset($_POST['subjectid']) && isset($_POST['newmark'])){
 			// add subject marks
 			$mark_data = array(
@@ -369,7 +369,7 @@ public function searchCourse(){
 				'subject_id' => $_POST['subjectid'],
 			);
 			$result_subject_marks = $this->course_model->add_update_subject_mark($mark_data);
-			echo $result_subject_marks;
+			// echo $result_subject_marks;
 			if($result_subject_marks == 'insert'){
 				$data['success_message_display'] = "Mark addded successfully";
 			}else if($result_subject_marks == 'update'){
@@ -392,7 +392,7 @@ public function searchCourse(){
 			
 			if(isset($_POST['certificatenumber']) && isset($_POST['studentid']) && isset($_POST['batchid'])){
 				// add or update certificate details
-				echo "update certificate";
+				// echo "update certificate";
 				$data_certificate = array(
 					'student_id' => $_POST['studentid'],
 					'batch_id' => $_POST['batchid'],

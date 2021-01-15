@@ -70,8 +70,8 @@ if (!($this->session->userdata('user_detail'))) {
           echo "</select>";
           
         }elseif (isset($select_course_detail)) {
-          echo '<label>Selected course</label>';
-            echo "<p>{$select_course_detail[0]->course_name}</p>";
+          echo '<label>Selected course</label><br>';
+            echo "<p class='badge badge-primary'>{$select_course_detail[0]->course_name}</p>";
            
         }
         
@@ -83,11 +83,11 @@ if (!($this->session->userdata('user_detail'))) {
             echo '<div class="col-6">';
             // print_r($active_batches);
             echo form_open('attendance/searchAttendance/3');
-            echo "<input type='text' name='course_id' value={$select_course_detail[0]->course_id}>";
-            echo '<label>Batch number</label>';
+            echo "<input type='hidden' name='course_id' value={$select_course_detail[0]->course_id}>";
+            echo '<label>Select a batch</label>';
             echo "<select class='form-control' name='selectbatch'>";
             // print_r($active_courses);
-              echo "<option>Select a batch</option>";
+              
             foreach ($active_batches as $key => $active_batch) {
                 echo "<option value='{$active_batch->batch_id}'>$active_batch->batch_number</option>";
             }
@@ -95,14 +95,15 @@ if (!($this->session->userdata('user_detail'))) {
   
           echo '</div>';
           }elseif (isset($select_batch_detail)) {
+            echo '<div class="col-6">';
             // print_r($select_batch_detail);
             echo form_open('attendance/searchAttendance/4');
-            echo "<input type='text' value='{$select_batch_detail->course_id}' name='course_id'>";
-            echo "<input type='text' value='{$select_batch_detail->batch_id}' name='batch_id'>";
-            echo '<div class="col-6">';
-              echo '<label>Selected batch number : </label>';
+            echo "<input type='hidden' value='{$select_batch_detail->course_id}' name='course_id'>";
+            echo "<input type='hidden' value='{$select_batch_detail->batch_id}' name='batch_id'>";
+            
+              echo '<label>Selected batch number : </label><br>';
               
-              echo "<p>{$select_batch_detail->batch_number}</p>";
+              echo "<p class='badge badge-primary'>{$select_batch_detail->batch_number}</p>";
             echo "</div>";
           }
         ?>

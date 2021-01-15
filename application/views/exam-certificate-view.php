@@ -70,8 +70,8 @@ if (!($this->session->userdata('user_detail'))) {
           echo "</select>";
           
         }elseif (isset($select_course_detail)) {
-          echo '<label>Selected course</label>';
-            echo "<p>{$select_course_detail[0]->course_name}</p>";
+          echo '<label>Selected course</label> <br>';
+            echo "<p class='badge badge-primary'>{$select_course_detail[0]->course_name}</p>";
            
         }
         
@@ -83,11 +83,11 @@ if (!($this->session->userdata('user_detail'))) {
             echo '<div class="col-6">';
             // print_r($active_batches);
             echo form_open('course/examCertificate/3');
-            echo "<input type='text' name='course_id' value={$select_course_detail[0]->course_id}>";
-            echo '<label>Batch number</label>';
+            echo "<input type='hidden' name='course_id' value={$select_course_detail[0]->course_id}>";
+            echo '<label>Select Batch</label>';
             echo "<select class='form-control' name='selectbatch'>";
             // print_r($active_courses);
-              echo "<option>Select a batch</option>";
+             
             foreach ($active_batches as $key => $active_batch) {
                 echo "<option value='{$active_batch->batch_id}'>$active_batch->batch_number</option>";
             }
@@ -97,12 +97,12 @@ if (!($this->session->userdata('user_detail'))) {
           }elseif (isset($select_batch_detail)) {
             // print_r($select_batch_detail);
            
-            echo "<input type='text' value='{$select_batch_detail->course_id}' name='course_id'>";
-            echo "<input type='text' value='{$select_batch_detail->batch_id}' name='batch_id'>";
+            echo "<input type='hidden' value='{$select_batch_detail->course_id}' name='course_id'>";
+            echo "<input type='hidden' value='{$select_batch_detail->batch_id}' name='batch_id'>";
             echo '<div class="col-6">';
-              echo '<label>Selected batch number : </label>';
+              echo '<label>Selected batch number : </label><br>';
               
-              echo "<p>{$select_batch_detail->batch_number}</p>";
+              echo "<p class='badge badge-primary'>{$select_batch_detail->batch_number}</p>";
             echo "</div>";
           }
         ?>
@@ -167,8 +167,8 @@ if (!($this->session->userdata('user_detail'))) {
             echo (empty($student->certificate_no))? 'Not given' : $student->certificate_no;
           echo "</td>";
           echo "<td>";
-            echo "<a href='" .base_url('course/examCertificate/4/'.$select_batch_detail->course_id.'/'.$select_batch_detail->batch_id.'/'.$student->student_full_details->student_id.'/marks') ."'>Add marks</a> ";
-            echo "<a href='" .base_url('course/examCertificate/4/'.$select_batch_detail->course_id.'/'.$select_batch_detail->batch_id.'/'.$student->student_full_details->student_id.'/certificate') ."'>Add certificate info</a>";
+            echo "<a class='btn btn-link btn-sm' href='" .base_url('course/examCertificate/4/'.$select_batch_detail->course_id.'/'.$select_batch_detail->batch_id.'/'.$student->student_full_details->student_id.'/marks') ."'>Add marks</a> ";
+            echo "<a class='btn btn-link btn-sm' href='" .base_url('course/examCertificate/4/'.$select_batch_detail->course_id.'/'.$select_batch_detail->batch_id.'/'.$student->student_full_details->student_id.'/certificate') ."'>Add certificate info</a>";
           echo "</td>";
           echo "</tr>";
         }
@@ -185,15 +185,17 @@ if (!($this->session->userdata('user_detail'))) {
         if(isset($student_marks) && is_array($student_marks)){
           echo '<div class="row">';
             echo '<div class="col-12">';
-          print_r($student_marks);
+          // print_r($student_marks);
+          echo "<h3 class='mt-4'>Student mark sheet</h3>";
           echo "<table class='table table-striped'>"; 
             echo "<thead><tr><td>Subject id</td><td>Subject name</td><td>Subject status</td><td>Student mark</td><td>pass/fail</td><td></td></tr></thead>";
 
             echo "<tbody>";
             
             foreach ($student_marks as $key => $student) {
+              
               echo form_open('course/examCertificate/4/'.$select_batch_detail->course_id.'/'.$select_batch_detail->batch_id.'/'.$students_detail[0]->student_id.'/marks');
-              echo "<input type='text' name='subjectid' value='{$student->subject_id}'";
+              echo "<input type='hidden' name='subjectid' value='{$student->subject_id}'";
               echo "<tr>";
               echo "<td>";
                 echo $student->subject_id;
@@ -239,7 +241,7 @@ if (!($this->session->userdata('user_detail'))) {
                  
               echo "</td>";
               echo "<td>";
-                  echo "<input type='submit' value='update'>";
+                  echo "<input type='submit' class='btn btn-info btn-sm' value='update'>";
               echo "</td>";
               echo "</tr>";
               echo form_close();
@@ -252,10 +254,10 @@ if (!($this->session->userdata('user_detail'))) {
         }else if(isset($student_batch_certificate)){
           echo '<div class="row">';
             echo '<div class="col-12">';
-            echo "<h3>Certificate detail</h3>";
+            echo "<h3 class='mt-4'>Certificate detail</h3>";
             echo form_open('course/examCertificate/4/'.$select_batch_detail->course_id.'/'.$select_batch_detail->batch_id.'/'.$student_batch_certificate->student_id.'/certificate');
-          echo "<input type='text' name='studentid' value='{$student_batch_certificate->student_id}'>";
-          echo "<input type='text' name='batchid' value='{$student_batch_certificate->batch_id}'>";
+          echo "<input type='hidden' name='studentid' value='{$student_batch_certificate->student_id}'>";
+          echo "<input type='hidden' name='batchid' value='{$student_batch_certificate->batch_id}'>";
             echo '<div class="form-group">';
             echo '<label for="certificate">Valid certificate number</label>';
             if(empty($student_batch_certificate->certificate_no)){
@@ -263,7 +265,7 @@ if (!($this->session->userdata('user_detail'))) {
             }else{
               echo '<input type="text" class="form-control" id="certificate" name="certificatenumber" placeholder="add number entered in the certificate" value="' . $student_batch_certificate->certificate_no .'">';
             }
-            echo '<button type="submit" class="mt-4 form-group btn btn-primary">Update</button>';
+            echo '<button type="submit" class="mt-4 form-group btn btn-info">Update certificate</button>';
           echo '</div>';
           echo '</div>';
           // print_r($student_batch_certificate);

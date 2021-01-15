@@ -3,6 +3,7 @@ Class User extends CI_Controller {
     public function __construct() {
 		parent::__construct();
 
+		$this->load->helper('captcha');
 		// Load form helper library
 		$this->load->helper('form');
 
@@ -1002,21 +1003,74 @@ public function course(){
 	 $result_add_installment  = $this->user_model->add_installment_payment($paymentid,$batchid,$this->session->userdata('user_detail')['user_id'],$payment_schedule_detials[0]->amount,$studentid);
 
 	 if($result_add_installment == 1){
-		 echo "true";
+		//  echo "true";
 		$this->session->set_flashdata('success_message_display','installment payment added successfully');
 		redirect('/user/studentProfile/'.$studentid);
 	 }else{
-		echo "false";
+		// echo "false";
 		$this->session->set_flashdata('error_message_display','Error or processing your request. Please try again');
 		redirect('/user/studentProfile/'.$studentid);
 	 }
  }
+
+ public function verification($step =1){
+	$success = $this->session->flashdata('success_message_display');
+	$error = $this->session->flashdata('error_message_display');
+	if(!empty($success)){
+		$data['success_message_display'] = $success;
+		
+	}
+	if(!empty($error)){
+		$data['error_message_display'] = $error;
+		
+	}
+		if($step ==1){
+			$vals = array(
+				'img_path'      => './captcha/',
+				'img_width'     => '250',
+				'img_height'    => 50,
+				'font_path'			=> '../../assets/bootstrap/fonts/glyphicons-halflings-regular.ttf',
+				'font_size'     => 16,
+        'img_url'       => 'http://localhost/datcportal/captcha/'
+			);
+			$cap = create_captcha($vals);
+			
+			$data_cap = array(
+        'captcha_time'  => $cap['time'],
+        'ip_address'    => $this->input->ip_address(),
+        'word'          => $cap['word']
+			);
+			echo $cap['word'];
+			$this->user_model->addCaptcha($data_cap);
+			// print_r($data);
+			// show form
+			$data['cap'] = $cap;
+			$this->load->view('verfication-view',$data);
+		}else if($step == 2 && isset($_POST)){
+			$expiration = time() - 7200; // Two hour limit
+			print_r($_POST);
+			$form_captcha = array(
+			'string'	=> $_POST['captcha'], 
+				'ip' => $this->input->ip_address(), 
+				'time' => $expiration
+			);
+			$result_captcha = $this->user_model->validateCaptcha($form_captcha);
+			if($result_captcha == 1){
+				echo "capctcha is correct";
+			}else{
+				$this->session->set_flashdata('error_message_display','You must submit the word that appears in the image.');
+				redirect('/user/verification/1');
+				
+			}
+		}
+	}
 
 /**
 	 * Logout module 
 	 */
 	 
 	public function logoutUser($user,$message = "") {
+		
 		// Removing session data
 		if($user == 'student' || $user == 'trainer'){
 				$this->session->unset_userdata('user_detail');

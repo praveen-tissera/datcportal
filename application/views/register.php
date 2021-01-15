@@ -22,17 +22,11 @@
     <div class="row">
       <div class="col-8">
         <?php
-        if (isset($success_message_display)) {
-          echo "success";
-        } elseif (isset($error_message_display)) {
-
-
+       if (isset($error_message_display)) {
           echo '<div class="alert alert-danger" role="alert">';
           echo $error_message_display;
           echo '</div>';
         }elseif (isset($success_message_display)) {
-
-
           echo '<div class="alert alert-success" role="alert">';
           echo $error_message_display;
           echo '</div>';
