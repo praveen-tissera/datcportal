@@ -155,7 +155,12 @@ if (!($this->session->userdata('user_detail'))) {
               echo $student->student_full_details->first_name . ' ' .  $student->student_full_details->last_name;
             echo "</td>";
             echo "<td>";
-            echo $student->state;
+            
+           if($student->state == 'active'){
+              echo "<span class='badge badge-success'>". $student->state . "</span>";
+            }else{
+              echo "<span class='badge badge-danger'>". $student->state . "</span>";
+            }
           echo "</td>";
           echo "<td>";
             echo $student->student_full_details->state;
@@ -254,7 +259,11 @@ if (!($this->session->userdata('user_detail'))) {
         }else if(isset($student_batch_certificate)){
           echo '<div class="row">';
             echo '<div class="col-12">';
+    
             echo "<h3 class='mt-4'>Certificate detail</h3>";
+            echo '<div class="alert alert-warning" role="alert">
+            Student batch status should be active when adding certificate details.
+          </div>';
             echo form_open('course/examCertificate/4/'.$select_batch_detail->course_id.'/'.$select_batch_detail->batch_id.'/'.$student_batch_certificate->student_id.'/certificate');
           echo "<input type='hidden' name='studentid' value='{$student_batch_certificate->student_id}'>";
           echo "<input type='hidden' name='batchid' value='{$student_batch_certificate->batch_id}'>";

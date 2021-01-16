@@ -1086,7 +1086,30 @@ public function read_student_detail_to_batch($student_id,$batch_id){
         }else{
             return(1);
         }
+    }
+    public function readCertificate($certificatenumber){
+        $condition = "	certificate_no  = " . "'" . $certificatenumber . "'";
+        $this->db->select('*');
+        $this->db->from('student_batch_map_table');
+        $this->db->where($condition);
+        $this->db->limit(1);
 
+        $query = $this->db->get();
+        
+        if ($query->num_rows() == 0)
+        {
+            return(0);
+        }else{
+            $result = $query->result()[0];
+            $student_details = $this->student_detail_byid($result->student_id)[0];
+            $batch_details = $this->read_batch_byid($result->batch_id)[0];
+           
+            $data['student_details'] = $student_details;
+            $data['batch_details'] = $batch_details;
 
+            $data['course_details'] = $this->read_course_byid($batch_details->course_id)[0];
+            return($data);
+            // return(1);
+        }
     }
 }

@@ -1057,6 +1057,10 @@ public function course(){
 			$result_captcha = $this->user_model->validateCaptcha($form_captcha);
 			if($result_captcha == 1){
 				echo "capctcha is correct";
+				$data['result_certificate'] = $this->user_model->readCertificate($_POST['certificatenumber']);
+				$data['certificatenumber'] = $_POST['certificatenumber'];
+				
+				$this->load->view('certificate-view',$data);
 			}else{
 				$this->session->set_flashdata('error_message_display','You must submit the word that appears in the image.');
 				redirect('/user/verification/1');
