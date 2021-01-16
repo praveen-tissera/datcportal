@@ -240,9 +240,7 @@ public function searchCourse(){
 		$data['active_courses'] = $this->course_model->get_all_courses_base_state('active');
 		$this->load->view('subject-registration',$data);
 	}else if($step == 2 ){
-		// get all subject if exist 
-		// print_r($_POST);
-		// $courseid = (!empty($flash_courseid)) ? $flash_courseid : $_POST['selectcourse'];
+
 
 		if(isset($flash_courseid) && !empty($flash_courseid)){
 			$courseid = $flash_courseid;
@@ -340,8 +338,7 @@ public function searchCourse(){
 		// print_r($_POST);
 		$data['select_course_detail'] = $this->course_model->get_course_by_id($_POST['course_id']);
 		$data['select_batch_detail'] = $this->user_model->read_batch_byid($_POST['selectbatch'])[0];
-		// $data['batch_attendance'] = $this->attendance_model->read_batchwise_attendance($_POST['selectbatch']);
-		// $data['batch_student_attendance'] = $this->attendance_model->get_students_by_batch_id($_POST['selectbatch']);
+	
 		$data['students_detail'] = $this->user_model->batch_wise_students($_POST['selectbatch']);
 				 $this->load->view('exam-certificate-view',$data);
 				  // print_r($data);
@@ -378,9 +375,6 @@ public function searchCourse(){
 				$data['error_message_display'] = "Error on adding marks. Try again";
 			}
 			$data['student_marks'] = $this->user_model->read_subject_and_marks_student_wise($studentid,$courseid,$batchid);
-		
-			
-
 		}
 		
 
@@ -415,7 +409,32 @@ public function searchCourse(){
 	
 	}
  }
+ public function editbatch($batchid,$step=1){
 
+	if($step==1){
+		$batch_data = $this->user_model->read_batch_byid($batchid);
+		if($batch_data){
+		 $course_data = $this->user_model->read_course_byid($batch_data[0]->course_id);
+		 $data['trainer_data'] = $this->user_model->trainer_map_to_batch($batchid);
+ 
+		 $data['trainers'] = $this->user_model->read_trainers_detail();
+ 
+		 print_r($course_data);
+		 $data['course_data'] = $course_data;
+		 $data['batch_data'] = $batch_data;
+		 $this->load->view('batch-edit-view',$data);
+		}else{
+ 
+		 echo "error";
+		 $data['error_message_display'] = "Error on adding marks. Try again";
+		}
+	}elseif($step == 2 && isset($_POST)){
+
+	}
+	
+	 
+
+ }
  
 }
 ?>

@@ -95,13 +95,17 @@ if (!($this->session->userdata('user_detail'))) {
         <th scope="col">Trainer</th>
         <th scope="col">Batch description</th>
         <th scope="col">Batch status</th>
+        <th></th>
         
         
       </tr>
     </thead>';
 
 echo "<tbody>";
-//  echo '<pre>';
+  // echo '<pre>';
+  //   print_r($course_batches_object);
+  // echo "</pre>";
+
       foreach ($course_batches_object as $key => $batch) {
         
         echo "<tr>";
@@ -136,6 +140,9 @@ echo "<tbody>";
         echo "</td>";
         echo "<td>";
            print_r($batch->state); 
+        echo "</td>";
+        echo "<td>";
+          echo "<a href='". base_url('course/editbatch/'.$batch->batch_id) . "'>Edit batch</a>"; 
         echo "</td>";
         echo "</tr>";
       }

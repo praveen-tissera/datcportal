@@ -443,6 +443,7 @@ public function read_student_detail_to_batch($student_id,$batch_id){
         $this->db->where($condition);
         $this->db->limit(1);
         $query = $this->db->get();
+        // echo $this->db->last_query();
         if($query->num_rows() > 0){
             return $query->result();
         }else{
@@ -741,6 +742,24 @@ public function read_student_detail_to_batch($student_id,$batch_id){
         if($query->num_rows() > 0){
             $trainer_details = $query->result();
             return $trainer_details[0];
+        }else{
+            return(0);
+        }
+    }
+
+     /**
+    * get all active trainers
+    */
+
+    public function read_trainers_detail(){
+        
+        $this->db->select('*');
+        $this->db->from('trainer_table');
+        
+        $query = $this->db->get();
+        if($query->num_rows() > 0){
+            $trainer_details = $query->result();
+            return $trainer_details;
         }else{
             return(0);
         }

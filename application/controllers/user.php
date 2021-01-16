@@ -1040,7 +1040,7 @@ public function course(){
         'ip_address'    => $this->input->ip_address(),
         'word'          => $cap['word']
 			);
-			echo $cap['word'];
+			// echo $cap['word'];
 			$this->user_model->addCaptcha($data_cap);
 			// print_r($data);
 			// show form
@@ -1056,7 +1056,7 @@ public function course(){
 			);
 			$result_captcha = $this->user_model->validateCaptcha($form_captcha);
 			if($result_captcha == 1){
-				echo "capctcha is correct";
+				// echo "capctcha is correct";
 				$data['result_certificate'] = $this->user_model->readCertificate($_POST['certificatenumber']);
 				$data['certificatenumber'] = $_POST['certificatenumber'];
 				
