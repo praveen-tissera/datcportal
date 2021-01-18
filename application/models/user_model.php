@@ -453,6 +453,43 @@ public function read_student_detail_to_batch($student_id,$batch_id){
 
      }
 
+     /**
+      * update batch detail 
+      */
+
+      public function update_batch_byid($data){
+        $result_trainer = $this->update_trainer_detail($data);
+
+        $condition ="batch_id =" . "'" .  $data['batch_id'] . "'";
+        $this->db->set('batch_number', $data['batch_number']);
+        $this->db->set('commence_date', $data['commence_date']);
+        $this->db->set('tentitive_close_date', $data['tentitive_close_date']);
+        $this->db->set('close_date', $data['close_date']);
+        $this->db->set('discription', $data['discription']);
+        $this->db->set('state', $data['state']);
+        $this->db->where($condition);
+
+        
+        if($result_trainer == 1 ||$result_trainer == 0){
+            echo "sucess";
+            $this->db->update('batch_table');
+
+             echo $this->db->last_query();
+            if($this->db->affected_rows() == 1){
+    
+            }else if($this->db->affected_rows() == 0){
+                return(0);
+            }else{
+                return(-1);
+            }
+        }else{
+            echo "error";
+            return ('errortrainer');
+        }
+
+
+     }
+
      public function update_student_payment($data,$staff_id){
         // echo "<hr>";
         // print_r($data);
@@ -747,6 +784,27 @@ public function read_student_detail_to_batch($student_id,$batch_id){
         }
     }
 
+    /**
+    * update trainer by id
+    */
+
+    public function update_trainer_detail($data){
+        $condition ="batch_id  =" . "'" .  $data['batch_id'] . "'";
+        $this->db->set('trainer_id', $data['trainer_id']);
+        
+        $this->db->where($condition);
+        
+        $this->db->update('trainer_batch_map_table');
+
+         echo $this->db->last_query();
+        if($this->db->affected_rows() == 1){
+            return(1);
+        }else if($this->db->affected_rows() == 0){
+            return(0);
+        }else{
+            return(-1);
+        }
+    }
      /**
     * get all active trainers
     */
@@ -1131,4 +1189,58 @@ public function read_student_detail_to_batch($student_id,$batch_id){
             // return(1);
         }
     }
+
+     /**
+      * update student detail 
+      */
+
+      public function updateStudent($data){
+        
+
+        $condition ="student_id =" . "'" .  $data['student_id'] . "'";
+        $this->db->set('first_name', $data['first_name']);
+        $this->db->set('last_name', $data['last_name']);
+        $this->db->set('email', $data['email']);
+        $this->db->set('telephone', $data['telephone']);
+        $this->db->set('birth_date', $data['birth_date']);
+        $this->db->set('state', $data['state']);
+        $this->db->where($condition);
+        $this->db->update('student_table');
+        
+        
+            //  echo $this->db->last_query();
+            if($this->db->affected_rows() == 1){
+                return(1);
+            }else if($this->db->affected_rows() == 0){
+                return(0);
+            }else{
+                return(-1);
+            }
+        
+
+
+     }
+
+     public function studentBatchUpdate($data){
+        
+
+        $condition ="student_id =" . "'" .  $data['student_id'] . "' AND batch_id = '" . $data['batch_id'] . "'";
+        $this->db->set('state', $data['state']);
+        
+        $this->db->where($condition);
+        $this->db->update('student_batch_map_table');
+        
+        
+            //  echo $this->db->last_query();
+            if($this->db->affected_rows() == 1){
+                return(1);
+            }else if($this->db->affected_rows() == 0){
+                return(0);
+            }else{
+                return(-1);
+            }
+        
+
+
+     }
 }

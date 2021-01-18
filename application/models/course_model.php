@@ -244,6 +244,31 @@ class Course_model extends CI_Model
             return('update');
     }
 
+     /**
+         * update course details
+         */
+        public function update_course($data){
+
+            $condition ="course_id =" . "'" .  $data['course_id'] . "'";
+            $this->db->set('course_name', $data['course_name']);
+            $this->db->set('course_description', $data['course_description']);
+            $this->db->set('course_type', $data['course_type']);
+            $this->db->set('state', $data['state'] );
+            $this->db->set('course_fee', $data['course_fee'] );
+            $this->db->where($condition);
+                            
+            $this->db->update('course_table');
+    
+            if($this->db->affected_rows() == 1){
+                return(1);
+            }else if($this->db->affected_rows() == 0){
+                return(0);
+            }else{
+                return(-1);
+            }
+    
+        }
+
       
   
 }

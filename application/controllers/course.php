@@ -409,8 +409,17 @@ public function searchCourse(){
 	
 	}
  }
- public function editbatch($batchid,$step=1){
-
+ public function editbatch($batchid=0,$step=1){
+	$success = $this->session->flashdata('success_message_display');
+	$error = $this->session->flashdata('error_message_display');
+	if(!empty($success)){
+		$data['success_message_display'] = $success;
+		
+	}
+	if(!empty($error)){
+		$data['error_message_display'] = $error;
+		
+	}
 	if($step==1){
 		$batch_data = $this->user_model->read_batch_byid($batchid);
 		if($batch_data){
@@ -419,22 +428,71 @@ public function searchCourse(){
  
 		 $data['trainers'] = $this->user_model->read_trainers_detail();
  
-		 print_r($course_data);
+		
 		 $data['course_data'] = $course_data;
 		 $data['batch_data'] = $batch_data;
 		 $this->load->view('batch-edit-view',$data);
 		}else{
  
-		 echo "error";
+		//  echo "error";
 		 $data['error_message_display'] = "Error on adding marks. Try again";
 		}
 	}elseif($step == 2 && isset($_POST)){
+		// print_r($_POST);
+		$data=array(
+			'course_id'=>$_POST['courseid'],
+			'batch_id'=>$_POST['batchid'],
+			'batch_number'=>$_POST['batchnumber'],
+			'commence_date'=>$_POST['commencedate'],
+			'tentitive_close_date'=>$_POST['tentetiveclosedate'],
+			'close_date'=>$_POST['completedate'],
+			'discription'=>$_POST['description'],
+			'state'=>$_POST['batchstate'],
+			'trainer_id'=>$_POST['trainer']
+		);
+		$result = $this->user_model->update_batch_byid($data);
+		// need to update the trainer id aswell
+		if($result == 1){
+			$this->session->set_flashdata('success_message_display','Batch details update successfully');
+			redirect('/course/editbatch/'.$data['batch_id']);
+		}else if($result ==0){
+			$this->session->set_flashdata('success_message_display','All upto date');
+			redirect('/course/editbatch/'.$data['batch_id']);
+		}else if($result == 'errortrainer'){
+			$this->session->set_flashdata('error_message_display','error in adding trainer. Try again');
+			redirect('/course/editbatch/'.$data['batch_id']);
+		}
+		else{
+			$this->session->set_flashdata('error_message_display','Error occoured. Please try again');
+			redirect('/course/editbatch/'.$data['batch_id']);
+		}
 
 	}
-	
-	 
-
+ }
+ public function courseUpdate(){
+	 print_r($_POST);
+	 $data = array(
+		 'course_id' => $_POST['courseid'],
+		 'course_name' => $_POST['coursetitle'],
+		 'course_description' => $_POST['coursediscription'],
+		 'course_fee' => $_POST['fee'],
+		 'course_type' => $_POST['coursetype'],
+		 'state' => $_POST['coursestate'],
+		 
+	 );
+	 $result = $this->course_model->update_course($data);
+	 if($result == 1){
+		$this->session->set_flashdata('success_message_display','Course details update successfully');
+		redirect('course/courseProfile/'.$data['course_id']);
+	}else if($result ==0){
+		$this->session->set_flashdata('success_message_display','All upto date');
+		redirect('/course/courseProfile/'.$data['course_id']);
+	}else{
+		$this->session->set_flashdata('error_message_display','Error occoured. Please try again');
+		redirect('/course/courseProfile/'.$data['course_id']);
+	}
  }
  
+
 }
 ?>

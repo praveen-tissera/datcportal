@@ -1101,7 +1101,52 @@ public function course(){
 	}
 
 
+	public function studentProfileUpdate(){
+		print_r($_POST);
+		if(isset($_POST)){
+			$data = array(
+				'student_id'=>$_POST['studentid'],
+				'first_name'=>$_POST['fname'],
+				'last_name'=>$_POST['lname'],
+				'email'=>$_POST['email'],
+				'telephone'=>$_POST['telephone'],
+				'birth_date'=>$_POST['bdate'],
+				'state'=>$_POST['studentstate']
+			);
+		}
+		$result = $this->user_model->updateStudent($data);
+		if($result == 1){
+			$this->session->set_flashdata('success_message_display','Student details update successfully');
+			redirect('/user/studentProfile/'.$data['student_id']);
+		}else if($result == 0){
+			$this->session->set_flashdata('success_message_display','All upto date');
+			redirect('/user/studentProfile/'.$data['student_id']);
+		}else{
+			$this->session->set_flashdata('error_message_display','Error occoured try again');
+			redirect('/user/studentProfile/'.$data['student_id']);
+		}
+	}
+	
+	public function studentBatchUpdate(){
+		// print_r($_POST);
+		$data = array(
+			'student_id'=>$_POST['studentid'], 
+			'batch_id'=>$_POST['batchid'],
+			'state'=>$_POST['studentstate'],
+		);
 
+		$result = $this->user_model->studentBatchUpdate($data);
+		if($result == 1){
+			$this->session->set_flashdata('success_message_display','Student batch details update successfully');
+			redirect('/user/studentProfile/'.$data['student_id']);
+		}else if($result == 0){
+			$this->session->set_flashdata('success_message_display','All upto date');
+			redirect('/user/studentProfile/'.$data['student_id']);
+		}else{
+			$this->session->set_flashdata('error_message_display','Error occoured try again');
+			redirect('/user/studentProfile/'.$data['student_id']);
+		}
+	}
 
 }
 ?>

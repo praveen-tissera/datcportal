@@ -52,21 +52,26 @@ if (!($this->session->userdata('user_detail'))) {
     
     ?>
     <div class="row">
-    <?php echo form_open('course/updateBatch'); ?>
+    
     <div class="col-12">
+    <?php echo form_open('course/editbatch/0/2'); ?>
     <h2>Batch edit</h2>
     
       
         <?php 
         
-        print_r($course_data);
-        echo '<hr>';
-        print_r($batch_data);
-        echo '<hr>';
-        print_r($trainer_data);
-        echo '<hr>';
-        print_r($trainers);
+        // print_r($course_data);
+        // echo '<hr>';
+        // print_r($batch_data);
+        // echo '<hr>';
+        // print_r($trainer_data);
+        // echo '<hr>';
+        // print_r($trainers);
+        
         if(isset($course_data) && isset($batch_data) && isset($trainer_data) && isset($trainers)){
+          echo "<input type='hidden' name='courseid' value='{$course_data[0]->course_id}'>";
+
+          echo "<input type='hidden' name='batchid' value='{$batch_data[0]->batch_id}'>";
           ?>
 
         <div class="form-group">
@@ -76,7 +81,7 @@ if (!($this->session->userdata('user_detail'))) {
 
         <div class="form-group">
           <label for="batch">Batch number</label>
-          <input type="text" class="form-control" id="batch" value="<?php echo $batch_data[0]->batch_number ?>" disabled>
+          <input type="text" name="batchnumber" class="form-control" id="batch" value="<?php echo $batch_data[0]->batch_number ?>">
         </div>
 
         <div class="form-group">
@@ -97,7 +102,7 @@ if (!($this->session->userdata('user_detail'))) {
         <div class="form-group">
           <label for="completedate">Trainer</label>
           <!-- <input type="date" name="completedate" class="form-control" id="completedate" value="<?php echo $batch_data[0]->close_date ?>" > -->
-          <select class="form-control"  name="batchstate">
+          <select class="form-control"  name="trainer">
           <?php 
 
             foreach ($trainers as $key => $trainer) {
@@ -123,14 +128,16 @@ if (!($this->session->userdata('user_detail'))) {
 
         
 
-        <div >
+        <div class="form-group">
           <select class="form-control"  name="batchstate">
             <option <?php echo  ($batch_data[0]->state == 'active') ? 'selected' : '' ?> value="active">Active</option>
             <option <?php echo ($batch_data[0]->state == 'complete') ? 'selected' : '' ?> value="complete" value="complete">Complete</option>
             <option <?php echo ($batch_data[0]->state == 'inactive') ? 'selected' : '' ?> value="inactive" value="inactive">Inactive</option>
           </select>
         </div>
-
+        <div class="form-group">
+            <input type="submit" class="btn btn-primary" value="Update">
+        </div>
         <?php 
         }
         ?>

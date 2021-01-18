@@ -52,7 +52,7 @@ if (!($this->session->userdata('user_detail'))) {
     
     ?>
     <div class="row">
-    <?php echo form_open('user/searchStudent'); ?>
+   
     <div class="col-12">
     
     </div>
@@ -74,8 +74,97 @@ if (!($this->session->userdata('user_detail'))) {
 <div class="tab-content" id="myTabContent">
   <div class="tab-pane fade show active" id="profile">
     <?php
-    echo '<pre>';
-      print_r($course_profile);
+    // echo '<pre>';
+    // print_r($user_detail);
+    // print_r($course_profile);
+    if($user_detail['type'] == 'admin' || $user_detail['type'] =='coordinator'){
+      
+      echo form_open("course/courseUpdate");
+    ?>
+    <div class="alert alert-warning mt-3" role="alert">
+        Course fee and course type change will not allowed once batches created.
+    </div>
+    <input type="hidden" name="courseid" value="<?php echo $course_profile[0]->course_id; ?>" >
+
+      <div class="form-group row pl-2 mt-3">
+       <label for="title" class="col-sm-2 col-form-label">Course title</label>
+        <div class="col-sm-10">
+          <input type="text" name="coursetitle" readonly class="form-control" id="title" id="coursetitle" value="<?php echo $course_profile[0]->course_name; ?>">
+        </div>
+      </div>
+
+      <div class="form-group row pl-2">
+       <label for="description" class="col-sm-2 col-form-label">Course description</label>
+        <div class="col-sm-10">
+         
+          <textarea name="coursediscription" readonly id="description" cols="100" rows="5" class="form-control"><?php echo $course_profile[0]->course_description; ?></textarea>
+        </div>
+      </div>
+
+      <div class="form-group row pl-2">
+       <label for="fee" class="col-sm-2 col-form-label">Course fee</label>
+        <div class="col-sm-10">
+        <?php  if(isset($course_batches_object[0])){
+              echo "<input type='text' name='fee' readonly class='form-control' id='feereadonly' value='{$course_profile[0]->course_fee}' >";
+            }else{
+              ?>
+              <input type="text" name="fee" readonly class="form-control" id="fee" value="<?php echo $course_profile[0]->course_fee; ?>">
+          <?php 
+            }
+          ?>
+
+          
+        </div>
+      </div>
+
+      <div class="form-group row pl-2">
+       <label for="coursetype" class="col-sm-2 col-form-label">Course type</label>
+        <div class="col-sm-10">
+          <?php
+            if(isset($course_batches_object[0])){
+              echo "<input class='form-control' readonly type='text' name='coursetype' value='{$course_profile[0]->course_type}'>";
+            }else{
+              ?>
+
+          <select readonly name="coursetype" id="coursetypedrop" class="form-control" >
+            <option <?php echo ($course_profile[0]->course_type == 'diploma') ? 'selected' : ''; ?> value="diploma" >Diploma course</option>
+            <option <?php echo ($course_profile[0]->course_type == 'threedays') ? 'selected' : ''; ?> value="threedays" >Threedays training</option>
+            <option <?php echo ($course_profile[0]->course_type == 'oneday') ? 'selected' : ''; ?> value="oneday">Oneday training</option>
+          </select>
+    <?php
+            }
+          
+          ?>
+          
+        </div>
+      </div>
+
+      <div class="form-group row pl-2">
+       <label for="type" class="col-sm-2 col-form-label">Course created date</label>
+        <div class="col-sm-10">
+          <input readonly type="date" name="date"  class="form-control" id="date" value="<?php echo $course_profile[0]->submit_date; ?>">
+        </div>
+      </div>
+
+      <div class="form-group row pl-2">
+       <label for="coursestate" class="col-sm-2 col-form-label">Course state</label>
+        <div class="col-sm-10">
+          <select readonly id="coursestate" name="coursestate" class="form-control">
+            <option <?php echo ($course_profile[0]->state == 'active') ? 'selected' : ''; ?> >active</option>
+            <option <?php echo ($course_profile[0]->state == 'inactive') ? 'selected' : ''; ?>>inactive</option>
+            <option <?php echo ($course_profile[0]->state == 'complete') ? 'selected' : ''; ?>>complete</option>
+          </select>
+         
+        </div>
+      </div>
+    <?php 
+    echo '<a class="btn btn-dark m-2 text-white" id="edit_profile">Edit</a>';
+    echo '<button class="btn btn-primary my-3">Update</button>';
+    echo form_close();
+    }else{
+
+    }
+      
     ?>
   </div>
   <div class="tab-pane fade" id="course" >
@@ -103,7 +192,7 @@ if (!($this->session->userdata('user_detail'))) {
 
 echo "<tbody>";
   // echo '<pre>';
-  //   print_r($course_batches_object);
+  //   print_r($course_batches_object[0]);
   // echo "</pre>";
 
       foreach ($course_batches_object as $key => $batch) {
@@ -178,14 +267,13 @@ echo "<tbody>";
 <?php $this->load->view('footer'); ?>
 <script>
   $(document).ready(function(){
-    $('#due-date').hide();
-    $('#pay_mode').on('change',function(){
-      var installment = $(this).val();
-      if(installment == '1st installment'){
-        $('#due-date').show();
-      }else{
-        $('#due-date').hide();
-      }
+    $('#edit_profile').on('click',function(){
+       $('#title').removeAttr('readonly');
+        $('#description').removeAttr('readonly');
+        $('#fee').removeAttr('readonly');
+        $('#coursetypedrop').removeAttr('readonly');
+        $('#date').removeAttr('readonly');
+        $('#coursestate').removeAttr('readonly');
     });
   });
 </script>
