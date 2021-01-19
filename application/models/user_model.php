@@ -745,6 +745,90 @@ public function read_student_detail_to_batch($student_id,$batch_id){
  
     }
 
+
+
+    public function register_student_new_course($data_student,$data_course_batch,$payment_detail){
+        echo "<br>";
+        // print_r($data_course_batch);
+        
+            //  $data['register_date'] = date('Y-m-d');
+             //$data['state'] = 'pending';
+             //$data['email_url'] = sha1(time() . $data['email']);
+             
+             // Query to insert data in database
+             $this->db->trans_begin();
+            //  $this->db->insert('student_table', $data_student);
+            // update student profile
+            $condition ="student_id =" . "'" .  $data_student['student_id'] . "'";
+            $this->db->set('first_name', $data_student['first_name']);
+            $this->db->set('last_name', $data_student['last_name']);
+            $this->db->set('email', $data_student['email']);
+            $this->db->set('birth_date', $data_student['birth_date']);
+            $this->db->set('telephone', $data_student['telephone']);
+            $this->db->set('state', $data_student['state']);
+            $this->db->where($condition);
+                 
+            $this->db->update('student_table');
+             
+             if( $this->db->trans_status() === FALSE ){
+                 
+                 $this->db->trans_rollback();
+                 //return( 0 );
+ 
+             }else{
+                //  get student id
+                 $insert_id = $data_student['student_id'];
+                 // echo $insert_id;
+
+                 //insert student id to batch detail table and keep student id on top for table insertion
+                 $data_course_batch['student_id'] = $insert_id;
+                 $data_course_batch = array_reverse($data_course_batch);
+
+                 $this->db->insert('student_batch_map_table', $data_course_batch);
+                 // echo $this->db->last_query();
+                 if( $this->db->trans_status() === FALSE ){
+                     $this->db->trans_rollback();
+                     return(0);
+                 }else{
+                     $this->db->trans_commit();
+                     echo "student details added";
+                     // echo $insert_id;
+                     //return  ($insert_id);
+                     
+                     $data_payment = array(
+                         'student-id' =>$insert_id,
+                         'batch-id' => $data_course_batch['batch_id'],
+                         'fullpayment' => $payment_detail['fullpayment'],
+                         'pay_type' => $payment_detail['pay_type'],
+                         'installment-two-date'=> $payment_detail['due-date'],
+                         'installment-one' => $payment_detail['installmentone'],
+                         'installment-two' => $payment_detail['installmenttwo']
+
+
+                     );
+                    //  call payment handle method which use to do online register student payments.
+                     $payment_output = $this->update_student_payment($data_payment,$data_course_batch['staff_id']);
+                     if($payment_output == '0'){
+                        $this->db->trans_rollback();
+                        return(0);
+                     }else{
+                        //  print_r($payment_output);
+                        $register_student_detail = array(
+                            'student_reg_id' => $insert_id,
+                            'receipt_number' => $payment_output
+                        );
+                        return $register_student_detail;
+                     }
+
+
+                 }   
+                 
+             }
+         
+         
+ 
+    }
+
    public function batch_details_with_course_detail($batchid){
         $condition = "batch_id = " . "'" . $batchid . "'";
         $this->db->select('*');

@@ -23,6 +23,7 @@ if (!($this->session->userdata('user_detail'))) {
 
 <div class="container">
   <div class="row">
+    <div class="col-12">
     <?php
 
     if (isset($error_message_display)) {
@@ -37,6 +38,7 @@ if (!($this->session->userdata('user_detail'))) {
     }
 
     ?>
+    </div>
     <?php 
     // print_r($studentManagement);
     
@@ -85,6 +87,7 @@ if (!($this->session->userdata('user_detail'))) {
   </thead>
   <tbody>
     <?php 
+    if(isset($peding_student_registration)){
       foreach ($peding_student_registration as $key => $registration_course_detail) {
         //print_r($registration_course_detail);
         echo '<td>';
@@ -123,6 +126,8 @@ if (!($this->session->userdata('user_detail'))) {
         echo '</td>';
         echo '</tr>';
       }
+    }
+     
       echo '</tbody>';
       echo '</table>';
     

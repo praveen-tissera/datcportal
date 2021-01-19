@@ -773,33 +773,38 @@ public function course(){
 
  public function pendingOnlineRegistration(){
 	$result = $this->user_model->get_pending_students();
-	
-	foreach ($result as $key => $student) {
-			//print_r($student);
-			$result_batch = $this->user_model->get_pending_student_batch($student->student_id);
-			//  print_r($result_batch);
-			foreach ($result_batch as $key => $batch) {
-				$result_batch_indetail = $this->user_model->read_active_batch_byid($batch->batch_id);
-				//print_r($result_batch_indetail[0]);
-				$batch->batch_number = $result_batch_indetail[0]->batch_number;
-				$result_course_indetail = $this->user_model->read_active_course_byid($result_batch_indetail[0]->course_id);
-				//print_r($result_course_indetail[0]);
-				$batch->course_name = $result_course_indetail[0]->course_name;
-				$batch->course_id = $result_course_indetail[0]->course_id;
-				$batch_detail_final[] = $batch;
-				//print_r($result_batch[$key]->batch_id);
+	if($result != 0){
+		foreach ($result as $key => $student) {
+					//print_r($student);
+					$result_batch = $this->user_model->get_pending_student_batch($student->student_id);
+					//  print_r($result_batch);
+					foreach ($result_batch as $key => $batch) {
+						$result_batch_indetail = $this->user_model->read_active_batch_byid($batch->batch_id);
+						//print_r($result_batch_indetail[0]);
+						$batch->batch_number = $result_batch_indetail[0]->batch_number;
+						$result_course_indetail = $this->user_model->read_active_course_byid($result_batch_indetail[0]->course_id);
+						//print_r($result_course_indetail[0]);
+						$batch->course_name = $result_course_indetail[0]->course_name;
+						$batch->course_id = $result_course_indetail[0]->course_id;
+						$batch_detail_final[] = $batch;
+						//print_r($result_batch[$key]->batch_id);
+					}
+					//print_r($batch_detail_final);
+					$student->batch_summary = $batch_detail_final;
+					unset($batch_detail_final);
+					//print_r($batch_detail_final); 
+					// $student->batch_detail = $result_batch;
+					$pending_student_detail[] = $student;
+					$data['peding_student_registration'] = $pending_student_detail;
+	 				$this->load->view('pending-student-registration',$data);
 			}
-			//print_r($batch_detail_final);
-			$student->batch_summary = $batch_detail_final;
-			 unset($batch_detail_final);
-			//print_r($batch_detail_final); 
-			// $student->batch_detail = $result_batch;
-			$pending_student_detail[] = $student;
-			
+	}else{
+		$data['success_message_display'] = 'Pending registration details not found';
+		$this->load->view('pending-student-registration',$data);
 	}
+	
 	// print_r($pending_student_detail);
-	$data['peding_student_registration'] = $pending_student_detail;
-	 $this->load->view('pending-student-registration',$data);
+	
  }
 
  public function registerStudent($student_state,$student_id,$course_id,$batch_id){
@@ -1146,6 +1151,88 @@ public function course(){
 			$this->session->set_flashdata('error_message_display','Error occoured try again');
 			redirect('/user/studentProfile/'.$data['student_id']);
 		}
+	}
+
+	/**
+	 * register student register to a new course
+	 */
+
+	public function newRegistrationCourse($step='1',$studentid=0){
+		echo $step;
+		/**
+		 * step one -  select course
+		 * step two - select batch and payment type
+		 * step three - student details
+		 */
+		 if($step == '1' && isset($studentid)){
+			 // get all courses into drop down
+			 $data['all_courses'] = $this->user_model->read_all_active_courses();
+			 $data['student_id'] = $studentid;
+			 
+			 $this->load->view('new-course-registerstudent',$data);
+ 
+		 }
+		 if($step == '2' && $studentid == 0){
+			//  print_r($_POST);
+			 $data['student_detail'] = $this->user_model->student_detail_byid($_POST['studentid'])[0];
+			 $data['select_course'] = $this->user_model->read_active_course_byid($_POST['selected_course']);
+			 // print_r($course_details[0]);
+				$data['all_batches'] = $this->user_model->read_active_batch($_POST['selected_course']);
+			   print_r($data);
+				$this->load->view('new-course-registerstudent',$data);
+			 
+		 }
+		 if($step == '3'){
+			 // submission
+			 // print_r($_POST);
+			 // Array ( [course-id] => 1 [selected_batch] => 2 [payment_mode] => full [due-date] => 2022-02-08 [firstname] => roshi [lastname] => fernando [bdate] => 2007-06-05 [email] => roshi@gmail.com [telephone] => 1234567 [password] => 71160457V )
+ 
+			 $data_student = array(
+				 'student_id' => $this->input->post('studentid'),
+				 'first_name' => $this->input->post('firstname'),
+				 'last_name' => $this->input->post('lastname'),
+				 'birth_date' => $this->input->post('bdate'),
+				 'email' => $this->input->post('email'),
+				 'telephone' => $this->input->post('telephone'),
+				 'staff_id' => $this->session->userdata('user_detail')['user_id'],
+				 'state' => 'active',
+				 
+ 
+			 );
+			 $data_course_batch = array(
+				 'batch_id'=> $this->input->post('selected_batch'),
+				 'staff_id'=> $this->session->userdata('user_detail')['user_id'],
+				 'added_date'=> Date('Y-m-d'),
+				 'state'=> 'active',
+				 'certificate_no' => NuLL
+			 );
+			 $pay_type = ($this->input->post('payment_mode') == 'full') ? '1':'2';
+			 $payment_detail = array(
+				 'payment_mode' => $this->input->post('payment_mode'),
+				 'pay_type' => $pay_type,
+				 'fullpayment'=> $this->input->post('fullpayment'),
+				 'installmentone' => $this->input->post('installmentone'),
+				 'installmenttwo' => $this->input->post('installmenttwo'),
+				 'due-date' =>$this->input->post('due-date')
+			 );
+
+
+
+				$registration_details = $this->user_model->register_student_new_course($data_student,$data_course_batch,$payment_detail);
+			 //  echo "<hr>";
+				if($registration_details == 'email found'){
+				 $data['error_message_display'] = "Student new course registration fail. User with the same email exist!";
+				 $this->load->view('student-first-payment-confirmation', $data);
+				}else{
+					 $student_batch_payment = array_merge($data_student,$data_course_batch,$payment_detail,$registration_details);
+					 // print_r($student_batch_payment);
+					 $data['success_message_display'] = "Student registered to the new course successfully";
+					 $data['student_detail'] = $student_batch_payment;
+					 $this->load->view('student-first-payment-confirmation', $data);
+				}
+			 
+		 }
+		 
 	}
 
 }
