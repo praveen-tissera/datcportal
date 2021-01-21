@@ -36,8 +36,22 @@ Class Trainer extends CI_Controller {
 	 * 
 	 */
 	public function newTrainerRegistration(){
+		$success = $this->session->flashdata('success_message_display');
+		$error = $this->session->flashdata('error_message_display');
+		if(!empty($success)){
+			$data['success_message_display'] = $success;
+			
+		}
+		if(!empty($error)){
+			$data['error_message_display'] = $error;
+			
+		}
+		if(isset($data)){
+			$this->load->view('trainer-registration',$data);
+		}else{
+			$this->load->view('trainer-registration');
+		}
 		
-		$this->load->view('trainer-registration');
 	}
 	public function addNewTrainer()
 	{
@@ -54,12 +68,18 @@ Class Trainer extends CI_Controller {
 		// print_r($data_student);
 		$result_registration = $this->trainer_model->add_new_trainer($data_student);
 		if($result_registration == 1){
-			$data['success_message_display'] = "Trainer registered successfully";
-			$this->load->view('trainer-registration',$data);
+			// $data['success_message_display'] = "Trainer registered successfully";
+			// $this->load->view('trainer-registration',$data);
+
+			$this->session->set_flashdata('success_message_display','Trainer registered successfully');
+				redirect('/trainer/newTrainerRegistration');
 			
 		}else{
 			$data['error_message_display'] = "Registration Fail";
 			$this->load->view('trainer-registration',$data);
+
+			$this->session->set_flashdata('error_message_display','Registration Fail. Try again.');
+				redirect('/trainer/newTrainerRegistration');
 		}
 	}
 
@@ -72,15 +92,15 @@ Class Trainer extends CI_Controller {
 
 	public function trainerBatch($step=1){
 		$success = $this->session->flashdata('success_message_display');
-	$error = $this->session->flashdata('error_message_display');
-	if(!empty($success)){
-		$data['success_message_display'] = $success;
-		
-	}
-	if(!empty($error)){
-		$data['error_message_display'] = $error;
-		
-	}
+		$error = $this->session->flashdata('error_message_display');
+		if(!empty($success)){
+			$data['success_message_display'] = $success;
+			
+		}
+		if(!empty($error)){
+			$data['error_message_display'] = $error;
+			
+		}
 		$active_courses= $this->user_model->read_all_active_courses();
 		$active_trainers = $this->trainer_model->get_all_trainers_base_state('active');
 		if($step == 1){
@@ -176,14 +196,43 @@ public function searchTrainer(){
 	 	$data['trainer_batches_object'] = $trainer_batches_object;
 	 	$this->load->view('trainer-profile',$data);
 	 }else{
-		$data['error_message_display'] = 'invalid input of trainer';
-		$this->load->view('trainer-search-view',$data);
+		$data['trainer_profile'] = $trainer_details;
+		$data['trainer_batches_object'] = $trainer_batches_object;
+		$this->load->view('trainer-profile',$data);
+		
 	 }
 	 
 	}else{
 		$data['errow_message_display'] = 'invalid input of trainer';
 		$this->load->view('trainer-search-view',$data);
 	}
+ }
+
+ public function trainerProfileUpdate(){
+	 print_r($_POST);
+
+	 $data = array(
+		'trainer_id'=>$_POST['trainerid'], 
+		'first_name'=>$_POST['fname'],
+		'last_name'=>$_POST['lname'],
+		'birth_date'=>$_POST['bdate'],
+		'email'=>$_POST['email'],
+		'state'=>$_POST['studentstate'],
+	);
+
+	$result = $this->trainer_model->trainerUpdate($data);
+	if($result == 1){
+		$this->session->set_flashdata('success_message_display','Student batch details update successfully');
+		redirect('/trainer/trainerProfile/'.$data['trainer_id']);
+	}else if($result == 0){
+		$this->session->set_flashdata('success_message_display','All upto date');
+		redirect('/trainer/trainerProfile/'.$data['trainer_id']);
+	}else{
+		$this->session->set_flashdata('error_message_display','Error occoured try again');
+		redirect('/trainer/trainerProfile/'.$data['trainer_id']);
+	}
+
+
  }
 }
 ?>

@@ -105,5 +105,32 @@ class Trainer_model extends CI_Model
             return(0);
         }
      }
+
+     public function trainerUpdate($data){
+        
+
+        $condition ="trainer_id =" . "'" .  $data['trainer_id']. "'";
+        $this->db->set('first_name', $data['first_name']);
+        $this->db->set('last_name', $data['last_name']);
+        $this->db->set('birth_date', $data['birth_date']);
+        $this->db->set('email', $data['email']);
+        $this->db->set('state', $data['state']);
+        
+        $this->db->where($condition);
+        $this->db->update('trainer_table');
+        
+        
+              echo $this->db->last_query();
+            if($this->db->affected_rows() == 1){
+                return(1);
+            }else if($this->db->affected_rows() == 0){
+                return(0);
+            }else{
+                return(-1);
+            }
+        
+
+
+     }
     
 }
