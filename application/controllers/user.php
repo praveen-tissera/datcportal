@@ -750,6 +750,28 @@ public function attendance(){
 }
 
 /**
+ * report management dashboard
+ */
+
+public function report(){
+	// $session = $this->session->userdata['user_detail'];
+
+	if($this->session->userdata['user_detail']['type'] == 'admin'){
+		$data['studentManagement'] = array(
+			'incomeReport' => 'Income Report',
+			'registrationReport' => 'Registration Report',
+			'dueReport' => 'Over Due Report',
+		);
+
+		$this->load->view('report-management',$data);
+
+	}else if($this->session->userdata['user_detail']['type'] == 'coordinator'){
+
+	}
+}
+
+
+/**
  * course batch management dashboard
  */
 public function course(){

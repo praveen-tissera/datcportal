@@ -222,7 +222,7 @@ class Course_model extends CI_Model
             $this->db->set('state', $data['state']);
             $this->db->where($condition);          
             $this->db->update('student_mark_table');
-            echo $this->db->last_query();
+            // echo $this->db->last_query();
             return('update');
 
         }else{
