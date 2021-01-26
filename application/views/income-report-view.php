@@ -260,10 +260,27 @@ if (!($this->session->userdata('user_detail'))) {
       <div class="col-12">
          <a class="btn btn-dark mt-2" href="<?php echo base_url('report/incomeReport')?>">Back</a>
         <button type="submit" class="mt-4 form-group btn btn-primary">Next</button>
-       </div>
+       
 
         
       <?php  echo form_close();?>
+      <?php
+    if (isset($result_payments) && is_array($result_payments)) {
+      $attributes = array('target' => '_blank','style'=>'display:inline');
+      echo form_open('report/pdf',$attributes);
+      echo "<input type='hidden' name='paymentreport' value = '";
+      print_r(serialize($result_payments));
+      echo  "'>";
+      
+      echo "<input type='hidden' name='startdate' value='$select_start_date'>";
+      echo "<input type='hidden' name='enddate' value='$select_end_date'>";
+      echo "<input type='hidden' name='total' value='$total_income'>";
+      echo "<input type='submit' class='mt-4 form-group btn btn-warning'  value='down pdf'>";
+      echo form_close();
+    }
+
+    ?>
+      </div>
       </div>
 
      

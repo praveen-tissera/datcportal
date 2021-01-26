@@ -507,90 +507,62 @@ public function registrationReport($step=1){
  }
 
 
+public function pdf(){
 
- public function editbatch($batchid=0,$step=1){
-	$success = $this->session->flashdata('success_message_display');
-	$error = $this->session->flashdata('error_message_display');
-	if(!empty($success)){
-		$data['success_message_display'] = $success;
-		
-	}
-	if(!empty($error)){
-		$data['error_message_display'] = $error;
-		
-	}
-	if($step==1){
-		$batch_data = $this->user_model->read_batch_byid($batchid);
-		if($batch_data){
-		 $course_data = $this->user_model->read_course_byid($batch_data[0]->course_id);
-		 $data['trainer_data'] = $this->user_model->trainer_map_to_batch($batchid);
- 
-		 $data['trainers'] = $this->user_model->read_trainers_detail();
- 
-		
-		 $data['course_data'] = $course_data;
-		 $data['batch_data'] = $batch_data;
-		 $this->load->view('batch-edit-view',$data);
-		}else{
- 
-		//  echo "error";
-		 $data['error_message_display'] = "Error on adding marks. Try again";
-		}
-	}elseif($step == 2 && isset($_POST)){
-		// print_r($_POST);
-		$data=array(
-			'course_id'=>$_POST['courseid'],
-			'batch_id'=>$_POST['batchid'],
-			'batch_number'=>$_POST['batchnumber'],
-			'commence_date'=>$_POST['commencedate'],
-			'tentitive_close_date'=>$_POST['tentetiveclosedate'],
-			'close_date'=>$_POST['completedate'],
-			'discription'=>$_POST['description'],
-			'state'=>$_POST['batchstate'],
-			'trainer_id'=>$_POST['trainer']
-		);
-		$result = $this->user_model->update_batch_byid($data);
-		// need to update the trainer id aswell
-		if($result == 1){
-			$this->session->set_flashdata('success_message_display','Batch details update successfully');
-			redirect('/course/editbatch/'.$data['batch_id']);
-		}else if($result ==0){
-			$this->session->set_flashdata('success_message_display','All upto date');
-			redirect('/course/editbatch/'.$data['batch_id']);
-		}else if($result == 'errortrainer'){
-			$this->session->set_flashdata('error_message_display','error in adding trainer. Try again');
-			redirect('/course/editbatch/'.$data['batch_id']);
-		}
-		else{
-			$this->session->set_flashdata('error_message_display','Error occoured. Please try again');
-			redirect('/course/editbatch/'.$data['batch_id']);
-		}
+if(isset($_POST['registrationreport'])){
+	$result_registration =unserialize($_POST['registrationreport']);
+	$start_date = $_POST['startdate'];
+	$end_date = $_POST['enddate'];
+	
+	
 
+	$html =  "<table border='1' style='margin-top:40px;width:100%;border:1px black solid;border-collapse: collapse;'><thead ><tr><th style='padding:10px;'>Total Registration</th><th scope='col'>Duration</th></tr></thead><tbody><tr><td style='text-align:center;padding:10px;'>{$result_registration['student_count']} </td><td style='text-align:center;'>$start_date to  $end_date</td></tr></tbody></table><hr><table border='1' style='width:100%;border:1px black solid;border-collapse: collapse;'><thead class='bg-primary'><tr><th scope='col'>Batch Name</th><th scope='col'>Student Count</th></tr></thead><tbody>";
+	
+
+	foreach ($result_registration['registration_obj'] as $key => $course) {
+
+		if (isset($course['batches']) && is_array($course['batches']) && count($course['batches']) > 0) {
+
+			$html .= "<tr  style='background-color:#ccc';'><td style='text-align:center;padding:10px;' colspan='2'>{$course['course_detail']}</td></tr>";
+			
+			foreach ($course['batches'] as $key => $batch) {
+				$html .= "<tr><td style='padding:10px;' >batch # {$batch['batch_id']}</td><td>{$batch['student_count']}</td></tr>";
+			}
+		}
 	}
- }
- public function courseUpdate(){
-	 print_r($_POST);
-	 $data = array(
-		 'course_id' => $_POST['courseid'],
-		 'course_name' => $_POST['coursetitle'],
-		 'course_description' => $_POST['coursediscription'],
-		 'course_fee' => $_POST['fee'],
-		 'course_type' => $_POST['coursetype'],
-		 'state' => $_POST['coursestate'],
-		 
-	 );
-	 $result = $this->course_model->update_course($data);
-	 if($result == 1){
-		$this->session->set_flashdata('success_message_display','Course details update successfully');
-		redirect('course/courseProfile/'.$data['course_id']);
-	}else if($result ==0){
-		$this->session->set_flashdata('success_message_display','All upto date');
-		redirect('/course/courseProfile/'.$data['course_id']);
-	}else{
-		$this->session->set_flashdata('error_message_display','Error occoured. Please try again');
-		redirect('/course/courseProfile/'.$data['course_id']);
-	}
- }
+
+	$html .= "<tr><td style='padding:10px;' >Grand Total</td><td > {$result_registration['student_count']}</td></tr></tbody></table>";
+}
+if(isset($_POST['paymentreport'])){
+
+	$result_payments =unserialize($_POST['paymentreport']);
+	$total_income = $_POST['total'];
+	$start_date = $_POST['startdate'];
+	$end_date = $_POST['enddate'];
+	
+
+	$html = "<table border='1' style='margin-top:40px;width:100%;border:1px black solid;border-collapse: collapse;'><thead><tr><th style='padding:10px;' >Total income</th><th scope='col'>Duration</th></tr></thead><tbody><tr><td>LKR  {$total_income}</td><td>$start_date to  $end_date</td></tr></tbody></table><hr>";
+
+          $html .= "<table border='1' style='width:100%;border:1px black solid;border-collapse: collapse;'><thead><tr><th style='padding:10px;'>Date</th><th scope='col'>Reg. No</th><th scope='col'>Student Name</th><th scope='col'>Course Name</th><th scope='col'>Batch Number</th><th style='text-align:right;'>ReciptNo</th><th style='text-align:right;'>Paid Amount</th></tr></thead><tbody>";
+        foreach ($result_payments as $key => $payment) {
+					$html .= "<tr><td> {$payment->paid_date}</td><td> {$payment->student_detail->student_id} </td><td> {$payment->student_detail->first_name}   {$payment->student_detail->last_name} </td><td> {$payment->course_batch_detail->course_detail->course_name} </td><td> {$payment->course_batch_detail->batch_number} </td><td style='text-align:right;'> {$payment->receipt_number}</td><td style='text-align:right'>"; $html .= number_format($payment->paid_amount,2);
+					$html .="</td></tr>";
+        }
+        $html .= "<tr><td colspan='6' style='text-align:right;'>Grand Total</td><td style='text-align:right;'> LKR {$total_income}</td></tr></tbody></table>";
+
+}
+	
+
+
+
+	$this->load->library('pdf');
+	$this->dompdf->loadHtml($html);
+	$this->dompdf->setPaper('A4', 'landscape');
+	$this->dompdf->render();
+	$this->dompdf->stream("welcome.pdf", array("Attachment"=>1));
+}
+ 
+
  
 
 }
