@@ -33,9 +33,32 @@ if (!($this->session->userdata('user_detail'))) {
     if (isset($success_message_display)) {
       echo '<div class="alert alert-success" role="alert">';
       echo $success_message_display;
-      echo '</div>';
-    }
+      echo '</div><br>';
 
+   
+        $attributes = array('target' => '_blank','style'=>'display:inline');
+        echo form_open('report/registrationPdf',$attributes);
+        echo "<input type='hidden' name='studentdetail' value = '";
+        print_r(serialize($student_details));
+        echo  "'>";
+        
+       
+       
+        echo "<input type='submit' class='mt-4 form-group btn btn-warning'  value='Print Registration Card'>";
+        echo form_close();
+
+        echo form_open('report/receiptPdf',$attributes);
+        echo "<input type='hidden' name='studentdetail' value = '";
+        print_r(serialize($student_details));
+        echo  "'>";
+        
+       
+       
+        echo "<input type='submit' class='mt-4 form-group btn btn-warning'  value='Print Receipt'>";
+        echo form_close();
+      }
+  
+    
     ?>
     <?php 
     // print_r($studentManagement);

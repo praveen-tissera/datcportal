@@ -360,7 +360,7 @@ echo "<tbody>";
               if(isset($payment->payment_receive) &&  !empty($payment->payment_receive)){
                 echo 'Paid receipt # -' . $payment->payment_receive->receipt_number . '<br>';   
                 echo 'Paid date - ' . $payment->payment_receive->paid_date . '<br>';
-                echo "<a href='". base_url('user/printreceipt/'.$payment->payment_id .'/'.$payment->batch_id.'/'.$payment->student_id ) . "'>Print receipt</a>";
+                echo "<a href='". base_url('report/printreceipt/'.$payment->payment_id .'/'.$payment->batch_id.'/'.$payment->student_id ) . "'>Print receipt</a>";
               }else{
                 echo "<a href='". base_url('user/payInstallment/'.$payment->payment_id .'/'.$payment->batch_id.'/'.$payment->student_id ) . "'>Pay now</a>";
               }

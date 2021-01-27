@@ -887,17 +887,35 @@ public function course(){
  }
 
  public function newRegistration($step='1'){
-	 echo $step;
+	 
 	 /**
 		* step one -  select course
 		* step two - select batch and payment type
 		* step three - student details
 		*/
 		if($step == '1'){
+
+			$success = $this->session->flashdata('success_message_display');
+			$student_details = $this->session->flashdata('student_details');
+			$error = $this->session->flashdata('error_message_display');
+			if(!empty($success) && !empty($student_details)){
+				$data['success_message_display'] = $success;
+				$data['student_details'] = $student_details;
+				
+			}else if(!empty($success)){
+				$data['success_message_display'] = $success;
+				
+			}
+			if(!empty($error)){
+				$data['error_message_display'] = $error;
+				
+			}
+
+
 			// get all courses into drop down
 			$data['all_courses'] = $this->user_model->read_all_active_courses();
-			
-			$this->load->view('new-student-offline-registration',$data);
+			// print_r($data);
+			 $this->load->view('new-student-offline-registration',$data);
 
 		}
 		if($step == '2'){
@@ -950,9 +968,13 @@ public function course(){
 			 }else{
 				  $student_batch_payment = array_merge($data_student,$data_course_batch,$payment_detail,$registration_details);
 					// print_r($student_batch_payment);
-					$data['success_message_display'] = "Student registered successfully";
+					// $data['success_message_display'] = "Student registered successfully";
 					$data['student_detail'] = $student_batch_payment;
-					$this->load->view('student-first-payment-confirmation', $data);
+
+					$this->session->set_flashdata('success_message_display','Student registered successfully');
+					$this->session->set_flashdata('student_details',$data);
+					redirect('/user/newRegistration/1');
+					// $this->load->view('student-first-payment-confirmation', $data);
 			 }
 			
 		}

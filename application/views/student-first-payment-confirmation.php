@@ -37,6 +37,8 @@ if (!($this->session->userdata('user_detail'))) {
           
           echo '<div class="alert alert-success" role="alert">';
           echo $success_message_display;
+
+          print_r($student_detail);
           
           // print_r($student_detail);
           echo '</div>';
