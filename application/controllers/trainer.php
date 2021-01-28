@@ -55,32 +55,48 @@ Class Trainer extends CI_Controller {
 	}
 	public function addNewTrainer()
 	{
-		$data_student = array(
-			'first_name' => $this->input->post('firstname'),
-			'last_name' => $this->input->post('lastname'),
-			'birth_date' => $this->input->post('bdate'),
-			'email' => $this->input->post('email'),
-			'password' => sha1($this->input->post('password')),
-			'state' => 'active',
-			'register_date' => Date('Y-m-d'),
-
-		);
-		// print_r($data_student);
-		$result_registration = $this->trainer_model->add_new_trainer($data_student);
-		if($result_registration == 1){
-			// $data['success_message_display'] = "Trainer registered successfully";
-			// $this->load->view('trainer-registration',$data);
-
-			$this->session->set_flashdata('success_message_display','Trainer registered successfully');
-				redirect('/trainer/newTrainerRegistration');
+		$this->form_validation->set_rules('firstname', 'First Name', 'trim|required|alpha');
+			$this->form_validation->set_rules('lastname', 'Last Name', 'trim|required|alpha');
+			$this->form_validation->set_rules('bdate', 'Birth Date', 'trim|required');
 			
-		}else{
-			$data['error_message_display'] = "Registration Fail";
-			$this->load->view('trainer-registration',$data);
+			$this->form_validation->set_rules('email', 'Email', 'trim|required');
+		
+			$this->form_validation->set_rules('password', 'Password', 'trim|required');
 
-			$this->session->set_flashdata('error_message_display','Registration Fail. Try again.');
-				redirect('/trainer/newTrainerRegistration');
-		}
+			if ($this->form_validation->run() == FALSE) {
+				$this->load->view('trainer-registration');
+			}else{
+
+				$data_student = array(
+					'first_name' => $this->input->post('firstname'),
+					'last_name' => $this->input->post('lastname'),
+					'birth_date' => $this->input->post('bdate'),
+					'email' => $this->input->post('email'),
+					'password' => sha1($this->input->post('password')),
+					'state' => 'active',
+					'register_date' => Date('Y-m-d'),
+		
+				);
+				// print_r($data_student);
+				$result_registration = $this->trainer_model->add_new_trainer($data_student);
+				if($result_registration == 1){
+		
+		
+					$this->session->set_flashdata('success_message_display','Trainer registered successfully');
+						redirect('/trainer/newTrainerRegistration');
+					
+				}else{
+					$data['error_message_display'] = "Registration Fail";
+					$this->load->view('trainer-registration',$data);
+		
+					$this->session->set_flashdata('error_message_display','Registration Fail. Try again.');
+						redirect('/trainer/newTrainerRegistration');
+				}
+
+			}
+	
+
+
 	}
 
 	/**

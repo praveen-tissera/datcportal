@@ -39,6 +39,17 @@ if (!($this->session->userdata('user_detail'))) {
 
     ?>
     </div>
+    <div class="col-12">
+   <?php
+    if(validation_errors() ){
+      echo '<div class="alert alert-danger" role="alert">';
+        echo validation_errors();
+      echo '</div>';
+    }
+    
+
+    ?>
+  </div>
   </div>
     <?php 
     // print_r($studentManagement);
@@ -57,22 +68,22 @@ if (!($this->session->userdata('user_detail'))) {
       <?php echo form_open('trainer/addNewTrainer'); ?>
       <div class="form-group">
           <label>First Name</label>
-          <input type="text" class="form-control" name="firstname">
+          <input type="text" value="<?php echo set_value('firstname'); ?>" class="form-control" name="firstname">
 
         </div>
         <div class="form-group">
           <label>Last Name</label>
-          <input type="text" class="form-control" name="lastname">
+          <input type="text" value="<?php echo set_value('lastname'); ?>" class="form-control" name="lastname">
 
         </div>
         <div class="form-group">
           <label>Birth Date</label>
-          <input type="date" class="form-control" name="bdate" >
+          <input type="date" value="<?php echo set_value('bdate'); ?>" class="form-control" name="bdate" >
 
         </div>
         <div class="form-group">
           <label>Email Address</label>
-          <input type="email" class="form-control" name="email" >
+          <input type="email" value="<?php echo set_value('email'); ?>" class="form-control" name="email" >
 
         </div>
         <!-- <div class="form-group">
@@ -82,7 +93,7 @@ if (!($this->session->userdata('user_detail'))) {
         </div> -->
         <div class="form-group">
           <label>Temporary password</label>
-          <input type="text" class="form-control" name="password" placeholder="use student NIC number" >
+          <input type="text" value="<?php echo set_value('password'); ?>" class="form-control" name="password" placeholder="use student NIC number" >
 
         </div>
         <button type="submit" class="form-group btn btn-primary">Next</button>

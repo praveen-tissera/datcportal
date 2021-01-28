@@ -46,6 +46,17 @@ Class Course extends CI_Controller {
 		$this->load->view('batch-registration',$data);
 	}
 	public function addNewCourse(){
+
+		$this->form_validation->set_rules('coursename', 'Course name', 'trim|required|alpha');
+		$this->form_validation->set_rules('coursediscription', 'Course description', 'trim|required|alpha');
+		$this->form_validation->set_rules('coursefee', 'Course fee', 'trim|required|numeric');
+		
+		if ($this->form_validation->run() == FALSE) {
+			$this->load->view('course-registration');
+		}else{
+
+
+
 		$data_course = array(
 			'course_name' => $this->input->post('coursename'),
 			'course_description' => $this->input->post('coursediscription'),
@@ -68,7 +79,22 @@ Class Course extends CI_Controller {
 		}
 	}
 
+	}
+
 	public function addNewBatch(){
+		
+		$this->form_validation->set_rules('batchnumber', 'Batch number', 'trim|required|numeric');
+		$this->form_validation->set_rules('commencedate', 'Commence date', 'trim|required');
+		$this->form_validation->set_rules('tentativeclosedate', 'Tentative closing date ', 'trim|required');
+		$this->form_validation->set_rules('discription', 'Description ', 'trim|required|alpha');
+		
+		if ($this->form_validation->run() == FALSE) {
+			$data['active_courses'] = $this->course_model->get_all_courses_base_state('active');
+			$this->load->view('batch-registration',$data);
+		}else{
+
+
+
 		$data['active_courses'] = $this->course_model->get_all_courses_base_state('active');
 		$data_course = array(
 			'course_id' => $this->input->post('selectcourse'),
@@ -96,6 +122,12 @@ Class Course extends CI_Controller {
 			$data['error_message_display'] = "Registration Fail";
 			$this->load->view('batch-registration',$data);
 		}
+
+	}
+
+
+
+
 	}
 
 	/**

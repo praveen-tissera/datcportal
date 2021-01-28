@@ -39,6 +39,17 @@ if (!($this->session->userdata('user_detail'))) {
 
     ?>
     </div>
+    <div class="col-12">
+   <?php
+    if(validation_errors() ){
+      echo '<div class="alert alert-danger" role="alert">';
+        echo validation_errors();
+      echo '</div>';
+    }
+    
+
+    ?>
+  </div>
   </div>
     <?php 
     // print_r($studentManagement);
@@ -74,22 +85,22 @@ if (!($this->session->userdata('user_detail'))) {
         
         <div class="form-group">
           <label>Batch number</label>
-          <input type="number" class="form-control" name="batchnumber" min="1" >
+          <input type="number" value="<?php echo set_value('batchnumber'); ?>" class="form-control" name="batchnumber" min="1" >
 
         </div>
         <div class="form-group">
           <label>Commence date</label>
-          <input type="date" class="form-control" name="commencedate" >
+          <input type="date" value="<?php echo set_value('commencedate'); ?>" class="form-control" name="commencedate" >
 
         </div>
         <div class="form-group">
           <label>Tentitive closing date</label>
-          <input type="date" class="form-control" name="tentativeclosedate" >
+          <input type="date" value="<?php echo set_value('tentativeclosedate'); ?>" class="form-control" name="tentativeclosedate" >
 
         </div>
         <div class="form-group">
           <label>Batch description</label>
-          <textarea class="form-control" name="discription" cols="30" rows="10"></textarea>
+          <textarea class="form-control" name="discription" cols="30" rows="10"><?php echo set_value('discription'); ?></textarea>
 
         </div>
        

@@ -39,6 +39,17 @@ if (!($this->session->userdata('user_detail'))) {
 
     ?>
     </div>
+    <div class="col-12">
+   <?php
+    if(validation_errors() ){
+      echo '<div class="alert alert-danger" role="alert">';
+        echo validation_errors();
+      echo '</div>';
+    }
+    
+
+    ?>
+  </div>
   </div>
     <?php 
     // print_r($studentManagement);
@@ -57,18 +68,18 @@ if (!($this->session->userdata('user_detail'))) {
       <?php echo form_open('course/addNewCourse'); ?>
       <div class="form-group">
           <label>Course name</label>
-          <input type="text" class="form-control" name="coursename">
+          <input type="text" value="<?php echo set_value('coursename'); ?>" class="form-control" name="coursename">
 
         </div>
         <div class="form-group">
           <label>Course description</label>
           
-          <textarea rows="5" cols="20" class="form-control" name="coursediscription"></textarea>
+          <textarea rows="5" cols="20" class="form-control" name="coursediscription"><?php echo set_value('coursediscription'); ?></textarea>
 
         </div>
         <div class="form-group">
           <label>Course fee</label>
-          <input type="text" class="form-control" name="coursefee" >
+          <input type="text" value="<?php echo set_value('coursefee'); ?>" class="form-control" name="coursefee" >
 
         </div>
         <div class="form-group">
