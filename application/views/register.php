@@ -15,9 +15,17 @@
 
   <div class="container">
     <div class="row center-title">
-      <div class="col-md-12 text-center">
-        
-      </div>
+    <div class="col-12">
+   <?php
+    if(validation_errors() ){
+      echo '<div class="alert alert-danger" role="alert">';
+        echo validation_errors();
+      echo '</div>';
+    }
+    
+
+    ?>
+  </div>
     </div>
     <div class="row">
       <div class="col-8">

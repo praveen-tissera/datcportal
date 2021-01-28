@@ -22,8 +22,10 @@ if (!($this->session->userdata('user_detail'))) {
 <br>
 
 <div class="container">
-  <div class="row">
-    <?php
+
+<div class="row">
+  <div class="col-12">
+  <?php
 
     if (isset($error_message_display)) {
       echo '<div class="alert alert-danger" role="alert">';
@@ -35,7 +37,28 @@ if (!($this->session->userdata('user_detail'))) {
       echo $success_message_display;
       echo '</div><br>';
 
-   
+      if($online == 1){
+        $attributes = array('target' => '_blank','style'=>'display:inline');
+        echo form_open('report/onlineRegistrationPdf',$attributes);
+        echo "<input type='hidden' name='studentdetail' value = '";
+        print_r(serialize($student_details));
+        echo  "'>";
+        
+       
+       
+        echo "<input type='submit' class='mt-4 form-group btn btn-warning'  value='Print Registration Card'>";
+        echo form_close();
+
+        echo form_open('report/onlineReceiptPdf',$attributes);
+        echo "<input type='hidden' name='studentdetail' value = '";
+        print_r(serialize($student_details));
+        echo  "'>";
+        
+       
+       
+        echo "<input type='submit' class='mt-4 form-group btn btn-warning'  value='Print Receipt'>";
+        echo form_close();
+      }else{
         $attributes = array('target' => '_blank','style'=>'display:inline');
         echo form_open('report/registrationPdf',$attributes);
         echo "<input type='hidden' name='studentdetail' value = '";
@@ -57,9 +80,29 @@ if (!($this->session->userdata('user_detail'))) {
         echo "<input type='submit' class='mt-4 form-group btn btn-warning'  value='Print Receipt'>";
         echo form_close();
       }
+        
+      }
+
+      
   
     
     ?>
+  </div>
+  <div class="col-12">
+   <?php
+    if(validation_errors() ){
+      echo '<div class="alert alert-danger" role="alert">';
+        echo validation_errors();
+      echo '</div>';
+    }
+    
+
+    ?>
+  </div>
+</div>
+  <div class="row">
+    
+    
     <?php 
     // print_r($studentManagement);
     
@@ -97,7 +140,7 @@ if (!($this->session->userdata('user_detail'))) {
         echo '<div class="form-group">';
           echo '<label>Selected course</label>';
           echo $select_course[0]->course_name;
-          echo "<input type='text' value='{$select_course[0]->course_id}' name='course-id' >";
+          echo "<input type='hidden' value='{$select_course[0]->course_id}' name='course-id' >";
         echo "</div>";
         echo '<div class="form-group">';
           echo '<label>Select a bath</label>';
@@ -123,9 +166,9 @@ if (!($this->session->userdata('user_detail'))) {
           $installment_two = ($course_fee - $installment_one);
           $installment_two = number_format((float)$installment_two, 2, '.', '');
           $installment_two_date = date('Y-m-d', strtotime("+6 months", strtotime($batch->commence_date)));
-          echo "<input type='text' name='fullpayment' value='{$select_course[0]->course_fee}'>";
-          echo "<input type='text' name='installmentone' value='$installment_one'>";
-          echo "<input type='text' name='installmenttwo' value='$installment_two'>";
+          echo "<input type='hidden' name='fullpayment' value='{$select_course[0]->course_fee}'>";
+          echo "<input type='hidden' name='installmentone' value='$installment_one'>";
+          echo "<input type='hidden' name='installmenttwo' value='$installment_two'>";
           echo '<div class="form-group">';
             echo '<label>Select a payment mode</label>';
             echo "<select name='payment_mode' class='form-control' id='pay_mode'>";
@@ -166,27 +209,27 @@ if (!($this->session->userdata('user_detail'))) {
    <h3>Student details</h3>
       <div class="form-group">
           <label>First Name</label>
-          <input type="text" class="form-control" name="firstname">
+          <input type="text" value="<?php echo set_value('firstname'); ?>" class="form-control" name="firstname">
 
         </div>
         <div class="form-group">
           <label>Last Name</label>
-          <input type="text" class="form-control" name="lastname">
+          <input value="<?php echo set_value('lastname'); ?>" type="text" class="form-control" name="lastname">
 
         </div>
         <div class="form-group">
           <label>Birth Date</label>
-          <input type="date" class="form-control" name="bdate" >
+          <input value="<?php echo set_value('bdate'); ?>" type="date" class="form-control" name="bdate" >
 
         </div>
         <div class="form-group">
           <label>Email Address</label>
-          <input type="email" class="form-control" name="email" >
+          <input value="<?php echo set_value('email'); ?>" type="email" class="form-control" name="email" >
 
         </div>
         <div class="form-group">
           <label>Contact Number</label>
-          <input type="tel" class="form-control" name="telephone">
+          <input value="<?php echo set_value('telephone'); ?>"  type="tel" class="form-control" name="telephone">
 
         </div>
         <div class="form-group">

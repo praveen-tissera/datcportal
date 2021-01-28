@@ -554,7 +554,7 @@ class Report extends CI_Controller
 	{
 		// print_r($_POST['studentdetail']);
 		$student_detail = unserialize($_POST['studentdetail']);
-
+		// print_r($student_detail);
 		foreach ($student_detail as $key => $value) {
 			$first_name = $value['first_name'];
 			$last_name = $value['last_name'];
@@ -563,7 +563,7 @@ class Report extends CI_Controller
 			$telephone = $value['telephone'];
 			$staff_id = $value['staff_id'];
 			$state = $value['state'];
-			$register_date = $value['register_date'];
+			$register_date = (isset($value['register_date'])) ? $value['register_date'] :date("F j, Y");
 			$batch_id = $value['batch_id'];
 			$added_date = $value['added_date'];
 			$payment_mode = $value['payment_mode'];
@@ -616,7 +616,7 @@ class Report extends CI_Controller
 	public function receiptPdf(){
 		// print_r($_POST['studentdetail']);
 		$student_detail = unserialize($_POST['studentdetail']);
-		// print_r($student_detail);
+		//  print_r($student_detail);
 		foreach ($student_detail as $key => $value) {
 			$first_name = $value['first_name'];
 			$last_name = $value['last_name'];
@@ -625,7 +625,8 @@ class Report extends CI_Controller
 			$telephone = $value['telephone'];
 			$staff_id = $value['staff_id'];
 			$state = $value['state'];
-			$register_date = $value['register_date'];
+			
+			$register_date = (isset($value['register_date'])) ? $value['register_date'] :date("F j, Y");
 			$batch_id = $value['batch_id'];
 			$added_date = $value['added_date'];
 			$payment_mode = $value['payment_mode'];
@@ -668,7 +669,7 @@ class Report extends CI_Controller
 
 		$html .= "</table>";
 		// $html = "<table border='1'><tr><td>Payment slip</td></tr></table>";
-		$customePaper = array(0, 0, 400, 500);
+		$customePaper = array(0, 0, 500, 500);
 		$this->load->library('pdf');
 		$this->dompdf->loadHtml($html);
 		$this->dompdf->setPaper($customePaper, 'landscape');
@@ -681,37 +682,7 @@ class Report extends CI_Controller
 	 * payment receipt pritn later
 	 */
 	public function printreceipt($payment_id,$batch_id,$student_reg_id){
-		// print_r($_POST['studentdetail']);
-		// $student_detail = unserialize($_POST['studentdetail']);
-		// print_r($student_detail);
-		// foreach ($student_detail as $key => $value) {
-			// $first_name = $value['first_name'];
-			// $last_name = $value['last_name'];
-			// $birth_date = $value['birth_date'];
-			// $email = $value['email'];
-			// $telephone = $value['telephone'];
-			// $staff_id = $value['staff_id'];
-			// $state = $value['state'];
-			// $register_date = $value['register_date'];
-			// $batch_id = $value['batch_id'];
-			// $added_date = $value['added_date'];
-			// $payment_mode = $value['payment_mode'];
-			// if ($payment_mode == 'full') {
-			// 	$payment_mode = 'Full Paid';
-			// } else {
-			// 	$payment_mode = '1st Installment Payment';
-			// }
-			// $pay_type = $value['pay_type'];
-			// if ($pay_type == 2) {
-			// 	$installmenttwo = $value['installmenttwo'];
-			// 	$due_date = $value['due-date'];
-			// }
-			// $fullpayment = $value['fullpayment'];
-			// $installmentone = $value['installmentone'];
-
-			// $student_reg_id = $value['student_reg_id'];
-			// $receipt_number = $value['receipt_number'];
-		// }
+		
 		$student_detail = $this->user_model->student_detail_byid($student_reg_id)[0];
 		$first_name = $student_detail->first_name;
 		$last_name = $student_detail->last_name;
@@ -767,9 +738,138 @@ class Report extends CI_Controller
 
 
 
+	/**
+	 * online Registration Card
+	 */
+	public function onlineRegistrationPdf()
+	{
+		// print_r($_POST['studentdetail']);
+		$student_detail = unserialize($_POST['studentdetail']);
+		//  print_r($student_detail);
+		// $value = $student_detail;
+		foreach ($student_detail as $key => $value) {
+			$first_name = $value['firstname'];
+			$last_name = $value['lastname'];
+			$birth_date = $value['bdate'];
+			$email = $value['email'];
+			$telephone = $value['telephone'];
+			// $staff_id = $value['staff_id'];
+			// $state = $value['state'];
+			$register_date = (isset($value['register_date'])) ? $value['register_date'] :date("F j, Y");
+			$batch_id = $value['batch-id'];
+			// $added_date = $value['added_date'];
+			$payment_mode = $value['pay_type'];
+			if ($payment_mode == 1) {
+				$payment_mode = 'Full Paid';
+			} else {
+				$payment_mode = '1st Installment Payment';
+			}
+			// $pay_type = $value['pay_type'];
+			// if ($pay_type == 2) {
+			// 	$installmenttwo = $value['installmenttwo'];
+			// 	$due_date = $value['due-date'];
+			// }
+			// $fullpayment = $value['fullpayment'];
+			// $installmentone = $value['installmentone'];
+
+			$student_reg_id = $value['student-id'];
+			$receipt_number = $value['recreipt_number'];
+		}
+		$batch_course_details = $this->user_model->batch_details_with_course_detail($batch_id);
+		$batch_number = $batch_course_details->batch_number;
+		$course_name = $batch_course_details->course_detail->course_name;
+
+		// print_r($batch_course_details);
+		$html = "<table border='1' style='margin-top:40px;width:100%;border:1px black solid;border-collapse: collapse;'><tr><td style='padding:10px;'>Registration Number</td><td style='padding:10px;'>";
+		$html .= sprintf("%05d", $student_reg_id);
+		$html .= "</td></tr><tr><td style='padding:10px;'>Student Name</td><td style='padding:10px;'>$first_name   $last_name</td></tr><tr><td style='padding:10px;'>Register Date</td><td style='padding:10px;'>$register_date</td></tr><tr><td style='padding:10px;'>Course Name</td><td style='padding:10px;'>$course_name</td></tr><tr><td style='padding:10px;'>Batch Number</td><td style='padding:10px;'>";
+		$html .= sprintf("%03d", $batch_number);
+		$html .= "</td></tr></table>";
 
 
 
+
+				// echo $html;
+
+
+		// $html = "<table border='1'><tr><td>Payment slip</td></tr></table>";
+		$customePaper = array(0, 0, 300, 500);
+		$this->load->library('pdf');
+		$this->dompdf->loadHtml($html);
+		$this->dompdf->setPaper($customePaper, 'landscape');
+		$this->dompdf->render();
+		$this->dompdf->stream("Registraion.pdf", array("Attachment" => 0));
+	}
+
+
+
+/**
+	 * payment receipt
+	 */
+	public function onlineReceiptPdf(){
+		// print_r($_POST['studentdetail']);
+		$student_detail = unserialize($_POST['studentdetail']);
+		  // print_r($student_detail);
+		// $value = $student_detail;
+		foreach ($student_detail as $key => $value) {
+			$first_name = $value['firstname'];
+			$last_name = $value['lastname'];
+			// $birth_date = $value['bdate'];
+			// $email = $value['email'];
+			// $telephone = $value['telephone'];
+			// $staff_id = $value['staff_id'];
+			// $state = $value['state'];
+			
+			$register_date = (isset($value['register_date'])) ? $value['register_date'] :date("F j, Y");
+			$batch_id = $value['batch-id'];
+			// $added_date = $value['added_date'];
+			$payment_mode = $value['pay_type'];
+			if ($payment_mode == 1) {
+				$payment_mode = 'Full Paid';
+			} else {
+				$payment_mode = '1st Installment Payment';
+			}
+			$pay_type = $value['pay_type'];
+			if ($pay_type == 2) {
+				$installmenttwo = $value['installment-two'];
+				$due_date = $value['installment-two-date'];
+			}
+			$fullpayment = $value['fullpayment'];
+			$installmentone = $value['installment-one'];
+
+			$student_reg_id = $value['student-id'];
+			$receipt_number = $value['recreipt_number'];
+		}
+		$batch_course_details = $this->user_model->batch_details_with_course_detail($batch_id);
+		$batch_number = $batch_course_details->batch_number;
+		$course_name = $batch_course_details->course_detail->course_name;
+		
+		// print_r($batch_course_details);
+
+
+
+
+		$html = "<table width='100%'><tr><td><h3 style='margin-bottom:0;padding-bottom:0;'>District Agriculture Training Center</h3><p style='margin-top:0;padding-top:0;'>Phone: +94764354222 | Email: info@datc.lk</p></td><td align='right'>Date Issued<br>";
+		$html .= date("F j, Y");
+		$html .= "</td></tr></table> <hr>";
+		$html .= "<table border='1' style='width:100%;border:1px black solid;border-collapse: collapse;margin-bottom:50px;'><tr><th style='padding:10px;' colspan='2'>Payment Receipt</th></tr><tr><td style='padding:10px; width:30%;'>Registration Number</td><td style='padding:10px;'>";
+		$html .= sprintf("%05d", $student_reg_id);
+		$html .= "</td></tr><tr><td style='padding:10px;'>Student Name</td><td style='padding:10px;'>$first_name  &nbsp; $last_name</td></tr><tr><td style='padding:10px;'>Payment Recepit</td><td style='padding:10px;'> $receipt_number</td></tr><tr><td style='padding:10px;'>Payment State</td><td style='padding:10px;'>$payment_mode</td></tr><tr><td style='padding:10px;'>Course Fee</td><td style='padding:10px;'> LKR $fullpayment</td></tr>";
+		if ($pay_type == 2) {
+			$html .= "<tr><td style='padding:10px;'>1st Installment</td><td style='padding:10px;'>Paid</td></tr><tr><td style='padding:10px;'>Paid Amount</td><td style='padding:10px;'>LKR $installmentone</td></tr><tr><td style='padding:10px;'>Next Payment</td><td style='padding:10px;'>LKR $installmenttwo</td></tr><tr><td style='padding:10px;'>Due Date</td><td style='padding:10px;'>$due_date</td></tr>";
+		} else {
+			$html .= "<tr><td style='padding:10px;'>Paid Amount</td><td style='padding:10px;'>LKR $fullpayment</td></tr>";
+		}
+
+		$html .= "</table>";
+		// $html = "<table border='1'><tr><td>Payment slip</td></tr></table>";
+		$customePaper = array(0, 0, 500, 500);
+		$this->load->library('pdf');
+		$this->dompdf->loadHtml($html);
+		$this->dompdf->setPaper($customePaper, 'landscape');
+		$this->dompdf->render();
+		$this->dompdf->stream("welcome.pdf", array("Attachment" => 0));
+	}
 
 
 }

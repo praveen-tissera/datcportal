@@ -262,11 +262,13 @@ class User_model extends CI_Model
                 );
                 $this->db->trans_begin();
                 $this->db->insert('student_batch_map_table', $data);
-                // echo $this->db->last_query();
+                 echo $this->db->last_query();
                 if( $this->db->trans_status() === FALSE ){
+                    echo "Error";
                     $this->db->trans_rollback();
                     return(0);
                 }else{
+                    echo "inserted";
                     $this->db->trans_commit();
                     // echo $insert_id;
                     return  (1);
@@ -476,7 +478,7 @@ public function read_student_detail_to_batch($student_id,$batch_id){
 
              echo $this->db->last_query();
             if($this->db->affected_rows() == 1){
-    
+                return(1);
             }else if($this->db->affected_rows() == 0){
                 return(0);
             }else{
@@ -498,7 +500,7 @@ public function read_student_detail_to_batch($student_id,$batch_id){
 
         if($data['pay_type'] == 1){
             // full payment
-            // print_r($data);
+             print_r($data);
             // Array ( [student-id] => 1 [batch-id] => 1 [course-id] => 1 [firstname] => chinthana [lastname] => perera [bdate] => 1997-08-04 [email] => chinthan@gmail.com [telephone] => [pay_type] => 1 [fullpayment] => 30000.00 [installment-one] => 15000.00 [installment-two] => 15000.00 [installment-two-date] => 2022-11-15 )
             // INSERT INTO `payment_schedule_table` (`payment_id`, `student_id`, `batch_id`, `payment_status`, `amount`, `payment_due_date`, `added_date`) VALUES (NULL, '1', '1', 'full', '30000', '2020-10-13', '2020-10-13');
             $data = array(

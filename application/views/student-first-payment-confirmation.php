@@ -38,10 +38,32 @@ if (!($this->session->userdata('user_detail'))) {
           echo '<div class="alert alert-success" role="alert">';
           echo $success_message_display;
 
-          print_r($student_detail);
+          print_r($student_details);
           
           // print_r($student_detail);
           echo '</div>';
+
+
+          $attributes = array('target' => '_blank','style'=>'display:inline');
+          echo form_open('report/onlineRegistrationPdf',$attributes);
+          echo "<input type='hidden' name='studentdetail' value = '";
+          print_r(serialize($student_details));
+          echo  "'>";
+          
+         
+         
+          echo "<input type='submit' class='mt-4 form-group btn btn-warning'  value='Print Registration Card'>";
+          echo form_close();
+  
+          echo form_open('report/onlineReceiptPdf',$attributes);
+          echo "<input type='hidden' name='studentdetail' value = '";
+          print_r(serialize($student_details));
+          echo  "'>";
+          
+         
+         
+          echo "<input type='submit' class='mt-4 form-group btn btn-warning'  value='Print Receipt'>";
+          echo form_close();
         } elseif (isset($error_message_display)) {
 
 
