@@ -115,7 +115,7 @@ transition: .3s ease all;
     <div class="form-group row pl-2">
       <label for="regnumber" class="col-sm-2 col-form-label">Registration number</label>
       <div class="col-sm-10">
-        <input type="text" name="regnumber" readonly class="form-control-plaintext" id="regnumber" value="<?php echo $profile->student_id; ?>">
+         <input type="text" name="regnumber" readonly class="form-control-plaintext" id="regnumber" value="<?php echo sprintf("%05d", $profile->student_id); ?>">
       </div>
     </div>
     <div class="form-group row pl-2">
@@ -176,7 +176,8 @@ transition: .3s ease all;
       <div class="form-group row pl-2">
       <label for="regnumber" class="col-sm-2 col-form-label">Registration number</label>
       <div class="col-sm-10">
-        <input type="text" name="regnumber" readonly class="form-control-plaintext" id="regnumber" value="<?php echo $profile->trainer_id; ?>">
+        <input type="text" name="regnumber" readonly class="form-control-plaintext" id="regnumber" value="<?php echo sprintf("%05d", $profile->trainer_id); ?>">
+        
       </div>
     </div>
     <div class="form-group row pl-2">
@@ -226,12 +227,13 @@ transition: .3s ease all;
 
     else if($profile->user_role == 'admin' || $profile->user_role =='coordinator'){
       echo form_open("user/profileUpdate/profile/$profile->user_role");
-      echo "admin";
+      // echo "admin";
       ?>
       <div class="form-group row pl-2">
       <label for="regnumber" class="col-sm-2 col-form-label">Staff Id</label>
       <div class="col-sm-10">
-        <input type="text" name="regnumber" readonly class="form-control-plaintext" id="regnumber" value="<?php echo $profile->staff_id; ?>">
+        <input type="text" name="regnumber" readonly class="form-control-plaintext" id="regnumber" value="<?php echo  sprintf("%05d", $profile->staff_id); ?>">
+       
       </div>
     </div>
     <div class="form-group row pl-2">

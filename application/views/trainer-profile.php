@@ -78,7 +78,8 @@ if (!($this->session->userdata('user_detail'))) {
                <div class="form-group row pl-2 mt-3">
                 <label for="trainerid" class="col-sm-2 col-form-label">Registration number</label>
                   <div class="col-sm-10">
-                    <input type="text" name="trainerid" readonly class="form-control" id="trainerid" value="<?php echo $trainer_profile[0]->trainer_id; ?>">
+                    <input type="text" name="trainerid" readonly class="form-control" id="trainerid" value="<?php echo sprintf("%05d", $trainer_profile[0]->trainer_id); ?>">
+                    
                   </div>
                 </div>
 
@@ -144,7 +145,8 @@ if (!($this->session->userdata('user_detail'))) {
               <div class="form-group row pl-2 mt-3">
                 <label for="trainerid" class="col-sm-2 col-form-label">Registration number</label>
                   <div class="col-sm-10">
-                    <input type="text" name="trainerid" readonly class="form-control" id="trainerid" value="<?php echo $trainer_profile[0]->trainer_id; ?>">
+                    <input type="text" name="trainerid" readonly class="form-control" id="trainerid" value="<?php echo sprintf("%05d", $trainer_profile[0]->trainer_id); ?>">
+                    
                   </div>
                 </div>
 

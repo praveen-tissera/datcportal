@@ -40,11 +40,11 @@ if ($this->session->userdata('user_detail')) {
          ?>
          <div class="form-group">
             <label>Email <?php echo (form_error('email')) ? '<span class="badge badge-danger">Email field required</span>' : ''; ?> </label>
-            <input type="text" name="email" class="form-control" placeholder="Email Address" required>
+            <input type="text" name="email" class="form-control" placeholder="Email Address" >
          </div>
          <div class="form-group">
             <label>Password <?php echo (form_error('password')) ? '<span class="badge badge-danger">Password field required</span>' : ''; ?></label>
-            <input type="password" name="password" class="form-control" placeholder="Password" required>
+            <input type="password" name="password" class="form-control" placeholder="Password" >
          </div>
 
          <div class="form-group">

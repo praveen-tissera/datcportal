@@ -502,7 +502,7 @@ public function searchCourse(){
 	}
  }
  public function courseUpdate(){
-	 print_r($_POST);
+	//  print_r($_POST);
 	 $data = array(
 		 'course_id' => $_POST['courseid'],
 		 'course_name' => $_POST['coursetitle'],
@@ -524,6 +524,7 @@ public function searchCourse(){
 		redirect('/course/courseProfile/'.$data['course_id']);
 	}
  }
+ 
  
 
 }

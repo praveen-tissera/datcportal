@@ -112,8 +112,8 @@ public function studentTrainerLogin(){
 			if($data['user-type'] == 'student'){
 				$user_menu = ['profile'=>'My Profile',
 											
-											'course'=>'Course Managment',
-											'attendance'=>'Attendance'
+											'myCourse'=>'My Courses',
+											'myAttendance'=>'Attendance'
 										];
 					$user_session_data = array(
 				'user_id' => $result[0]->student_id,
@@ -278,7 +278,7 @@ public function staffMemberLogin(){
 		}
 
 		 $client_detail = $this->session->userdata('user_detail');
-			print_r($client_detail);
+			// print_r($client_detail);
 		// $result = $this->user_model->show_client_booking($client_detail['user_id']);
 
 		 $this->load->view('client-dashboard');
@@ -1378,14 +1378,20 @@ public function course(){
 				 }
 			}
 
-			 
-			 
-		 
-			
-			
 		}
 		 
 	}
+	public function myCourse(){
+		// print_r($this->session->userdata('user_detail')['user_id']);
+		$enrol_courses = $this->user_model->student_wise_batches_course($this->session->userdata('user_detail')['user_id']);
+		// print_r($enrol_courses);
+		if($enrol_courses){
+			$data['enrol_courses'] = $enrol_courses;
+			$this->load->view('my-courses',$data);
+		}else{
+			$data['enrol_courses'] = 'No course found';
+		}
+	 }
 
 }
 ?>
