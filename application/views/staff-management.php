@@ -45,7 +45,7 @@ if (!($this->session->userdata('user_detail'))) {
           
           foreach ($staffManagement as $key => $value) {
             echo '<div class="col-4">';  
-            echo '<a href="'. base_url('trainer/'.$key) . '">';
+            echo '<a href="'. base_url('user/'.$key) . '">';
              echo  '<div class="card text-white bg-dark mb-4" style="max-width: 18rem; min-height:8rem;">';
                 echo '<div class="card-body">';
               echo '<h5 class="card-title text-center pt-4">' . $value . '</h5>';

@@ -1329,4 +1329,61 @@ public function read_student_detail_to_batch($student_id,$batch_id){
 
 
      }
+
+     /**
+     * add new trainer profile
+     */
+    public function add_new_staff($data)
+    {
+        $this->db->insert('staff_table', $data);
+        // echo $this->db->last_query();
+        if ($this->db->affected_rows() > 0) {
+            return(1);
+        }else{
+            return(0);
+        }
+    }
+
+    /**
+     * password reset
+     */
+
+    public function resetPassword($id,$role,$password){
+        if($role == 'staff'){
+            $condition ="staff_id =" . "'" .  $id . "'";
+           
+            $this->db->set('password', $password);
+            $this->db->where($condition);
+            $this->db->update('staff_table');
+            if($this->db->affected_rows() == 1){
+                return(1);
+            }else{
+                return(0);
+            }
+        }else if($role == 'trainer'){
+
+
+        }else if($role == 'student'){
+
+        }
+    }
+
+     /**
+     * password reset
+     */
+
+    public function updaeState($id,$state){
+        
+            $condition ="staff_id =" . "'" .  $id . "'";
+           
+            $this->db->set('state', $state);
+            $this->db->where($condition);
+            $this->db->update('staff_table');
+            if($this->db->affected_rows() == 1){
+                return(1);
+            }else{
+                return(0);
+            }
+        
+    }
 }

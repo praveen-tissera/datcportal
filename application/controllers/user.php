@@ -20,6 +20,7 @@ Class User extends CI_Controller {
 		$this->load->model('user_model');
 		$this->load->model('search_model');
 		$this->load->model('trainer_model');
+		$this->load->model('attendance_model');
 		
 	}  
 	public function index() {
@@ -207,6 +208,7 @@ public function staffMemberLogin(){
 										];
 			}else if($result[0]->role_type == 'coordinator'){
 				$user_menu = ['profile'=>'My Profile',
+											'staff'=>'Staff Managment',
 											'student'=>'Student Managment',
 											'trainer'=>'Trainer Managment',
 											'course'=>'Course Managment',
@@ -731,7 +733,12 @@ public function staff(){
 		$this->load->view('staff-management',$data);
 
 	}else if($this->session->userdata['user_detail']['type'] == 'coordinator'){
+		$data['staffManagement'] = array(
+			
+			'searchStaff' => 'Search Staff Member'
+		);
 
+		$this->load->view('staff-management',$data);
 	}
 }
 
@@ -1392,6 +1399,149 @@ public function course(){
 			$data['enrol_courses'] = 'No course found';
 		}
 	 }
+
+	 public function myAttendance(){
+		$enrole_courses = $this->user_model->student_wise_batches_course($this->session->userdata('user_detail')['user_id']);
+
+
+		if($enrole_courses){
+			foreach ($enrole_courses as $key => $enrole_course) {
+				// print_r($enrole_course);
+				$enrole_courses[$key]->attendance = $this->attendance_model->read_student_batchwise_attendance($enrole_course->batch_id,$enrole_course->student_id);
+			}
+
+			$data['enrol_courses'] = $enrole_courses;
+			$this->load->view('my-attendance',$data);
+		}else{
+			$data['enrol_courses'] = 'No course found';
+		}
+	 }
+	 	/**
+	 * view staff registration page 
+	 * 
+	 */
+	public function newStaffRegistration(){
+		$success = $this->session->flashdata('success_message_display');
+		$error = $this->session->flashdata('error_message_display');
+		if(!empty($success)){
+			$data['success_message_display'] = $success;
+			
+		}
+		if(!empty($error)){
+			$data['error_message_display'] = $error;
+			
+		}
+		if(isset($data)){
+			$this->load->view('staff-registration',$data);
+		}else{
+			$this->load->view('staff-registration');
+		}
+		
+	}
+
+	public function addNewStaff()
+	{
+		$this->form_validation->set_rules('name', 'Member name', 'trim|required');
+
+
+			
+			$this->form_validation->set_rules('email', 'Email', 'trim|required');
+		
+			$this->form_validation->set_rules('password', 'Password', 'trim|required');
+
+			if ($this->form_validation->run() == FALSE) {
+				$this->load->view('staff-registration');
+			}else{
+
+				$data_staff = array(
+					'staff_name' => $this->input->post('name'),
+					
+					'email' => $this->input->post('email'),
+					'role_type' => $this->input->post('role'),
+					'password' => sha1($this->input->post('password')),
+					'state' => 'active',
+					
+		
+				);
+				// print_r($data_student);
+				$result_registration = $this->user_model->add_new_staff($data_staff);
+				if($result_registration == 1){
+		
+		
+					$this->session->set_flashdata('success_message_display','Staff registered successfully');
+						redirect('/user/newStaffRegistration');
+					
+				}else{
+					$data['error_message_display'] = "Registration Fail";
+					$this->load->view('staff-registration',$data);
+		
+					$this->session->set_flashdata('error_message_display','Registration Fail. Try again.');
+						redirect('/user/newStaffRegistration');
+				}
+
+			}
+	
+
+
+	}
+
+		/**
+ * search trainer base on the text send
+ */
+public function searchStaff(){
+	$success = $this->session->flashdata('success_message_display');
+		$error = $this->session->flashdata('error_message_display');
+		$data = array();
+		if(!empty($success)){
+			$data['success_message_display'] = $success;
+			
+		}
+		if(!empty($error)){
+			$data['error_message_display'] = $error;
+			
+		}
+	// show default staff search page
+	if(isset($_POST['search-text']) && isset($_POST['type'])){
+		// print_r($_POST);
+		$staff_search_result = $this->search_model->search_staff($_POST);
+		
+		// if found staff
+		if($staff_search_result == 0){
+			$data = array(
+				'error_message_display'  => 'No result found',
+				'search_input' => $_POST
+			);
+			$this->load->view('staff-search-view',$data);
+		}else{
+			$data = array(
+				'success_message_display' => 'Found result',
+				'search_result' => $staff_search_result,
+				'search_input' => $_POST
+			);
+			$this->load->view('staff-search-view',$data);
+		}
+
+	}else{
+		$this->load->view('staff-search-view', $data);
+	}
+ }
+
+ public function reset($id, $role){
+		if(isset($id) && isset($role)){
+			$reset_passowrd = sha1('abc123');
+			$result = $this->user_model->resetPassword($id, $role,	$reset_passowrd);
+			$this->session->set_flashdata('success_message_display','Password Reset New Password - abc123' );
+			redirect('/user/searchStaff');
+		}
+ }
+ public function staffupdate($id, $state){
+	if(isset($id) && isset($state)){
+		
+		$result = $this->user_model->updaeState($id, $state);
+		$this->session->set_flashdata('success_message_display','State update to ' .$state );
+		redirect('/user/searchStaff');
+	}
+}
 
 }
 ?>

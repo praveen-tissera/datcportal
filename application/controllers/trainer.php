@@ -67,7 +67,7 @@ Class Trainer extends CI_Controller {
 				$this->load->view('trainer-registration');
 			}else{
 
-				$data_student = array(
+				$data_trainer = array(
 					'first_name' => $this->input->post('firstname'),
 					'last_name' => $this->input->post('lastname'),
 					'birth_date' => $this->input->post('bdate'),
@@ -77,8 +77,8 @@ Class Trainer extends CI_Controller {
 					'register_date' => Date('Y-m-d'),
 		
 				);
-				// print_r($data_student);
-				$result_registration = $this->trainer_model->add_new_trainer($data_student);
+				
+				$result_registration = $this->trainer_model->add_new_trainer($data_trainer);
 				if($result_registration == 1){
 		
 		

@@ -103,7 +103,7 @@ class Attendance_model extends CI_Model
         $this->db->order_by("attend_date","ASC");
         
         $query = $this->db->get();
-        echo 'last query' . $this->db->last_query();
+        // echo 'last query' . $this->db->last_query();
         if($query->num_rows() > 0){
             return $query->result();
         }
