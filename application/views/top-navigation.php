@@ -30,17 +30,11 @@
                     <ul class="navbar-nav ml-auto mr-auto">
 
                         <li class="nav-item active"><a class="text-white nav-link" href="<?php echo base_url(); ?>">Home</a></li>
-                        <li class="nav-item"><a class="text-white nav-link" href="<?php echo base_url('/user/showForum') ?>">Courses</a></li>
+                        <li class="nav-item"><a class="text-white nav-link" href="#courseview">Courses</a></li>
                         <li class="nav-item"><a class="text-white nav-link" href="<?php echo base_url('/user/verification') ?>">Certificate Verification</a></li>
                         
-                        <li class="nav-item"><a class="text-white nav-link" href="<?php echo base_url('/user/search') ?>">Contact Us</a></li>
-                        <?php 
-                        if(!isset($this->session->userdata['user_detail']['login'])){
-                        ?>
-                        <li class="nav-item"><a class='text-white nav-link' href="<?php echo base_url('/user/register') ?>">Join</a></li>
-                        <?php 
-                        }
-                        ?>
+                        <li class="nav-item"><a class="text-white nav-link" href="#contactinfo">Contact Us</a></li>
+                       
                         <?php 
                             
                             if(isset($this->session->userdata['user_detail']['login'])){

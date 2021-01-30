@@ -26,9 +26,9 @@
                    
                 </div>
             </div>
-            <div class="row center-title">
+            <div class="row center-title my-5" id="courseview">
                 <div class="col-md-12">
-                    <h2 class="display-4 text-left">Courses we offer</h2>
+                    <h2 class="display-4 text-left mt-5" >Courses we offer</h2>
                     
                    
                 </div>
@@ -71,6 +71,25 @@
                 </div>
 
             </div>
+
+            </div>
+
+            <div class="row my-5">
+                <div class="col-12">
+                <h2 class="display-4 text-left mt-5" id="contactinfo">Contact Info</h2>
+                </div>
+                <div class="col-12">
+                <div class="wow fadeInUp contact-info" data-wow-delay="0.4s">
+                         <div class="section-title">
+                              
+                              <p>Lorem ipsum dolor sit consectetur adipiscing morbi venenatis et tortor consectetur adipisicing lacinia tortor morbi ultricies.</p>
+                         </div>
+                         
+                         <p><i class="fa fa-map-marker"></i> 456 New Street 22000, New York City, USA</p>
+                         <p><i class="fa fa-comment"></i> <a href="mailto:info@company.com">info@company.com</a></p>
+                         <p><i class="fa fa-phone"></i> 010-020-0340</p>
+                    </div>
+                </div>
 
             </div>
             
