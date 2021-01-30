@@ -34,15 +34,32 @@
                         <li class="nav-item"><a class="text-white nav-link" href="<?php echo base_url('/user/verification') ?>">Certificate Verification</a></li>
                         
                         <li class="nav-item"><a class="text-white nav-link" href="<?php echo base_url('/user/search') ?>">Contact Us</a></li>
-                        
+                        <?php 
+                        if(!isset($this->session->userdata['user_detail']['login'])){
+                        ?>
                         <li class="nav-item"><a class='text-white nav-link' href="<?php echo base_url('/user/register') ?>">Join</a></li>
+                        <?php 
+                        }
+                        ?>
                         <?php 
                             
                             if(isset($this->session->userdata['user_detail']['login'])){
                                 $userType = $this->session->userdata['user_detail']['type'];
+
+                                if($userType == 'admin' || $userType  == 'coordinator'){
+                                    echo "<li class='nav-item'><a class='text-white nav-link' href='";
+                                    echo base_url('/user/staffDashBoard');
+                                    echo "'>Dashboard</a></li>";
+                                }else if($userType == 'student' || $userType  == 'trainer'){
+                                    echo "<li class='nav-item'><a class='text-white nav-link' href='";
+                                    echo base_url('/user/clientDashBoard');
+                                    echo "'>Dashboard</a></li>";
+                                }
                                 echo "<li class='nav-item'><a class='text-white nav-link' href='";
                                 echo base_url('/user/logoutUser/'.$userType);
                                 echo "'>log out</a></li>";
+                                    
+                                
                             }
                             else{
                                 echo "<li class='nav-item'><a class='text-white nav-link' href='";
@@ -50,24 +67,7 @@
                                 echo "'>log in</a></li>";
                             }
                         ?>
-                        <?php 
-                            if(isset($this->session->userdata['lawyer_detail'])){
-                                echo "<li class='nav-item'><a class='text-white nav-link' href='";
-                                echo base_url('/user/lawyerDashBoard');
-                                echo "'>";
-                                echo "<span class='label label-default' style='font-size:14px'> My Dashboard</span>";
-                               
-                                echo "</a></li>";
-                            }
-                            elseif(isset($this->session->userdata['client_detail'])){
-                                echo "<li class='nav-item'><a class='text-white nav-link' style='padding-left: 5px; padding-right: 5px;' href='";
-                                echo base_url('/user/clientDashBoard');
-                                echo "'>";
-                                echo "<span class='label label-default' style='font-size:14px;'> My Dashboard</span>";
-                               
-                                echo "</a></li>";
-                            }
-                        ?>
+                        
                         
                     </ul>
                 </div><!--/.nav-collapse -->

@@ -80,7 +80,7 @@ public function staffLogin() {
 
 /**
  * 
- * DATC student and trainer loin
+ * DATC student and trainer login
  * 
  * 
  */
