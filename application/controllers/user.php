@@ -484,7 +484,13 @@ public function studentRegisterOnline($course_id,$batch_id){
 			$this->load->view('student-management',$data);
 
 		}else if($this->session->userdata['user_detail']['type'] == 'coordinator'){
+			$data['studentManagement'] = array(
+				'newRegistration' => 'New Registration',
+				'pendingOnlineRegistration' => 'Pending online Registration',
+				'searchStudent' => 'Registered Students',
+			);
 
+			$this->load->view('student-management',$data);
 		}
  }
 
@@ -760,7 +766,13 @@ public function trainer(){
 		$this->load->view('trainer-management',$data);
 
 	}else if($this->session->userdata['user_detail']['type'] == 'coordinator'){
+		$data['trainerManagement'] = array(
+			
+			'trainerBatch' => 'Assign Trainer to Batch',
+			'searchTrainer' => 'Search Trainer',
+		);
 
+		$this->load->view('trainer-management',$data);
 	}
 }
 
@@ -780,7 +792,12 @@ public function attendance(){
 		$this->load->view('attendance-management',$data);
 
 	}else if($this->session->userdata['user_detail']['type'] == 'coordinator'){
+		$data['studentManagement'] = array(
+			'newAttendanceRegistration' => 'Add Attendance',
+			'searchAttendance' => 'Search Attendance',
+		);
 
+		$this->load->view('attendance-management',$data);
 	}
 }
 
@@ -801,7 +818,13 @@ public function report(){
 		$this->load->view('report-management',$data);
 
 	}else if($this->session->userdata['user_detail']['type'] == 'coordinator'){
+		$data['studentManagement'] = array(
+			'incomeReport' => 'Income Report',
+			'registrationReport' => 'Registration Report',
+			'dueReport' => 'Over Due Report',
+		);
 
+		$this->load->view('report-management',$data);
 	}
 }
 
@@ -824,6 +847,15 @@ public function course(){
 		$this->load->view('course-management',$data);
 
 	}else if($this->session->userdata['user_detail']['type'] == 'coordinator'){
+		$data['studentManagement'] = array(
+			
+			'newBatchRegistration' => 'New Batch', 
+			'searchCourse' => 'Search Course & Batch',
+			
+			'examCertificate' => 'Exam & Certificate'
+		);
+
+		$this->load->view('course-management',$data);
 
 	}
 }
