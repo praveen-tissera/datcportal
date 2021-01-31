@@ -268,5 +268,37 @@ class Report_model extends CI_Model
       
    
    }
+   public function due_report(){
+    $this->load->model('User_model', 'userModel');
+    $query = "SELECT *
+    FROM payment_schedule_table AS a
+    WHERE NOT EXISTS (
+      SELECT *
+      FROM payment_receive_table AS b 
+      WHERE a.payment_id=b.payment_id
+    )";
+   $query =  $this->db->query($query);
+   
+        if($query->num_rows() > 0){
+            $result = $query->result();
+            foreach ($result as $key => $due) {
+                // print_r($due);
+                $result[$key]->student_detail = $this->userModel->student_detail_byid($due->student_id)[0];
+                
+                $result[$key]->batch_detail = $this->userModel->read_batch_byid($due->batch_id)[0];
+               $batch = $this->userModel->read_batch_byid($due->batch_id)[0];
+                $result[$key]->course_detail  = $this->userModel->read_course_byid($batch->course_id)[0];
+                $result[$key]->batch_student_detail = $this->userModel->readStudentBatch($due->student_id,$due->batch_id)[0];
+                
+            }
+            // print_r($result);
+            return $result;
+        }else{
+            return(0);
+        }
+    // print_r($result->result());
+
+   }
+
 
 }

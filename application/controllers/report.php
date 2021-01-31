@@ -871,5 +871,11 @@ class Report extends CI_Controller
 		$this->dompdf->stream("welcome.pdf", array("Attachment" => 0));
 	}
 
+	public function dueReport(){
+		$data['dues']  = $this->report_model->due_report();
+		$this->load->view('due-report-view',$data);
+
+	}
+
 
 }

@@ -1331,6 +1331,31 @@ public function read_student_detail_to_batch($student_id,$batch_id){
      }
 
      /**
+      * read sutdne batchwsie details
+      */
+     public function readStudentBatch($studendid,$batchid){
+        
+
+        $condition ="student_id =" . "'" .  $studendid . "' AND batch_id = '" . $batchid . "'";
+        $this->db->select('*');
+        $this->db->from('student_batch_map_table');
+        $this->db->where($condition);
+        $query = $this->db->get();
+        
+        
+            //  echo $this->db->last_query();
+            if($query->num_rows() == 0){
+                return(0);
+            }else{
+                return $query->result();
+                
+            }
+        
+
+
+     }
+
+     /**
      * add new trainer profile
      */
     public function add_new_staff($data)
