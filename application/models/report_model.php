@@ -9,10 +9,35 @@ class Report_model extends CI_Model
          $this->load->model('trainer_model', 'trainerModel');
          $this->load->model('user_model', 'userModel');
          $this->load->model('search_model', 'searchModel');
-
+         
         //  print_r($data);
         if($data['course_id']=='All Courses' && $data['batch_id']=='All Batches' ){
+
             $condtion = "paid_date >= '". $data['startdate'] ."' AND paid_date <= '". $data['enddate'] ."'"; 
+            $years = [
+                ['2020-01-01','2020-12-31'],
+                ['2021-01-01','2021-12-31']
+            ];
+            
+            foreach ($years as $key => $yearyArray) {
+                $condtion_year = "paid_date >= '". $yearyArray[0] ."' AND paid_date <= '". $yearyArray[1] ."'";
+                $this->db->select('paid_amount');
+                $this->db->from('payment_receive_table');
+                $this->db->where($condtion_year);
+                $query= $this->db->get();
+                // echo $this->db->last_query();
+                $income = $query->result();
+                $oneYear = $yearyArray[0];
+                $yeararray = explode("-", $yearyArray[0]);
+                $year = $yeararray[0];
+                $year_income[$year] = 0;
+                foreach ($income as $incomekey => $value) {
+                    
+                    $year_income[$year] = $year_income[$year] + $value->paid_amount;
+                }
+            }
+            // print_r($year_income);
+
         }else if($data['course_id'] !='All Courses' && $data['batch_id']=='All Batches'){
                 $batches = $this->courseModel->get_course_batch_details($data['course_id']); 
                 // print_r($batches);
@@ -43,8 +68,11 @@ class Report_model extends CI_Model
         foreach ($payments as $key => $payment) {
             $payments[$key]->student_detail =$this->userModel->student_detail_byid($payment->student_id)[0];
             $payments[$key]->course_batch_detail = $this->userModel->batch_details_with_course_detail($payment->batch_id);
+            // $payments[$key]->year_wise_income = $year_income;
         }
         //  print_r($payments);
+        // $payments['year_income'] = $year_income;
+        // print_r($payments);
         return $payments;
 
     }

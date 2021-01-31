@@ -88,10 +88,10 @@ if (!($this->session->userdata('user_detail'))) {
          <td><?php echo sprintf("%03d", $due->batch_detail->batch_number); ?></td>
          <td><?php echo $due->payment_due_date; ?></td>
          <td><?php 
-              echo dueage;
+              echo $dueage;
               ?>
         </td>
-         <td><?php echo $due->amount; ?></td>
+         <td><?php echo  number_format($due->amount, 2); ?></td>
        </tr>
 
      <?php   
