@@ -406,10 +406,10 @@ public function searchCourse(){
 			}else{
 				$data['error_message_display'] = "Error on adding marks. Try again";
 			}
-			$data['student_marks'] = $this->user_model->read_subject_and_marks_student_wise($studentid,$courseid,$batchid);
+			// $data['student_marks'] = $this->user_model->read_subject_and_marks_student_wise($studentid,$courseid,$batchid);
 		}
-		
-
+		$data['student_marks'] = $this->user_model->read_subject_and_marks_student_wise($studentid,$courseid,$batchid);
+		print_r($data);
 		 $this->load->view('exam-certificate-view',$data);
 
 

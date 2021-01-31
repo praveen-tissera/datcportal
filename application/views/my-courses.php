@@ -179,7 +179,33 @@ if (!($this->session->userdata('user_detail'))) {
             echo '<td colspan ="6">No Payment History Found</td>';
             echo '</tr>';
           }
+          
           ?>
+            <tr>
+              <td colspan="6" class="text-center bg-warning text-white">Marks</td>
+            </tr>
+            <?php 
+              if(is_array($enrol_course->marks_object) && !empty($enrol_course->marks_object)){
+                echo "<tr><td colspan='4'>Subject Name</td><td>Marks</td><td>Final Grade</td></tr>";
+                foreach ($enrol_course->marks_object as $key => $mark) {
+                  echo "<tr>";
+                    echo "<td colspan='4'>";
+                      echo $mark->subject_name->subject_name;
+                    echo "</td>";
+                    echo "<td>";
+                      echo $mark->mark;
+                    echo "</td>";
+                    echo "<td>";
+                      echo $mark->state;
+                    echo "</td>";
+                  echo "</tr>";
+                }
+              }else{
+                echo '<tr>';
+              echo '<td colspan ="6">No Marks Found</td>';
+              echo '</tr>';
+              }
+            ?>
           </tbody>
         </table>
       <?php

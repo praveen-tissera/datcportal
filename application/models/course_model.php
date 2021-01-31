@@ -93,6 +93,24 @@ class Course_model extends CI_Model
             return(0);
         }
     }
+
+     /**
+     * get subject details base on course id and subject id
+     */
+    public function get_subject_byid($subjectid){
+        $condition = "subject_id =" . $subjectid . "";
+        $this->db->select('*');
+        $this->db->from('subject_table');
+        $this->db->where($condition);
+        
+        $query = $this->db->get();
+        // echo $this->db->last_query();
+        if($query->num_rows() > 0){
+            return $query->result();
+        }else{
+            return(0);
+        }
+    }
         /**
          * update subject details
          */
@@ -205,6 +223,28 @@ class Course_model extends CI_Model
         }
 
      }
+
+/**
+ * get student wise marks
+ */
+
+     public function read_student_marks($studentid, $batchid){
+        $condition = "student_id = " . "'" . $studentid . "' AND batch_id = '" . $batchid . "'";
+        $this->db->select('*');
+        $this->db->from('student_mark_table');
+        $this->db->where($condition);
+        $query = $this->db->get();
+        if($query->num_rows() > 0){
+            $result_marks =  $query->result();
+            foreach ($result_marks as $key => $mark) {
+                $result_marks[$key]->subject_name = $this->get_subject_byid($mark->subject_id)[0];
+            }
+            return $result_marks;
+        }else{
+            return(0);
+        }
+     }
+
      /**
       * add subject marks
       */

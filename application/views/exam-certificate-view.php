@@ -223,7 +223,7 @@ if (!($this->session->userdata('user_detail'))) {
               echo "<td>";
                 
                 if($student->student_mark == 'not found'){
-                  echo "<select>";
+                  echo "<select name='markstate'>";
                     echo "<option>absent</option>";
                     echo "<option>pass</option>";
                     echo "<option>fail</option>";

@@ -885,8 +885,9 @@ public function course(){
 					// $student->batch_detail = $result_batch;
 					$pending_student_detail[] = $student;
 					$data['peding_student_registration'] = $pending_student_detail;
-	 				$this->load->view('pending-student-registration',$data);
+	 				
 			}
+			$this->load->view('pending-student-registration',$data);
 	}else{
 		$data['success_message_display'] = 'Pending registration details not found';
 		$this->load->view('pending-student-registration',$data);

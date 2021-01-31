@@ -982,6 +982,7 @@ public function read_student_detail_to_batch($student_id,$batch_id){
     * 
     */
     public function student_wise_batches_course($studentid){
+        $this->load->model('Course_model', 'courseModel');
         $condition = "student_id = " . "'" . $studentid . "'";
         $this->db->select('*');
         $this->db->from('student_batch_map_table');
@@ -994,6 +995,7 @@ public function read_student_detail_to_batch($student_id,$batch_id){
                 //  print_r($batch);
                  $batches[$key]->batch_object = $this->batch_details_with_course_detail($batch->batch_id);
                  $batches[$key]->payment_object = $this->payment_schedule($studentid,$batch->batch_id);
+                 $batches[$key]->marks_object = $this->courseModel->read_student_marks($studentid,$batch->batch_id);
                 
             
 
