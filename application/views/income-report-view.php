@@ -191,7 +191,7 @@ if (!($this->session->userdata('user_detail'))) {
                   echo 'LKR '. $total_income;
                 echo "</td>";
                 echo "<td>";
-                  echo "<a href=''>Detail view</a>";
+                echo "<a href='' class='btn btn-primary' data-toggle='modal' data-target='#exampleModal'>Income  Analyse</a>";
                 echo "</td>";
               echo "</tr>";
             echo "</tbody>";
@@ -280,6 +280,8 @@ if (!($this->session->userdata('user_detail'))) {
     }
 
     ?>
+
+
       </div>
       </div>
 
@@ -294,7 +296,36 @@ if (!($this->session->userdata('user_detail'))) {
 
 </div>
 
+<!-- //////////////////////////// Modal-->
 
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+            <div class="row">
+            <div class="col-12">
+               <div id="chart-line"></div>
+            </div>
+        </div>
+
+        </div>
+      
+        
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+
+<!-- /////////////////////////////////////// -->
 
 
 
@@ -325,13 +356,14 @@ if (!($this->session->userdata('user_detail'))) {
 
 ?>
 <script language = "JavaScript">
+
   
          function drawChart() {
           let income = +$('#chart_div').data("value");
           let start_date = $('#chart_div').data("sdate");
           let end_date = $('#chart_div').data("edate");
           let duration = 'Period (' + start_date + ' to ' + end_date + ')';
-          console.log(income);
+          // console.log(income);
             // Define the chart to be drawn.
             var data = google.visualization.arrayToDataTable([
                ['Year', 'Collection'],
@@ -345,5 +377,38 @@ if (!($this->session->userdata('user_detail'))) {
             var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
             chart.draw(data, options);
          }
+
+         function drawLineChart() {
+          //  convert php jason to string format. once it done javascript can read and parse into javascript object.
+          let income =JSON.stringify(<?php echo json_encode($year_wise_income) ?>);
+          
+          // convert to javascript object
+          income = JSON.parse(income);  
+         
+         
+            // Define the chart to be drawn.
+                let chart_array =[['Year', 'Income']];
+                for(let year_income in income){ 
+                  let year_array = [year_income,  income[year_income]];
+                  chart_array.push(year_array);
+                }
+
+            var data = google.visualization.arrayToDataTable(chart_array);
+
+            var options = {
+                  title: 'Income Analyse',
+                  curveType: 'function',
+                  legend: { position: 'bottom' },
+                  height: '300',
+                  width: '1000',
+
+                }; 
+
+            // Instantiate and draw the chart.
+            var chart = new google.visualization.LineChart(document.getElementById('chart-line'));
+            chart.draw(data, options);
+         }
          google.charts.setOnLoadCallback(drawChart);
+
+         google.charts.setOnLoadCallback(drawLineChart);
       </script>

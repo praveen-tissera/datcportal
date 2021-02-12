@@ -349,7 +349,11 @@ class Report extends CI_Controller
 					'startdate' => $_POST['startdate'],
 					'enddate' => $_POST['enddate'],
 				);
-				$data['result_payments'] = $this->report_model->income_report($post_data);
+				$result_payments = $this->report_model->income_report($post_data);
+				$data['year_wise_income'] = $result_payments['yearly_payment'];
+				$data['result_payments'] = $result_payments['payments'];
+
+
 				$data['select_start_date'] = $_POST['startdate'];
 				$data['select_end_date'] =  $_POST['enddate'];
 				$total = 0;
@@ -371,7 +375,9 @@ class Report extends CI_Controller
 					'enddate' => $_POST['enddate'],
 				);
 				// print_r($post_data);
-				$data['result_payments'] = $this->report_model->income_report($post_data);
+				$result_payments = $this->report_model->income_report($post_data);
+				$data['year_wise_income'] = $result_payments['yearly_payment'];
+				$data['result_payments'] = $result_payments['payments'];
 				$data['select_start_date'] = $_POST['startdate'];
 				$data['select_end_date'] =  $_POST['enddate'];
 				$total = 0;
@@ -394,7 +400,9 @@ class Report extends CI_Controller
 					'startdate' => $_POST['startdate'],
 					'enddate' => $_POST['enddate'],
 				);
-				$data['result_payments'] = $this->report_model->income_report($post_data);
+				$result_payments = $this->report_model->income_report($post_data);
+				$data['year_wise_income'] = $result_payments['yearly_payment'];
+				$data['result_payments'] = $result_payments['payments'];
 				$total = 0;
 				foreach ($data['result_payments'] as $key => $payment) {
 					$total  = $total + $payment->paid_amount;

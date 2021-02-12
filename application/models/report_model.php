@@ -9,45 +9,40 @@ class Report_model extends CI_Model
          $this->load->model('trainer_model', 'trainerModel');
          $this->load->model('user_model', 'userModel');
          $this->load->model('search_model', 'searchModel');
-         
-        //  print_r($data);
+         $yearbegin = explode("-", $data['startdate']);
+         $yearbegin = $yearbegin[0];
+        
+         $yearend = explode("-", $data['enddate']);
+         $yearend = $yearend[0];
+        
+         $years = [];
+
+        // array of years (eg 2020-01-01 to 2020-12-31)
+        for ($i=$yearbegin; $i <= $yearend ; $i++) { 
+            $start = $i.'-01-01';
+            $end = $i.'-12-31';
+            $year_array = [$start,$end];
+            array_push($years,$year_array);
+        }
+       
         if($data['course_id']=='All Courses' && $data['batch_id']=='All Batches' ){
 
             $condtion = "paid_date >= '". $data['startdate'] ."' AND paid_date <= '". $data['enddate'] ."'"; 
-            $years = [
-                ['2020-01-01','2020-12-31'],
-                ['2021-01-01','2021-12-31']
-            ];
-            
-            foreach ($years as $key => $yearyArray) {
-                $condtion_year = "paid_date >= '". $yearyArray[0] ."' AND paid_date <= '". $yearyArray[1] ."'";
-                $this->db->select('paid_amount');
-                $this->db->from('payment_receive_table');
-                $this->db->where($condtion_year);
-                $query= $this->db->get();
-                // echo $this->db->last_query();
-                $income = $query->result();
-                $oneYear = $yearyArray[0];
-                $yeararray = explode("-", $yearyArray[0]);
-                $year = $yeararray[0];
-                $year_income[$year] = 0;
-                foreach ($income as $incomekey => $value) {
-                    
-                    $year_income[$year] = $year_income[$year] + $value->paid_amount;
-                }
-            }
-            // print_r($year_income);
+       
 
         }else if($data['course_id'] !='All Courses' && $data['batch_id']=='All Batches'){
+            
                 $batches = $this->courseModel->get_course_batch_details($data['course_id']); 
                 // print_r($batches);
                 $batch_string = '';
                 foreach ($batches as $key => $batch) {
                     $batch_string = $batch_string . "`batch_id`=". $batch->batch_id . ' OR ';
                 }
-                
-                $batch_string =  substr("$batch_string", 0, -3);
                 // echo $batch_string;
+                // remove string last letters 
+                // eg: `batch_id`=1 OR `batch_id`=2 OR
+                $batch_string =  substr("$batch_string", 0, -3);
+                 
                 $condtion = "paid_date >= '". $data['startdate'] ."' AND paid_date <= '". $data['enddate'] ."' AND (". $batch_string . ")"; 
         }
         else{
@@ -62,7 +57,7 @@ class Report_model extends CI_Model
         $this->db->join('payment_schedule_table', 'payment_schedule_table.payment_id=payment_receive_table.payment_id');
          $this->db->where($condtion);
         $query= $this->db->get();
-        // echo $this->db->last_query();
+        //  echo $this->db->last_query();
         //  print_r($query->result());
         $payments = $query->result();
         foreach ($payments as $key => $payment) {
@@ -70,10 +65,32 @@ class Report_model extends CI_Model
             $payments[$key]->course_batch_detail = $this->userModel->batch_details_with_course_detail($payment->batch_id);
             // $payments[$key]->year_wise_income = $year_income;
         }
-        //  print_r($payments);
-        // $payments['year_income'] = $year_income;
+        // getting year wise income
+        foreach ($years as $key => $yearyArray) {
+            $yeararray = explode("-", $yearyArray[0]);
+                $year = $yeararray[0];
+                $year_income[$year] = 0;
+            foreach ($payments as $key => $payment) {
+                // print_r($payment);
+                // echo $payment->paid_date;
+                
+                // echo $yearyArray[0];
+                // echo '<br>';
+                if(($payment->paid_date >= $yearyArray[0]) &&  ($payment->paid_date <= $yearyArray[1])){
+
+                    $year_income[$year] =  $year_income[$year] + $payment->paid_amount;
+
+                }
+            }
+        }
+
+
+        //  print_r($year_income);
+          $income_array['payments'] = $payments;
+          $income_array['yearly_payment'] = $year_income;
+        //   $payments['year_income'] = $year_income;
         // print_r($payments);
-        return $payments;
+        return $income_array;
 
     }
 
