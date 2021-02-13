@@ -125,8 +125,9 @@ if (!($this->session->userdata('user_detail'))) {
         echo "</th>";
         for($i=1;$i<=7;$i++){
             echo "<th>";
-            $datetime->modify('+1 day');
+            
             echo $datetime->format('Y-m-d');
+            $datetime->modify('+1 day');
             echo "</th>";
         }
 
@@ -138,55 +139,97 @@ if (!($this->session->userdata('user_detail'))) {
             // print_r($student);
               echo $student->student_detail->first_name . ' ' . $student->student_detail->last_name;
             echo "</td>";
-            echo "<td>";
-              echo "<select name='{$student->student_id}_1'>";
-              echo "<option value='na'>N/A</option>";
-                echo "<option value='0'>0</option>";
-                echo "<option value='1'>1</option>";
-              echo "</select>";
-            echo "</td>";
-            echo "<td>";
-              echo "<select name='{$student->student_id}_2'>";
-                echo "<option value='na'>N/A</option>";
-                echo "<option value='0'>0</option>";
-                echo "<option value='1'>1</option>";
-              echo "</select>";
-            echo "</td>";
-            echo "<td>";
-              echo "<select name='{$student->student_id}_3'>";
-                echo "<option value='na'>N/A</option>";
-                echo "<option value='0'>0</option>";
-                echo "<option value='1'>1</option>";
-              echo "</select>";
-            echo "</td>";
-            echo "<td>";
-              echo "<select name='{$student->student_id}_4'>";
-                echo "<option value='na'>N/A</option>";
-                echo "<option value='0'>0</option>";
-                echo "<option value='1'>1</option>";
-              echo "</select>";
-            echo "</td>";
-            echo "<td>";
-              echo "<select name='{$student->student_id}_5'>";
-                echo "<option value='na'>N/A</option>";
-                echo "<option value='0'>0</option>";
-                echo "<option value='1'>1</option>";
-              echo "</select>";
-            echo "</td>";
-            echo "<td>";
-              echo "<select name='{$student->student_id}_6'>";
-                echo "<option value='na'>N/A</option>";
-                echo "<option value='0'>0</option>";
-                echo "<option value='1'>1</option>";
-              echo "</select>";
-            echo "</td>";
-            echo "<td>";
-              echo "<select name='{$student->student_id}_7'>";
-                echo "<option value='na'>N/A</option>";
-                echo "<option value='0'>0</option>";
-                echo "<option value='1'>1</option>";
-              echo "</select>";
-            echo "</td>";
+            
+              // print_r($student->student_attendance);
+              $datetime = new DateTime($start_date);
+              
+                // print_r($value);
+                for($i=1;$i<=7;$i++){
+                 
+                  $found_flag = false;
+                  foreach ($student->student_attendance as $key => $value) {
+
+
+                  if($datetime->format('Y-m-d') == $value->attend_date){
+                    // found attendance for the current date
+                    $found_flag = true;
+                    echo "<td>";
+                      echo "<select name='{$student->student_id}_$i'>";
+                      if($value->status == 'na'){
+                        echo "<option selected value='na'>N/A</option>";
+                        echo "<option value='0'>0</option>";
+                        echo "<option value='1'>1</option>";
+                      }elseif($value->status == '0'){
+                        echo "<option value='na'>N/A</option>";
+                        echo "<option selected value='0'>0</option>";
+                        echo "<option value='1'>1</option>";
+                      }elseif($value->status == '1'){
+                        echo "<option value='na'>N/A</option>";
+                        echo "<option value='0'>0</option>";
+                        echo "<option selected value='1'>1</option>";
+                      }
+                     
+                        
+                       
+                      echo "</select>";
+                    echo '</td>';
+                  }
+                }
+                if(!$found_flag){
+                  echo "<td>";
+                  echo "<select name='{$student->student_id}_$i'>";
+                  echo "<option value='na'>N/A</option>";
+                    echo "<option value='0'>0</option>";
+                    echo "<option value='1'>1</option>";
+                  echo "</select>";
+                echo '</td>';
+                }
+                $datetime->modify('+1 day');
+              }
+             
+            // echo "</td>";
+            // echo "<td>";
+            //   echo "<select name='{$student->student_id}_2'>";
+            //     echo "<option value='na'>N/A</option>";
+            //     echo "<option value='0'>0</option>";
+            //     echo "<option value='1'>1</option>";
+            //   echo "</select>";
+            // echo "</td>";
+            // echo "<td>";
+            //   echo "<select name='{$student->student_id}_3'>";
+            //     echo "<option value='na'>N/A</option>";
+            //     echo "<option value='0'>0</option>";
+            //     echo "<option value='1'>1</option>";
+            //   echo "</select>";
+            // echo "</td>";
+            // echo "<td>";
+            //   echo "<select name='{$student->student_id}_4'>";
+            //     echo "<option value='na'>N/A</option>";
+            //     echo "<option value='0'>0</option>";
+            //     echo "<option value='1'>1</option>";
+            //   echo "</select>";
+            // echo "</td>";
+            // echo "<td>";
+            //   echo "<select name='{$student->student_id}_5'>";
+            //     echo "<option value='na'>N/A</option>";
+            //     echo "<option value='0'>0</option>";
+            //     echo "<option value='1'>1</option>";
+            //   echo "</select>";
+            // echo "</td>";
+            // echo "<td>";
+            //   echo "<select name='{$student->student_id}_6'>";
+            //     echo "<option value='na'>N/A</option>";
+            //     echo "<option value='0'>0</option>";
+            //     echo "<option value='1'>1</option>";
+            //   echo "</select>";
+            // echo "</td>";
+            // echo "<td>";
+            //   echo "<select name='{$student->student_id}_7'>";
+            //     echo "<option value='na'>N/A</option>";
+            //     echo "<option value='0'>0</option>";
+            //     echo "<option value='1'>1</option>";
+            //   echo "</select>";
+            // echo "</td>";
          echo "</tr>";
           }
         echo "</table>";

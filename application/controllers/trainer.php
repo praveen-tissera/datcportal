@@ -19,6 +19,12 @@ Class Trainer extends CI_Controller {
 		$this->load->model('user_model');
 		$this->load->model('search_model');
 		$this->load->model('trainer_model');
+		if($this->router->fetch_method() =='verification'){
+			$this->session->set_userdata('current_menu', 'verification');
+		}else{
+			
+			$this->session->set_userdata('current_menu', 'dashboard');
+		}
 		
 	}  
 	public function index() {

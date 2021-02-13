@@ -37,6 +37,9 @@ class Welcome extends CI_Controller {
 		// Load database
 		$this->load->model('user_model');
 		
+		if($this->router->fetch_method() =='index'){
+			$this->session->set_userdata('current_menu', 'index');
+		}
 	} 
 	public function index()
 	{

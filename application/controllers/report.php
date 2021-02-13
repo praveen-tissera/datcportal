@@ -23,6 +23,12 @@ class Report extends CI_Controller
 		$this->load->model('trainer_model');
 		$this->load->model('course_model');
 		$this->load->model('report_model');
+		if($this->router->fetch_method() =='verification'){
+			$this->session->set_userdata('current_menu', 'verification');
+		}else{
+			
+			$this->session->set_userdata('current_menu', 'dashboard');
+		}
 	}
 	public function index()
 	{

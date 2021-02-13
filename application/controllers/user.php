@@ -21,6 +21,15 @@ Class User extends CI_Controller {
 		$this->load->model('search_model');
 		$this->load->model('trainer_model');
 		$this->load->model('attendance_model');
+		// echo $this->router->fetch_method();
+		if($this->router->fetch_method() =='verification'){
+			$this->session->set_userdata('current_menu', 'verification');
+		}else{
+			
+			$this->session->set_userdata('current_menu', 'dashboard');
+		}
+		
+
 		
 	}  
 	public function index() {
@@ -41,7 +50,7 @@ public function login() {
 	if(isset($this->session->userdata['user_detail'])){
 			//if session is already set
 			// redirect('/user/studentTrainerDashBoard');
-			print_r($this->session->userdata('user_detail'));
+			// print_r($this->session->userdata('user_detail'));
 			if($this->session->userdata('user_detail')['type'] == 'admin' ||$this->session->userdata('user_detail')['type'] == 'coordinator'){
 				$this->load->view('staff-login');
 			}else if($this->session->userdata('user_detail')['type'] == 'trainer' ||$this->session->userdata('user_detail')['type'] == 'student'){

@@ -21,6 +21,12 @@ Class Attendance extends CI_Controller {
 		$this->load->model('trainer_model');
 		$this->load->model('course_model');
 		$this->load->model('attendance_model');
+		if($this->router->fetch_method() =='verification'){
+			$this->session->set_userdata('current_menu', 'verification');
+		}else{
+			
+			$this->session->set_userdata('current_menu', 'dashboard');
+		}
 		
 	}  
 	public function index() {
@@ -74,6 +80,7 @@ Class Attendance extends CI_Controller {
 					$data['start_date'] = $start_date;
 					$data['end_date'] = $end_date;
 					$this->load->view('attendance-registration',$data);
+					// print_r($data);
 					}
 		}else if($step == 4){
 			$students_obj = $this->attendance_model->get_students_by_batch_id($_POST['batch_id']);

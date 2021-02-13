@@ -23,29 +23,34 @@
         </div>
         
         <!-- Static navbar -->
-        <nav class="navbar navbar-expand-lg sticky-top navbar-light bg-primary">
+        <nav class="navbar navbar-expand-lg sticky-top navbar-light bg-primary py-0">
             <div class="container">
                
                 <div id="navbarNav" class="collapse navbar-collapse">
                     <ul class="navbar-nav ml-auto mr-auto">
+                    <?php $dashboad_active = ($this->session->current_menu == 'index') ? 'text-dark bg-warning' : 'text-white'; ?>
+                        <li class="nav-item active"><a class="<?php echo $dashboad_active ?> nav-link" href="<?php echo base_url(); ?>">Home</a></li>
+                        <li class="nav-item"><a class="text-white nav-link" href="<?php echo base_url(); ?>#courseview">Courses</a></li>
 
-                        <li class="nav-item active"><a class="text-white nav-link" href="<?php echo base_url(); ?>">Home</a></li>
-                        <li class="nav-item"><a class="text-white nav-link" href="#courseview">Courses</a></li>
-                        <li class="nav-item"><a class="text-white nav-link" href="<?php echo base_url('/user/verification') ?>">Certificate Verification</a></li>
+                        <?php $dashboad_active = ($this->session->current_menu == 'verification') ? 'text-dark bg-warning' : 'text-white'; ?>
+
+                        <li class="nav-item"><a class=" <?php echo $dashboad_active ?> nav-link" href="<?php echo base_url('/user/verification') ?>">Certificate Verification</a></li>
                         
                         <li class="nav-item"><a class="text-white nav-link" href="#contactinfo">Contact Us</a></li>
                        
                         <?php 
                             
                             if(isset($this->session->userdata['user_detail']['login'])){
+                               
                                 $userType = $this->session->userdata['user_detail']['type'];
+                                $dashboad_active = ($this->session->current_menu == 'dashboard') ? 'text-dark bg-warning' : 'text-white';
 
                                 if($userType == 'admin' || $userType  == 'coordinator'){
-                                    echo "<li class='nav-item'><a class='text-white nav-link' href='";
+                                    echo "<li class='nav-item'><a class='$dashboad_active nav-link' href='";
                                     echo base_url('/user/staffDashBoard');
                                     echo "'>Dashboard</a></li>";
                                 }else if($userType == 'student' || $userType  == 'trainer'){
-                                    echo "<li class='nav-item'><a class='text-white nav-link' href='";
+                                    echo "<li class='nav-item'><a class='$dashboad_active nav-link' href='";
                                     echo base_url('/user/clientDashBoard');
                                     echo "'>Dashboard</a></li>";
                                 }
