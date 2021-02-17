@@ -143,7 +143,7 @@ if (!($this->session->userdata('user_detail'))) {
           echo "<input type='hidden' value='{$select_course[0]->course_id}' name='course-id' >";
         echo "</div>";
         echo '<div class="form-group">';
-          echo '<label>Select a bath</label>';
+          echo '<label>Select a batch</label>';
         
           echo "<select name='selected_batch' class='form-control'>";
           foreach ($all_batches as $key_batch => $batch) {

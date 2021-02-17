@@ -850,7 +850,7 @@ public function course(){
 			'newBatchRegistration' => 'New Batch', 
 			'searchCourse' => 'Search Course & Batch',
 			'newSubject' => 'New Subject',
-			'examCertificate' => 'Exam & Certificate'
+			'examCertificate' => 'Batch wise students <br>(Exam & Certificate)'
 		);
 
 		$this->load->view('course-management',$data);
@@ -861,7 +861,7 @@ public function course(){
 			'newBatchRegistration' => 'New Batch', 
 			'searchCourse' => 'Search Course & Batch',
 			
-			'examCertificate' => 'Exam & Certificate'
+			'examCertificate' => 'Batch wise students<br>(Exam & Certificate)'
 		);
 
 		$this->load->view('course-management',$data);
@@ -1358,6 +1358,7 @@ public function course(){
 			 // Array ( [course-id] => 1 [selected_batch] => 2 [payment_mode] => full [due-date] => 2022-02-08 [firstname] => roshi [lastname] => fernando [bdate] => 2007-06-05 [email] => roshi@gmail.com [telephone] => 1234567 [password] => 71160457V )
  
 
+			 $this->form_validation->set_rules('selected_batch', 'Batch Number', 'trim|required');
 			 $this->form_validation->set_rules('firstname', 'First Name', 'trim|required|alpha');
 			 $this->form_validation->set_rules('lastname', 'Last Name', 'trim|required|alpha');
 			 $this->form_validation->set_rules('bdate', 'Birth Date', 'trim|required');

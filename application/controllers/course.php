@@ -378,7 +378,7 @@ public function searchCourse(){
 
 		$data['select_course_detail'] = $this->course_model->get_course_by_id($courseid);
 		$data['select_batch_detail'] = $this->user_model->read_batch_byid($batchid)[0];
-		
+		$data['select_student'] = $this->user_model->student_detail_byid($studentid);
 		if($state == 'marks'){
 			// show student marks form if exist to edit or add new 
 		// 	$courseid,
@@ -397,6 +397,7 @@ public function searchCourse(){
 				'state' => $_POST['markstate'],
 				'subject_id' => $_POST['subjectid'],
 			);
+		
 			$result_subject_marks = $this->course_model->add_update_subject_mark($mark_data);
 			// echo $result_subject_marks;
 			if($result_subject_marks == 'insert'){
@@ -409,7 +410,8 @@ public function searchCourse(){
 			// $data['student_marks'] = $this->user_model->read_subject_and_marks_student_wise($studentid,$courseid,$batchid);
 		}
 		$data['student_marks'] = $this->user_model->read_subject_and_marks_student_wise($studentid,$courseid,$batchid);
-		print_r($data);
+		$data['student_id'] = $studentid;
+		// print_r($data);
 		 $this->load->view('exam-certificate-view',$data);
 
 

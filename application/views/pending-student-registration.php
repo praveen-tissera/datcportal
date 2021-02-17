@@ -107,17 +107,17 @@ if (!($this->session->userdata('user_detail'))) {
         echo '</td>';
         echo '<td>';
         echo '<table>';
-        foreach ($registration_course_detail->batch_summary as $key => $bath_detail) {
+        foreach ($registration_course_detail->batch_summary as $key => $batch_detail) {
           echo '<tr>';
           echo '<td>';
-             echo $bath_detail->course_name;
+             echo $batch_detail->course_name;
           echo '</td>';
           echo '<td>';
-             echo $bath_detail->batch_number;
+             echo $batch_detail->batch_number;
           echo '</td>';
           echo '<td>';
           // student_id/course_id/batch_id/
-             echo '<a href="'. base_url('user/registerStudent/pending/'.$registration_course_detail->student_id.'/'.$bath_detail->course_id.'/'.$bath_detail->batch_id) .'">Proceed</a>';
+             echo '<a href="'. base_url('user/registerStudent/pending/'.$registration_course_detail->student_id.'/'.$batch_detail->course_id.'/'.$batch_detail->batch_id) .'">Proceed</a>';
           echo '</td>';
             // print_r($bath_detail);
           echo '</tr>';

@@ -191,15 +191,16 @@ if (!($this->session->userdata('user_detail'))) {
           echo '<div class="row">';
             echo '<div class="col-12">';
           // print_r($student_marks);
-          echo "<h3 class='mt-4'>Student mark sheet</h3>";
+          echo "<h3 class='mt-4'>".$select_student[0]->first_name . ' '.  $select_student[0]->last_name . " mark sheet</h3>";
           echo "<table class='table table-striped'>"; 
             echo "<thead><tr><td>Subject id</td><td>Subject name</td><td>Subject status</td><td>Student mark</td><td>pass/fail</td><td></td></tr></thead>";
 
             echo "<tbody>";
             
             foreach ($student_marks as $key => $student) {
+             
               
-              echo form_open('course/examCertificate/4/'.$select_batch_detail->course_id.'/'.$select_batch_detail->batch_id.'/'.$students_detail[0]->student_id.'/marks');
+              echo form_open('course/examCertificate/4/'.$select_batch_detail->course_id.'/'.$select_batch_detail->batch_id.'/'.$student_id.'/marks');
               echo "<input type='hidden' name='subjectid' value='{$student->subject_id}'";
               echo "<tr>";
               echo "<td>";
@@ -260,7 +261,7 @@ if (!($this->session->userdata('user_detail'))) {
           echo '<div class="row">';
             echo '<div class="col-12">';
     
-            echo "<h3 class='mt-4'>Certificate detail</h3>";
+            echo "<h3 class='mt-4'>". $select_student[0]->first_name . ' '.  $select_student[0]->last_name  . " Certificate detail</h3>";
             echo '<div class="alert alert-warning" role="alert">
             Student batch status should be active when adding certificate details.
           </div>';
