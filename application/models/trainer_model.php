@@ -118,7 +118,7 @@ class Trainer_model extends CI_Model
                     
                     $this->db->update('trainer_batch_map_table');
                 }
-                return('2');
+                
             }
             $this->db->insert('trainer_batch_map_table', $data);
             // echo $this->db->last_query();
