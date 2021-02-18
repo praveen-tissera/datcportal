@@ -914,7 +914,7 @@ public function read_student_detail_to_batch($student_id,$batch_id){
      * 
      */
     public function trainer_map_to_batch($batchid){
-        $condition = "batch_id = " . "'" . $batchid . "'";
+        $condition = "batch_id = " . "'" . $batchid . "' AND state = 'active'";
         $this->db->select('*');
         $this->db->from('trainer_batch_map_table');
         $this->db->where($condition);

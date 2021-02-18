@@ -77,7 +77,7 @@ if (!($this->session->userdata('user_detail'))) {
         }elseif(isset($select_course)){
           echo '<p class="lead">';
           echo 'Selected course: <br>';
-          echo $select_course->course_name;
+          echo '<p class="badge badge-primary">' . $select_course->course_name . '</p>';
           echo '</p>';
         }
      
@@ -105,7 +105,7 @@ if (!($this->session->userdata('user_detail'))) {
       }else if(isset($select_trainer)){
         echo '<p class="lead">';
         echo 'Selected trainer: <br>';
-        echo $select_trainer->first_name . ' ' .  $select_trainer->last_name;
+        echo '<p class="badge badge-primary">' . $select_trainer->first_name . ' ' .  $select_trainer->last_name . '</p>';
         echo '</p>';
       }
    
@@ -116,10 +116,11 @@ if (!($this->session->userdata('user_detail'))) {
       <div class="col-12">
         
         <?php 
-        if(isset($course_batches)){
+        if(isset($course_batches) && is_array($course_batches)){
           echo form_open('trainer/trainerBatch/3'); 
-          echo "<input type='hidden' name='course_id' value='$select_trainer->trainer_id'>";
-          echo "<input type='hidden' name='trainer_id' value='$select_course->course_id'>";
+          // print_r($select_trainer);
+          echo "<input type='hidden' name='course_id' value='$select_course->course_id'>";
+          echo "<input type='hidden' name='trainer_id' value='$select_trainer->trainer_id'>";
           // print_r($course_batches);
           echo '<label>Select a batch</label>';
         
@@ -142,7 +143,12 @@ if (!($this->session->userdata('user_detail'))) {
             echo "</tr>";
           }
         echo "</table>";
+        }else if(isset($course_batches)){
+          echo '<div class="alert alert-danger" role="alert">';
+          echo 'No batches found for this course';
+          echo '</div>';
         }
+
         
         ?>
       </div>

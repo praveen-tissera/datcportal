@@ -138,10 +138,10 @@ Class Trainer extends CI_Controller {
 			
 			$data['select_trainer'] = $this->trainer_model->get_trainer_by_id($_POST['trainer_id'])[0];
 			$data['course_batches'] = $this->user_model->read_active_batch($_POST['selected_course']);
-			//print_r($data);
+			
 			$this->load->view('trainer-batch-map',$data);
 		}else if($step == 3){
-			// print_r($_POST);
+			
 			$data = array(
 				'trainer_id' => $_POST['trainer_id'],
 				'batch_id' => $_POST['select_batch'],
@@ -151,11 +151,12 @@ Class Trainer extends CI_Controller {
 
 			);
 			$result = $this->trainer_model->map_trainer_with_batch($data);
+			// echo $result;
 			if($result == 1){
 				$this->session->set_flashdata('success_message_display','Trainer assigned to batch');
 				redirect('/trainer/trainerBatch/1');
-			}else if($result == 'user found'){
-				$this->session->set_flashdata('error_message_display','Trainer already assigned to the batch');
+			}else if($result == '2'){
+				$this->session->set_flashdata('success_message_display','Trainer state update to active');
 				redirect('/trainer/trainerBatch/1');
 			}else{
 				$this->session->set_flashdata('error_message_display','Error came when assigning trainer to batch. Please try again');
