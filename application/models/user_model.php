@@ -1389,11 +1389,32 @@ public function read_student_detail_to_batch($student_id,$batch_id){
             }
         }else if($role == 'trainer'){
 
-
+            $condition ="trainer_id =" . "'" .  $id . "'";
+           
+            $this->db->set('password', $password);
+            $this->db->where($condition);
+            $this->db->update('trainer_table');
+            if($this->db->affected_rows() == 1){
+                return(1);
+            }else{
+                return(0);
+            }
         }else if($role == 'student'){
-
+            $condition ="student_id =" . "'" .  $id . "'";
+           
+            $this->db->set('password', $password);
+            $this->db->where($condition);
+            $this->db->update('student_table');
+            if($this->db->affected_rows() == 1){
+                return(1);
+            }else{
+                return(0);
+            }
         }
     }
+
+
+    
 
      /**
      * password reset

@@ -108,7 +108,8 @@ if (!($this->session->userdata('user_detail'))) {
       echo "<td> $trainerObject->email </td>";
       echo "<td> $trainerObject->state </td>";
       echo "<td> $trainerObject->register_date </td>";
-      echo "<td><a target='_blank' href='trainerProfile/$trainerObject->trainer_id' >view more</a></td>";
+      
+      echo "<td><a target='_blank' href='". base_url("/user/reset/$trainerObject->trainer_id/trainer")."' >Rest password</a> <a target='_blank' href='trainerProfile/$trainerObject->trainer_id' >View more</a></td>";
     echo "</tr>";
   }
     

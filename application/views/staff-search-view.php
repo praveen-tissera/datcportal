@@ -54,7 +54,7 @@ if (!($this->session->userdata('user_detail'))) {
     <div class="row">
     <?php echo form_open('user/searchStaff'); ?>
     <div class="col-12">
-    <h2>Trainer Search</h2>
+    <h2>Staff Search</h2>
     <div class="form-row">
       
         <div class="form-group col-md-5">

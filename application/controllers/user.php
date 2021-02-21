@@ -142,9 +142,9 @@ public function studentTrainerLogin(){
 			}else{
 				$user_menu = ['profile'=>'My Profile',
 											
-											'student'=>'Student Managment',
+											'trainerStudentAttendane'=>'Mark Student Attendance',
 											
-											'course'=>'Course Managment',
+											'trainerCourse'=>'My Courses',
 										
 										];
 				$user_session_data = array(
@@ -1576,7 +1576,14 @@ public function searchStaff(){
 			$reset_passowrd = sha1('abc123');
 			$result = $this->user_model->resetPassword($id, $role,	$reset_passowrd);
 			$this->session->set_flashdata('success_message_display','Password Reset New Password - abc123' );
-			redirect('/user/searchStaff');
+			if($role == 'staff'){
+				redirect('/user/searchStaff');
+			}else if($role == 'trainer'){
+				redirect('/trainer/searchTrainer');
+			}else if($role == 'student'){
+				redirect('/user/searchStudent');
+			}
+			
 		}
  }
  public function staffupdate($id, $state){

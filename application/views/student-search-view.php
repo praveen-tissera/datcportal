@@ -110,7 +110,11 @@ if (!($this->session->userdata('user_detail'))) {
       echo "<td> $studentObject->telephone </td>";
       echo "<td> $studentObject->state </td>";
       echo "<td> $studentObject->register_date </td>";
-      echo "<td><a class='btn btn-link btn-sm' target='_blank' href='studentProfile/$studentObject->student_id' >view</a><a class='btn btn-link btn-sm' target='_blank' href='newRegistrationCourse/1/$studentObject->student_id' >register to new course</a></td>";
+      echo "<td>
+      <a class='btn btn-link btn-sm' target='_blank' href='studentProfile/$studentObject->student_id' >View</a>
+      <a class='btn btn-link btn-sm' target='_blank' href='newRegistrationCourse/1/$studentObject->student_id' >Register to new course</a> 
+      <a class='btn btn-link btn-sm' target='_blank' href='reset/$studentObject->student_id/student' >Reset password</a>
+      </td>";
     echo "</tr>";
   }
     
