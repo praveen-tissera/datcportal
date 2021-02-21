@@ -14,8 +14,7 @@ class Attendance_model extends CI_Model
         
         $query = $this->db->get();
         if($query->num_rows() > 0){
-            // return $query->result();
-            // print_r($query->result());
+
             $student_obj = $query->result();
             foreach ($student_obj as $key => $value) {
                $student_info =  $this->userModel->student_detail_byid($value->student_id)[0];
