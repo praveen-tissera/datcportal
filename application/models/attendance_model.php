@@ -55,7 +55,7 @@ class Attendance_model extends CI_Model
             
             $this->db->update('student_attendance_table');
             // echo $this->db->last_query();
-            // echo "<br>";
+            
             if ($this->db->affected_rows() > 0) {
                 return(1);
             }else{
