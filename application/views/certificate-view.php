@@ -50,7 +50,7 @@
 
         // print_r($result_certificate['course_details']);
 
-      if(isset($result_certificate)){
+      if(isset($result_certificate) && is_array($result_certificate)){
         echo "<h3 class='my-4'>Certificate ({$certificatenumber}) verified under following details</h3>";
         echo "<caption>Student Detail</caption>";
         echo "<table class='table'>";
@@ -105,6 +105,10 @@
             echo "</tr>";
           echo "</tbody>";
         echo "</table>";
+      }else{
+        echo '<div class="alert alert-success" role="alert">';
+         echo "No certificate found";
+        echo '</div>';
       }
       
       ?>

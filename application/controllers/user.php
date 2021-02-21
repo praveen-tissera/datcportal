@@ -1205,7 +1205,7 @@ public function course(){
 			$this->load->view('verfication-view',$data);
 		}else if($step == 2 && isset($_POST)){
 			$expiration = time() - 7200; // Two hour limit
-			print_r($_POST);
+			// print_r($_POST);
 			$form_captcha = array(
 			'string'	=> $_POST['captcha'], 
 				'ip' => $this->input->ip_address(), 
@@ -1218,6 +1218,8 @@ public function course(){
 				$data['certificatenumber'] = $_POST['certificatenumber'];
 				
 				$this->load->view('certificate-view',$data);
+
+
 			}else{
 				$this->session->set_flashdata('error_message_display','You must submit the word that appears in the image.');
 				redirect('/user/verification/1');
