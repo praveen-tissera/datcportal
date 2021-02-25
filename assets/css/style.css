@@ -2,6 +2,9 @@
 /* DATC styles start here */
 
 
+select,input[text]{
+  text-transform: capitalize;
+}
 .banner {
   height: 100vh;
   min-height: 500px;

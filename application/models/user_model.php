@@ -1413,9 +1413,6 @@ public function read_student_detail_to_batch($student_id,$batch_id){
         }
     }
 
-
-    
-
      /**
      * password reset
      */

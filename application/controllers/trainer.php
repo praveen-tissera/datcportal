@@ -137,8 +137,15 @@ Class Trainer extends CI_Controller {
 			$data['select_course'] = $this->user_model->read_active_course_byid($_POST['selected_course'])[0];
 			
 			$data['select_trainer'] = $this->trainer_model->get_trainer_by_id($_POST['trainer_id'])[0];
-			$data['course_batches'] = $this->user_model->read_active_batch($_POST['selected_course']);
-			
+			// $data['course_batches'] = $this->user_model->read_active_batch($_POST['selected_course']);
+			$course_batches = $this->user_model->read_active_batch($_POST['selected_course']);
+			foreach ($course_batches as $key => $value) {
+				// print_r($value);
+				
+				$course_batches[$key]->trainer_details = $this->user_model->trainer_map_to_batch($value->batch_id);
+			}
+			// print_r($course_batches);
+			$data['course_batches'] = $course_batches;
 			$this->load->view('trainer-batch-map',$data);
 		}else if($step == 3){
 			

@@ -1595,5 +1595,18 @@ public function searchStaff(){
 	}
 }
 
+// show trainer assign course and batches
+
+	public function trainerCourse(){
+		// print_r($this->session->userdata['user_detail']);
+		if(isset($this->session->userdata['user_detail']['type']) == 'trainer'){
+		
+			$data['trainer_batch_details'] = $this->trainer_model->get_trainer_batch_details($this->session->userdata['user_detail']['user_id']);
+			// print_r($trainer_batch_details);
+			$this->load->view('trainer-course-view',$data);
+
+		}
+	}
+
 }
 ?>

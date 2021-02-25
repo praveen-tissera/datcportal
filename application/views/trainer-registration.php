@@ -96,7 +96,7 @@ if (!($this->session->userdata('user_detail'))) {
           <input type="text" value="<?php echo set_value('password'); ?>" class="form-control" name="password" placeholder="use student NIC number" >
 
         </div>
-        <button type="submit" class="form-group btn btn-primary">Next</button>
+        <button type="submit" class="form-group btn btn-primary">Submit</button>
       <?php  echo form_close();?>
     </div>
     </div>

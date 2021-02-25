@@ -117,6 +117,7 @@ if (!($this->session->userdata('user_detail'))) {
         
         <?php 
         if(isset($course_batches) && is_array($course_batches)){
+         
           echo form_open('trainer/trainerBatch/3'); 
           // print_r($select_trainer);
           echo "<input type='hidden' name='course_id' value='$select_course->course_id'>";
@@ -127,8 +128,29 @@ if (!($this->session->userdata('user_detail'))) {
          echo "<table class='table table-dark' >";
           
           foreach ($course_batches as $key => $batch) {
+            
             echo "<tr><td>";
-            echo "<li>";
+            echo "<li style='list-style:none;'>";
+                echo '<div class="alert alert-danger" role="alert">';
+                //  print_r($batch->trainer_details);
+                if(is_object($batch->trainer_details)){
+                  // print_r($batch->trainer_details->trainer_detail);
+                  echo '<p>Active Trainer Details:</p>';
+                  echo "<p>Name: ";
+                  echo $batch->trainer_details->trainer_detail->first_name . ' '
+ . $batch->trainer_details->trainer_detail->last_name;
+                 
+                  echo "<br>Trainer ID: ";
+                   echo $batch->trainer_details->trainer_detail->trainer_id;
+ 
+                  echo "</p>";
+                  
+  
+
+         }else{
+                  echo "No active trainer found for this batch";
+                }
+                echo '</div>';
               echo "<input type='radio' name='select_batch' value='{$batch->batch_id}' id='{$batch->batch_id}' >";
               echo "<label class='ml-3' for='{$batch->batch_id}'>";
                 echo ' Batch number - ' . $batch->batch_number;
