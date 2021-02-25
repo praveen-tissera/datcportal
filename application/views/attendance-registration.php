@@ -70,8 +70,8 @@ if (!($this->session->userdata('user_detail'))) {
           echo "</select>";
           
         }elseif (isset($select_course_detail)) {
-          echo '<label>Selected course</label>';
-            echo "<p>{$select_course_detail[0]->course_name}</p>";
+          echo '<label>Selected course</label><br>';
+            echo "<p class='badge badge-primary'>{$select_course_detail[0]->course_name}</p>";
            
         }
         
@@ -99,7 +99,7 @@ if (!($this->session->userdata('user_detail'))) {
             echo form_open('attendance/newAttendanceRegistration/4');
             echo "<input type='hidden' value='{$select_batch_detail->course_id}' name='course_id'>";
             echo "<input type='hidden' value='{$select_batch_detail->batch_id}' name='batch_id'>";
-            echo '<div class="col-6">';
+            echo '<div class="col-12">';
               echo '<label>Selected batch number : </label><br>';
               
               echo "<p class='badge badge-primary'>{$select_batch_detail->batch_number}</p>";
@@ -147,34 +147,40 @@ if (!($this->session->userdata('user_detail'))) {
                 for($i=1;$i<=7;$i++){
                  
                   $found_flag = false;
-                  foreach ($student->student_attendance as $key => $value) {
+                  if(is_array($student->student_attendance)){
+
+                    foreach ($student->student_attendance as $key => $value) {
 
 
-                  if($datetime->format('Y-m-d') == $value->attend_date){
-                    // found attendance for the current date
-                    $found_flag = true;
-                    echo "<td>";
-                      echo "<select name='{$student->student_id}_$i'>";
-                      if($value->status == 'na'){
-                        echo "<option selected value='na'>N/A</option>";
-                        echo "<option value='0'>0</option>";
-                        echo "<option value='1'>1</option>";
-                      }elseif($value->status == '0'){
-                        echo "<option value='na'>N/A</option>";
-                        echo "<option selected value='0'>0</option>";
-                        echo "<option value='1'>1</option>";
-                      }elseif($value->status == '1'){
-                        echo "<option value='na'>N/A</option>";
-                        echo "<option value='0'>0</option>";
-                        echo "<option selected value='1'>1</option>";
+                      if($datetime->format('Y-m-d') == $value->attend_date){
+                        // found attendance for the current date
+                        $found_flag = true;
+                        echo "<td>";
+                          echo "<select name='{$student->student_id}_$i'>";
+                          if($value->status == 'na'){
+                            echo "<option selected value='na'>N/A</option>";
+                            echo "<option value='0'>0</option>";
+                            echo "<option value='1'>1</option>";
+                          }elseif($value->status == '0'){
+                            echo "<option value='na'>N/A</option>";
+                            echo "<option selected value='0'>0</option>";
+                            echo "<option value='1'>1</option>";
+                          }elseif($value->status == '1'){
+                            echo "<option value='na'>N/A</option>";
+                            echo "<option value='0'>0</option>";
+                            echo "<option selected value='1'>1</option>";
+                          }
+                         
+                            
+                           
+                          echo "</select>";
+                        echo '</td>';
                       }
-                     
-                        
-                       
-                      echo "</select>";
-                    echo '</td>';
+                    }
                   }
-                }
+                  
+
+
                 if(!$found_flag){
                   echo "<td>";
                   echo "<select name='{$student->student_id}_$i'>";
