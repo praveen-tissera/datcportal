@@ -36,6 +36,12 @@ if (!($this->session->userdata('user_detail'))) {
       echo $success_message_display;
       echo '</div>';
     }
+    // if trainer login and could not found any batches assigne to his
+    if((isset($active_batches) && count($active_batches)==0)){
+      echo '<div class="alert alert-danger" role="alert">';
+      echo "No active batch found for this profile";
+      echo '</div>';
+    }
 
     ?>
     </div>
@@ -127,6 +133,7 @@ if (!($this->session->userdata('user_detail'))) {
           echo "<th>";
             echo "Student name";
           echo "</th>";
+          // create heading for th all attendance dates
         foreach ($batch_attendance as $value) {
           echo "<th>";
             echo $value->attend_date;
@@ -136,34 +143,104 @@ if (!($this->session->userdata('user_detail'))) {
 
 
         echo "</tr>";
+
+
+        // create row for trainer attendance
+        if(is_object($batch_trainer_attendance)){
+          // print_r($batch_trainer_attendance);
+          echo "<tr>";
+          echo "<td>";
+
+          echo $batch_trainer_attendance->trainer_id;
+          echo "</td>";
+          echo "<td>";
+          echo $batch_trainer_attendance->trainer_detail->first_name . " " . $batch_trainer_attendance->trainer_detail->last_name;
+          echo ' <span class="badge badge-info"> Trainer </span> ';
+          echo "</td>";
+          foreach ($batch_attendance as $batch_attend_date) {
+            $flag =false;
+              echo "<td>";
+              if(is_array($batch_trainer_attendance->trainer_attendance)){
+                foreach ($batch_trainer_attendance->trainer_attendance as $trainerAttendDate) {
+                  // echo $stdAttendDate->attend_date;
+                  // echo "---";
+                  // echo $batch_attend_date->attend_date;
+                  // echo "<hr>";
+  
+                  if($trainerAttendDate->attend_date == $batch_attend_date->attend_date ){
+                    
+                    // $stdAttendDate->attend_date;
+                     echo $trainerAttendDate->status;
+                     $flag = true;
+                    
+                  }
+                  
+                }
+                // if flag is ture means there is a attendace found for the date period
+                if(!$flag){
+                  echo 'N/A';
+                }
+
+                
+              }
+              else{
+                // echo "<td>";
+                  echo 'N/A';
+                // echo "</td>";
+              }
+              
+              echo "</td>";
+          }
+          echo "</tr>";
+        }
+
+
+
+        // create rows for student attendance
+        //  print_r($batch_student_attendance);
         foreach ($batch_student_attendance as $studentkey => $stdObj) {
           echo "<tr>";
             echo "<td>";
-            // echo "<pre>";
-            //   print_r($stdObj->student_detail->student_id);
-            // echo "</pre>";
+
             echo $stdObj->student_detail->student_id;
             echo "</td>";
             echo "<td>";
             echo $stdObj->student_detail->first_name . " " . $stdObj->student_detail->last_name;
             echo "</td>";
-
+            // loop throung full attendance and search through student attendance array if it contain attendated date
             foreach ($batch_attendance as $batch_attend_date) {
-              foreach ($stdObj->student_attendance as $stdAttendDate) {
-                // echo $stdAttendDate->attend_date;
-                // echo "---";
-                // echo $batch_attend_date->attend_date;
-                // echo "<hr>";
-
-                if($stdAttendDate->attend_date == $batch_attend_date->attend_date ){
-                   echo "<td>";
-                  // $stdAttendDate->attend_date;
-                   echo $stdAttendDate->status;
-                   echo "</td>";
+              $flag =false;
+              echo "<td>";
+              if(is_array($stdObj->student_attendance)){
+                foreach ($stdObj->student_attendance as $stdAttendDate) {
+                  // echo $stdAttendDate->attend_date;
+                  // echo "---";
+                  // echo $batch_attend_date->attend_date;
+                  // echo "<hr>";
+  
+                  if($stdAttendDate->attend_date == $batch_attend_date->attend_date ){
+                    
+                    // $stdAttendDate->attend_date;
+                     echo $stdAttendDate->status;
+                     $flag = true;
+                    
+                  }
                   
                 }
+                // if flag is ture means there is a attendace found for the date period
+                if(!$flag){
+                  echo 'N/A';
+                }
+
+                
+              }
+              else{
+                // echo "<td>";
+                  echo 'N/A';
+                // echo "</td>";
               }
               
+              echo "</td>";
             }
 
 
@@ -180,9 +257,19 @@ if (!($this->session->userdata('user_detail'))) {
      
       ?>
       <div class="row">
-      <div class="col-12">
+      <div class="col-12 mb-4">
          <a class="btn btn-dark mt-2" href="<?php echo base_url('attendance/searchAttendance')?>">Back</a>
-        <button type="submit" class="mt-4 form-group btn btn-primary">Next</button>
+         <?php 
+          if(isset($batch_attendance)){
+            echo '<button type="submit" class="mt-4 form-group btn btn-primary">Next</button>';
+          }else if(isset($active_batches) && count($active_batches)>0){
+            echo '<button type="submit" class="mt-4 form-group btn btn-primary">Next</button>';
+          }else if(isset($active_courses)){
+            echo '<button type="submit" class="mt-4 form-group btn btn-primary">Next</button>';
+          }
+          
+         ?>
+        
        </div>
 
         

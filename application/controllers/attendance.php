@@ -59,17 +59,66 @@ Class Attendance extends CI_Controller {
 			$data['active_courses'] = $this->course_model->get_all_courses_base_state('active');
 			$this->load->view('attendance-registration',$data);
 		}elseif ($step == 2) {
+
+
 			// print_r($_POST);
+			if($this->session->userdata['user_detail']['type'] == 'admin' || $this->session->userdata['user_detail']['type'] == 'coordinator'){
 			$select_course_detail = $this->course_model->get_course_by_id($_POST['selectcourse']);
 			$data['select_course_detail'] = $select_course_detail;
 			 
 			$data['active_batches'] = $this->course_model->get_course_batch_details($_POST['selectcourse']);
+			
+			}elseif ($this->session->userdata['user_detail']['type'] == 'trainer') {
+				$select_course_detail = $this->course_model->get_course_by_id($_POST['selectcourse']);
+			$data['select_course_detail'] = $select_course_detail;
+			 
+			$data['active_batches'] = $this->course_model->get_course_batch_details($_POST['selectcourse']);
+			// print_r($data['active_batches']);
+			// print_r($this->session->userdata['user_detail']['user_id']);
+			$trainer_assign_batches = $this->trainer_model->get_trainer_batch_details($this->session->userdata['user_detail']['user_id']);
+				// print_r($trainer_assign_batches);
+				foreach ($data['active_batches'] as $active_batch_key => $ative_batches) {
+					$flag='false';
+
+					if(is_array($trainer_assign_batches)){
+
+						foreach ($trainer_assign_batches as $key => $trainer_batch) {
+						// print_r($trainer_batch);
+							if($ative_batches->batch_id == $trainer_batch->batch_id){
+								$flag = 'true';
+
+								break;
+							}
+						}
+						// remove un match batch
+						if($flag == 'false'){
+							unset($data['active_batches'][$active_batch_key]);
+						}
+
+					}
+					// remove un match batch
+					if($flag == 'false'){
+						unset($data['active_batches'][$active_batch_key]);
+					}
+
+
+				}
+			}
+
 			$this->load->view('attendance-registration',$data);
 		}elseif ($step == 3) {
 			// print_r($_POST);
 			$data['select_course_detail'] = $this->course_model->get_course_by_id($_POST['course_id']);
 			$data['select_batch_detail'] = $this->user_model->read_batch_byid($_POST['selectbatch'])[0];
 			$data['student_in_batch_obj'] = $this->attendance_model->get_students_by_batch_id($_POST['selectbatch']);
+
+			$data['trainer_in_batch_obj'] = $this->attendance_model->get_trainer_by_batch_id($_POST['selectbatch']);
+
+				if(	!is_object($data['trainer_in_batch_obj'])){
+					$data['error_message_display'] = "No active trainer found";
+						// $this->load->view('attendance-registration',$data);
+				}
+			// print_r($data['student_in_batch_obj']);
 			// print_r($data);
 					if(	$data['student_in_batch_obj'] == 0){
 						$data['error_message_display'] = "No student register yet";
@@ -80,10 +129,33 @@ Class Attendance extends CI_Controller {
 					$data['start_date'] = $start_date;
 					$data['end_date'] = $end_date;
 					$this->load->view('attendance-registration',$data);
-					// print_r($data);
+					//  print_r($data);
 					}
 		}else if($step == 4){
 			$students_obj = $this->attendance_model->get_students_by_batch_id($_POST['batch_id']);
+			$trainer_obj = $this->user_model->trainer_map_to_batch($_POST['batch_id']);
+			// print_r($trainer_obj);
+			list($start_date, $end_date) = $this->x_week_range(date("Y-m-d"));
+			$datetime = new DateTime($start_date);
+				for($i=1; $i<=7; $i++){
+					$index = 't_'.$trainer_obj->trainer_id.'_'.$i;
+					if($_POST[$index] != 'na'){
+						$data = array(
+							'trainer_id' => $trainer_obj->trainer_id,
+							'batch_id' => $trainer_obj->batch_id,
+							'status' => $_POST[$index],
+							'attend_date' => $datetime->format('Y-m-d'),
+							'added_date' => Date('Y-m-d'),
+							'staff_id' => $this->session->userdata('user_detail')['user_id']
+						);
+						$datetime->modify('+1 day');
+						$datetime->format('Y-m-d');
+						$this->attendance_model->trainer_add_new_attendance($data);
+					}else{
+						$datetime->modify('+1 day');
+							$datetime->format('Y-m-d');
+					}
+				}
 			// print_r($students_obj);
 			list($start_date, $end_date) = $this->x_week_range(date("Y-m-d"));
 		
@@ -138,20 +210,67 @@ Class Attendance extends CI_Controller {
 			$this->load->view('attendance-view',$data);
 		}elseif ($step == 2) {
 			// print_r($_POST);
-			$select_course_detail = $this->course_model->get_course_by_id($_POST['selectcourse']);
+
+			if($this->session->userdata['user_detail']['type'] == 'admin' || $this->session->userdata['user_detail']['type'] == 'coordinator'){
+				$select_course_detail = $this->course_model->get_course_by_id($_POST['selectcourse']);
 			$data['select_course_detail'] = $select_course_detail;
 			 
 			$data['active_batches'] = $this->course_model->get_course_batch_details($_POST['selectcourse']);
-			$this->load->view('attendance-view',$data);
+			}elseif ($this->session->userdata['user_detail']['type'] == 'trainer') {
+
+				$select_course_detail = $this->course_model->get_course_by_id($_POST['selectcourse']);
+			$data['select_course_detail'] = $select_course_detail;
+			 
+			$data['active_batches'] = $this->course_model->get_course_batch_details($_POST['selectcourse']);
+			// print_r($data['active_batches']);
+			// print_r($this->session->userdata['user_detail']['user_id']);
+			$trainer_assign_batches = $this->trainer_model->get_trainer_batch_details($this->session->userdata['user_detail']['user_id']);
+				// print_r($trainer_assign_batches);
+				foreach ($data['active_batches'] as $active_batch_key => $ative_batches) {
+					$flag='false';
+
+					if(is_array($trainer_assign_batches)){
+
+						foreach ($trainer_assign_batches as $key => $trainer_batch) {
+						// print_r($trainer_batch);
+							if($ative_batches->batch_id == $trainer_batch->batch_id){
+								$flag = 'true';
+								
+								// print_r($trainer_batch->batch_id);
+								break;
+							}
+						}
+						// remove un match batch
+						if($flag == 'false'){
+							unset($data['active_batches'][$active_batch_key]);
+						}
+
+					}
+					// remove un match batch
+					if($flag == 'false'){
+						unset($data['active_batches'][$active_batch_key]);
+					}
+
+
+				}
+				//  print_r($data['active_batches']);
+
+				
+			}
+			
+			 $this->load->view('attendance-view',$data);
+
+
 		}elseif ($step == 3) {
 			// print_r($_POST);
 			$data['select_course_detail'] = $this->course_model->get_course_by_id($_POST['course_id']);
 			$data['select_batch_detail'] = $this->user_model->read_batch_byid($_POST['selectbatch'])[0];
 			$data['batch_attendance'] = $this->attendance_model->read_batchwise_attendance($_POST['selectbatch']);
 			$data['batch_student_attendance'] = $this->attendance_model->get_students_by_batch_id($_POST['selectbatch']);
+			$data['batch_trainer_attendance'] = $this->attendance_model->get_trainer_by_batch_id($_POST['selectbatch']);
 
 					 $this->load->view('attendance-view',$data);
-					// print_r($data);
+			// print_r($data);
 		}
 		
 	}

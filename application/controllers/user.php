@@ -142,7 +142,7 @@ public function studentTrainerLogin(){
 			}else{
 				$user_menu = ['profile'=>'My Profile',
 											
-											'trainerStudentAttendane'=>'Mark Student Attendance',
+											'attendance'=>'Attendance',
 											
 											'trainerCourse'=>'My Courses',
 										
@@ -801,6 +801,14 @@ public function attendance(){
 		$this->load->view('attendance-management',$data);
 
 	}else if($this->session->userdata['user_detail']['type'] == 'coordinator'){
+		$data['studentManagement'] = array(
+			'newAttendanceRegistration' => 'Add Attendance',
+			'searchAttendance' => 'Search Attendance',
+		);
+
+		$this->load->view('attendance-management',$data);
+	}
+	else if($this->session->userdata['user_detail']['type'] == 'trainer'){
 		$data['studentManagement'] = array(
 			'newAttendanceRegistration' => 'Add Attendance',
 			'searchAttendance' => 'Search Attendance',

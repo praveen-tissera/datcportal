@@ -36,7 +36,12 @@ if (!($this->session->userdata('user_detail'))) {
       echo $success_message_display;
       echo '</div>';
     }
-
+    // if trainer login and could not found any batches assigne to his
+    if((isset($active_batches) && count($active_batches)==0)){
+      echo '<div class="alert alert-danger" role="alert">';
+      echo "No active batch found for this profile";
+      echo '</div>';
+    }
     ?>
     </div>
   </div>
@@ -121,7 +126,7 @@ if (!($this->session->userdata('user_detail'))) {
         echo "<table class='table table-striped'>";
         echo "<tr>";
         echo "<th>";
-          echo "Student name";
+          echo "Student and trainer name";
         echo "</th>";
         for($i=1;$i<=7;$i++){
             echo "<th>";
@@ -133,6 +138,66 @@ if (!($this->session->userdata('user_detail'))) {
 
 
         echo "</tr>";
+
+          if(is_object($trainer_in_batch_obj)){
+            // print_r($trainer_in_batch_obj);
+            echo "<tr>";
+            echo "<td>";
+            // print_r($student);
+              echo $trainer_in_batch_obj->trainer_detail->first_name . ' ' . $trainer_in_batch_obj->trainer_detail->last_name;
+              echo " <span class='badge badge-info'> Trainer </span>";
+            echo "</td>";
+            $datetime = new DateTime($start_date);
+              
+            // print_r($value);
+            for($i=1;$i<=7;$i++){
+             
+              $found_flag = false;
+              if(is_array($trainer_in_batch_obj->trainer_attendance)){
+
+                foreach ($trainer_in_batch_obj->trainer_attendance as $key => $value) {
+                  if($datetime->format('Y-m-d') == $value->attend_date){
+                    // found attendance for the current date
+                    $found_flag = true;
+                    echo "<td>";
+                      echo "<select name='t_{$trainer_in_batch_obj->trainer_id}_$i'>";
+                      if($trainer_in_batch_obj->trainer_attendance->status == 'na'){
+                        echo "<option selected value='na'>N/A</option>";
+                        echo "<option value='0'>0</option>";
+                        echo "<option value='1'>1</option>";
+                      }elseif($value->status == '0'){
+                        echo "<option value='na'>N/A</option>";
+                        echo "<option selected value='0'>0</option>";
+                        echo "<option value='1'>1</option>";
+                      }elseif($value->status == '1'){
+                        echo "<option value='na'>N/A</option>";
+                        echo "<option value='0'>0</option>";
+                        echo "<option selected value='1'>1</option>";
+                      }
+                     
+                        
+                       
+                      echo "</select>";
+                    echo '</td>';
+                  }
+                }
+
+
+               
+              }
+              if(!$found_flag){
+                echo "<td>";
+                echo "<select name='t_{$trainer_in_batch_obj->trainer_id}_$i'>";
+                echo "<option value='na'>N/A</option>";
+                  echo "<option value='0'>0</option>";
+                  echo "<option value='1'>1</option>";
+                echo "</select>";
+              echo '</td>';
+              }
+              $datetime->modify('+1 day');
+            }
+          }
+
           foreach ($student_in_batch_obj as $key => $student) {
          echo "<tr>";
             echo "<td>";
@@ -193,49 +258,7 @@ if (!($this->session->userdata('user_detail'))) {
                 $datetime->modify('+1 day');
               }
              
-            // echo "</td>";
-            // echo "<td>";
-            //   echo "<select name='{$student->student_id}_2'>";
-            //     echo "<option value='na'>N/A</option>";
-            //     echo "<option value='0'>0</option>";
-            //     echo "<option value='1'>1</option>";
-            //   echo "</select>";
-            // echo "</td>";
-            // echo "<td>";
-            //   echo "<select name='{$student->student_id}_3'>";
-            //     echo "<option value='na'>N/A</option>";
-            //     echo "<option value='0'>0</option>";
-            //     echo "<option value='1'>1</option>";
-            //   echo "</select>";
-            // echo "</td>";
-            // echo "<td>";
-            //   echo "<select name='{$student->student_id}_4'>";
-            //     echo "<option value='na'>N/A</option>";
-            //     echo "<option value='0'>0</option>";
-            //     echo "<option value='1'>1</option>";
-            //   echo "</select>";
-            // echo "</td>";
-            // echo "<td>";
-            //   echo "<select name='{$student->student_id}_5'>";
-            //     echo "<option value='na'>N/A</option>";
-            //     echo "<option value='0'>0</option>";
-            //     echo "<option value='1'>1</option>";
-            //   echo "</select>";
-            // echo "</td>";
-            // echo "<td>";
-            //   echo "<select name='{$student->student_id}_6'>";
-            //     echo "<option value='na'>N/A</option>";
-            //     echo "<option value='0'>0</option>";
-            //     echo "<option value='1'>1</option>";
-            //   echo "</select>";
-            // echo "</td>";
-            // echo "<td>";
-            //   echo "<select name='{$student->student_id}_7'>";
-            //     echo "<option value='na'>N/A</option>";
-            //     echo "<option value='0'>0</option>";
-            //     echo "<option value='1'>1</option>";
-            //   echo "</select>";
-            // echo "</td>";
+            
          echo "</tr>";
           }
         echo "</table>";
@@ -247,8 +270,15 @@ if (!($this->session->userdata('user_detail'))) {
       ?>
       <div class="row">
       <div class="col-12">
-         <a class="btn btn-dark mt-2" href="<?php echo base_url('attendance/newAttendanceRegistration')?>">Back</a>
-        <button type="submit" class="mt-4 form-group btn btn-primary">Next</button>
+         <a class="btn btn-dark my-4" href="<?php echo base_url('attendance/newAttendanceRegistration')?>">Back</a>
+         <?php 
+          if(isset($error_message_display) || (isset($active_batches) && count($active_batches)==0)){
+        
+          }else{
+            echo '<button type="submit" class="my-2 form-group btn btn-primary">Next</button>';
+          }
+         ?>
+        
        </div>
 
         
