@@ -32,9 +32,9 @@ class Report extends CI_Controller
 	}
 	public function index()
 	{
-		if (isset($this->session->userdata['lawyer_detail'])) {
+		if(isset($this->session->userdata['user_detail'])){
 			//if session is already set
-			redirect('/user/lawyerDashBoard');
+			redirect('/user/report');
 		} else {
 			$this->load->view('login');
 		}

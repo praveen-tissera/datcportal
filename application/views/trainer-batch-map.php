@@ -12,7 +12,7 @@ if (!($this->session->userdata('user_detail'))) {
 ?>
 
 
-<!-- lawyer profile and resouce link -->
+<!-- load navigatio resouces -->
 <?php $this->load->view('header'); ?>
 <?php $this->load->view('top-navigation'); ?>
 <?php $this->load->view('staff-navigation'); ?>
