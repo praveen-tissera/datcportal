@@ -95,9 +95,9 @@ transition: .3s ease all;
   <li class="nav-item" role="presentation">
     <a class="nav-link" id="profile-tab" data-toggle="tab" href="#password" role="tab" aria-controls="profile" aria-selected="false">Change Password</a>
   </li>
-  <li class="nav-item" role="presentation">
+  <!-- <li class="nav-item" role="presentation">
     <a class="nav-link" id="contact-tab" data-toggle="tab" href="#notification" role="tab" aria-controls="contact" aria-selected="false">Notification</a>
-  </li>
+  </li> -->
 </ul>
 <!-- tab conent -->
 <div class="tab-content" id="myTabContent">
@@ -298,7 +298,7 @@ transition: .3s ease all;
     <?php echo form_close(); ?>
   </div>
   
-  <div class="tab-pane fade" id="notification">
+  <!-- <div class="tab-pane fade" id="notification">
   <?php 
       
       //  print_r($student_object);
@@ -365,7 +365,7 @@ echo "<tbody>";
       echo "</table>";
     ?>
 
-  </div>
+  </div> -->
 </div>
       
      
