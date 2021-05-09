@@ -48,7 +48,7 @@
         ?>
         <div class="form-group">
           <label>Certificate number</label>
-          <input type="text" class="form-control" name="certificatenumber">
+          <input type="text" class="form-control" pattern ="[A-Z]{2}\d+[A-A]{2}" name="certificatenumber">
         </div>
         <div class="form-group">
           <label>Image verification</label>
